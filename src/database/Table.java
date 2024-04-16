@@ -24,7 +24,7 @@ public abstract class Table {
 	public void AddIndex(String indexName) {
 		HashMap<String, Model> newIndex = new HashMap<String, Model>();
 		for (Model row : this.rows) {
-			newIndex.put(row.get(indexName), row);
+			newIndex.put((String)row.get(indexName), row);
 		}
 		this.indecies.put(indexName, newIndex);
 	}
