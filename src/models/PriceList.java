@@ -1,19 +1,33 @@
 package models;
 
-import java.util.Date;
+import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.HashMap;
 
+import utils.CSVDateParser;
+
 public class PriceList extends Model {
-	private static long lastId = 0;
-	private long id;
-	private Date startDate;
-	private Date endDate;
+	
+	/* ******************************  ATTRIBUTES  *************************************** */
+	
+	private LocalDate startDate;
+	private LocalDate endDate;
 	private HashMap<RoomType, Double> roomTypePrices;
 	private HashMap<RoomAddition, Double> roomAdditionPrices;
 	private HashMap<ReservationAddition, Double> reservationAdditionPrices;
+	
+	/* ******************************  CONSTRUCTORS  *************************************** */
 
 	public PriceList() {
-		this.id = ++lastId;
+		super();
+		this.startDate = null;
+		this.endDate = null;
+		this.roomTypePrices = new HashMap<RoomType, Double>();
+		this.roomAdditionPrices = new HashMap<RoomAddition, Double>();
+		this.reservationAdditionPrices = new HashMap<ReservationAddition, Double>();
+	}
+	public PriceList(String id) {
+		super(id);
 		this.startDate = null;
 		this.endDate = null;
 		this.roomTypePrices = new HashMap<RoomType, Double>();
@@ -21,10 +35,10 @@ public class PriceList extends Model {
 		this.reservationAdditionPrices = new HashMap<ReservationAddition, Double>();
 	}
 
-	public PriceList(Date startDate, Date endDate, HashMap<RoomType, Double> roomTypePrices,
+	public PriceList(LocalDate startDate, LocalDate endDate, HashMap<RoomType, Double> roomTypePrices,
 			HashMap<RoomAddition, Double> roomAdditionPrices,
 			HashMap<ReservationAddition, Double> reservationAdditionPrices) {
-		this.id = ++lastId;
+		super();
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.roomTypePrices = roomTypePrices;
@@ -32,8 +46,19 @@ public class PriceList extends Model {
 		this.reservationAdditionPrices = reservationAdditionPrices;
 	}
 
-	public PriceList(Date startDate, Date endDate) {
-		this.id = ++lastId;
+	public PriceList(String id, LocalDate startDate, LocalDate endDate, HashMap<RoomType, Double> roomTypePrices,
+			HashMap<RoomAddition, Double> roomAdditionPrices,
+			HashMap<ReservationAddition, Double> reservationAdditionPrices) {
+		super(id);
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.roomTypePrices = roomTypePrices;
+		this.roomAdditionPrices = roomAdditionPrices;
+		this.reservationAdditionPrices = reservationAdditionPrices;
+	}
+
+	public PriceList(LocalDate startDate, LocalDate endDate) {
+		super();
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.roomTypePrices = new HashMap<RoomType, Double>();
@@ -41,6 +66,17 @@ public class PriceList extends Model {
 		this.reservationAdditionPrices = new HashMap<ReservationAddition, Double>();
 	}
 
+	public PriceList(String id, LocalDate startDate, LocalDate endDate) {
+		super(id);
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.roomTypePrices = new HashMap<RoomType, Double>();
+		this.roomAdditionPrices = new HashMap<RoomAddition, Double>();
+		this.reservationAdditionPrices = new HashMap<ReservationAddition, Double>();
+	}
+
+	/* ******************************  METHODS  *************************************** */
+	
 	@Override
 	public Object get(String key) throws IllegalArgumentException {
 		switch (key) {
@@ -57,7 +93,7 @@ public class PriceList extends Model {
 		case "id":
 			return (Object) getId();
 		default:
-			throw new IllegalArgumentException("Invalid key");
+			return super.get(key);
 		}
 	}
 
@@ -66,10 +102,10 @@ public class PriceList extends Model {
 	public void set(String key, Object value) throws IllegalArgumentException {
 		switch (key) {
 		case "startDate":
-			setStartDate((Date) value);
+			setStartDate((LocalDate) value);
 			break;
 		case "endDate":
-			setEndDate((Date) value);
+			setEndDate((LocalDate) value);
 			break;
 		case "roomTypePrices":
 			setRoomTypePrices((HashMap<RoomType, Double>) value);
@@ -81,76 +117,97 @@ public class PriceList extends Model {
 			setReservationAdditionPrices((HashMap<ReservationAddition, Double>) value);
 			break;
 		default:
-			throw new IllegalArgumentException("Invalid key");
+		    super.set(key, value);
 		}
 	}
 	@Override
-	public PriceList clone() {
-		return new PriceList(getStartDate(), getEndDate(), getRoomTypePrices(), getRoomAdditionPrices(),
-				getReservationAdditionPrices());
+	public Object clone() throws CloneNotSupportedException {
+		HashMap<RoomType, Double> roomTypePricesClone = new HashMap<RoomType, Double>();
+		for (RoomType roomType : getRoomTypePrices().keySet()) {
+			roomTypePricesClone.put((RoomType)roomType.clone(), getRoomTypePrices().get(roomType));
+		}
+		HashMap<RoomAddition, Double> roomAdditionPricesClone = new HashMap<RoomAddition, Double>();
+		for (RoomAddition roomAddition : getRoomAdditionPrices().keySet()) {
+			roomAdditionPricesClone.put((RoomAddition) roomAddition.clone(), getRoomAdditionPrices().get(roomAddition));
+		}
+		HashMap<ReservationAddition, Double> reservationAdditionPricesClone = new HashMap<ReservationAddition, Double>();
+		for (ReservationAddition reservationAddition : getReservationAdditionPrices().keySet()) {
+			reservationAdditionPricesClone.put((ReservationAddition) reservationAddition.clone(),
+					getReservationAdditionPrices().get(reservationAddition));
+		}
+		return new PriceList(getId(), LocalDate.from(getStartDate()), LocalDate.from(getEndDate()), roomTypePricesClone, roomAdditionPricesClone, reservationAdditionPricesClone);
 	}
 	@Override
 	public String toString() {
-		StringBuilder roomTypePricesString = new StringBuilder();
-		for (RoomType roomType : getRoomTypePrices().keySet()) {
-            roomTypePricesString.append(roomType.toString() + ":" + getRoomTypePrices().get(roomType));
-        }
-		StringBuilder roomAdditionPricesString = new StringBuilder();
-		for (RoomAddition roomAddition : getRoomAdditionPrices().keySet()) {
-			roomAdditionPricesString.append(roomAddition.toString() + ":" + getRoomAdditionPrices().get(roomAddition));
-		}
-		StringBuilder reservationAdditionPricesString = new StringBuilder();
-		for (ReservationAddition reservationAddition : getReservationAdditionPrices().keySet()) {
-			reservationAdditionPricesString.append(
-					reservationAddition.toString() + ":" + getReservationAdditionPrices().get(reservationAddition));
-		}
+		
 		return String.join(";", new String[] {
-            Long.toString(getId()),
+			super.toString(),
             getStartDate().toString(),
             getEndDate().toString(),
-            String.join(",", roomTypePricesString.toString()),
-            String.join(",", roomAdditionPricesString.toString()),
-            String.join(",", reservationAdditionPricesString.toString())
         });
 	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof PriceList))
+		if (!super.equals(obj))
 			return false;
 		PriceList other = (PriceList) obj;
-		return getId() == other.getId() && getStartDate().equals(other.getStartDate())
+		return getStartDate().equals(other.getStartDate())
                 && getEndDate().equals(other.getEndDate()) && getRoomTypePrices().equals(other.getRoomTypePrices())
                 && getRoomAdditionPrices().equals(other.getRoomAdditionPrices())
                 && getReservationAdditionPrices().equals(other.getReservationAdditionPrices());
 	}
-
+	
+	@Override
+	public void update(Model newModel) throws IllegalArgumentException {
+		super.update(newModel);
+		if (!(newModel instanceof PriceList))
+			throw new IllegalArgumentException("Not  a PriceList object");
+		PriceList priceList = (PriceList) newModel;
+		setStartDate(priceList.getStartDate());
+		setEndDate(priceList.getEndDate());
+		setRoomTypePrices(priceList.getRoomTypePrices());
+		setRoomAdditionPrices(priceList.getRoomAdditionPrices());
+	}
+	
+	@Override
+	public Model fromCSV(String csv) throws ParseException {
+		super.fromCSV(csv);
+		String[] values = csv.split(";");
+		if (values.length < 3) throw new ParseException("Invalid RoomType string", 1);
+		this.startDate = CSVDateParser.parseString(values[1]);
+		this.endDate = CSVDateParser.parseString(values[2]);
+		return this;
+	}
+	
+	/* ******************************  GETTERS AND SETTERS  *************************************** */
+	
 	/**
 	 * @return the startDate
 	 */
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
 	/**
 	 * @param startDate the startDate to set
 	 */
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
 	/**
 	 * @return the endDate
 	 */
-	public Date getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
 	/**
 	 * @param endDate the endDate to set
 	 */
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 
@@ -196,11 +253,5 @@ public class PriceList extends Model {
 		this.reservationAdditionPrices = reservationAdditionPrices;
 	}
 
-	/**
-	 * @return the id
-	 */
-	public long getId() {
-		return id;
-	}
-
+	
 }

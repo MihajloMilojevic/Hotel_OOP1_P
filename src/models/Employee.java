@@ -3,7 +3,8 @@
  */
 package models;
 
-import java.util.Date;
+import java.text.ParseException;
+import java.time.LocalDate;
 
 import models.enums.Gender;
 import models.enums.UserRole;
@@ -12,14 +13,23 @@ import models.enums.UserRole;
  * 
  */
 public abstract class Employee extends User {
+
+	/* ******************************  PROPERTIES  *************************************** */
+	
 	protected String levelOfProfessionalEducation;
 	protected int yearsOfWorkExperience;
 	protected double salary;
 
+	/* ******************************  CONSTRUCTORS  *************************************** */
+
 	public Employee(UserRole role) {
 		super(role);
 	}
+	public Employee(UserRole role, String id) {
+		super(role, id);
+	}
 	/**
+	 * @param role
 	 * @param name
 	 * @param surname
 	 * @param gender
@@ -29,7 +39,45 @@ public abstract class Employee extends User {
 	 * @param username
 	 * @param password
 	 */
-	public Employee(UserRole role, String name, String surname, String gender, Date birthdate, String phone, String address,
+	public Employee(UserRole role, String name, String surname, String gender, LocalDate birthdate, String phone, String address,
+			String username, String password, String levelOfProfessionalEducation, int yearsOfWorkExperience, double salary) {
+		super(role, name, surname, gender, birthdate, phone, address, username, password);
+		this.levelOfProfessionalEducation = levelOfProfessionalEducation;
+		this.yearsOfWorkExperience = yearsOfWorkExperience;
+		this.salary = salary;
+	}
+	/**
+	 * @param role
+	 * @param id
+	 * @param name
+	 * @param surname
+	 * @param gender
+	 * @param birthdate
+	 * @param phone
+	 * @param address
+	 * @param username
+	 * @param password
+	 */
+	public Employee(UserRole role, String id, String name, String surname, String gender, LocalDate birthdate, String phone, String address,
+			String username, String password, String levelOfProfessionalEducation, int yearsOfWorkExperience, double salary) {
+		super(role, id, name, surname, gender, birthdate, phone, address, username, password);
+		this.levelOfProfessionalEducation = levelOfProfessionalEducation;
+		this.yearsOfWorkExperience = yearsOfWorkExperience;
+		this.salary = salary;
+	}
+
+	/**
+	 * @param role
+	 * @param name
+	 * @param surname
+	 * @param gender
+	 * @param birthdate
+	 * @param phone
+	 * @param address
+	 * @param username
+	 * @param password
+	 */
+	public Employee(UserRole role, String name, String surname, Gender gender, LocalDate birthdate, String phone, String address,
 			String username, String password, String levelOfProfessionalEducation, int yearsOfWorkExperience, double salary) {
 		super(role, name, surname, gender, birthdate, phone, address, username, password);
 		this.levelOfProfessionalEducation = levelOfProfessionalEducation;
@@ -38,6 +86,8 @@ public abstract class Employee extends User {
 	}
 
 	/**
+	 * @param role
+	 * @param id
 	 * @param name
 	 * @param surname
 	 * @param gender
@@ -47,13 +97,15 @@ public abstract class Employee extends User {
 	 * @param username
 	 * @param password
 	 */
-	public Employee(UserRole role, String name, String surname, Gender gender, Date birthdate, String phone, String address,
+	public Employee(UserRole role, String id, String name, String surname, Gender gender, LocalDate birthdate, String phone, String address,
 			String username, String password, String levelOfProfessionalEducation, int yearsOfWorkExperience, double salary) {
-		super(role, name, surname, gender, birthdate, phone, address, username, password);
+		super(role, id, name, surname, gender, birthdate, phone, address, username, password);
 		this.levelOfProfessionalEducation = levelOfProfessionalEducation;
 		this.yearsOfWorkExperience = yearsOfWorkExperience;
 		this.salary = salary;
 	}
+	
+	/* ******************************  METHODS  *************************************** */
 	
 	@Override
 	public Object get(String key) throws IllegalArgumentException {
@@ -85,7 +137,7 @@ public abstract class Employee extends User {
 			break;
 		}
 	}
-
+	@Override
 	public String toString() {
 		return String.join(";", new String[] {
 			super.toString(),
@@ -108,6 +160,34 @@ public abstract class Employee extends User {
 				&& getYearsOfWorkExperience() == employee.getYearsOfWorkExperience()
 				&& getSalary() == employee.getSalary();
 	}
+	@Override
+	public void update(Model newModel) throws IllegalArgumentException {
+		super.update(newModel);
+		if (!(newModel instanceof Employee)) throw new IllegalArgumentException("Not an Employee");
+		Employee employee = (Employee) newModel;
+		setLevelOfProfessionalEducation(employee.getLevelOfProfessionalEducation());
+		setYearsOfWorkExperience(employee.getYearsOfWorkExperience());
+		setSalary(employee.getSalary());
+	}
+	
+	@Override
+	public Model fromCSV(String csv) throws ParseException {
+		super.fromCSV(csv);
+		System.out.println(csv);
+		String[] values = csv.split(";");
+		if (values.length < 12) throw new ParseException("Invalid csv record", 2);
+		try {
+			setLevelOfProfessionalEducation(values[9]);
+			setYearsOfWorkExperience(Integer.parseInt(values[10]));
+			setSalary(Double.parseDouble(values[11]));
+			return this;
+	    } catch (Exception e) {
+			throw new ParseException("Invalid csv record", 2);
+	    }
+	}
+	
+	/* ******************************  GETTERS & SETTERS  *************************************** */
+	
 	/**
 	 * @return the levelOfProfessionalEducation
 	 */

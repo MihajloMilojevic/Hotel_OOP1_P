@@ -3,35 +3,43 @@
  */
 package models;
 
-import java.util.Date;
+import java.text.ParseException;
+import java.time.LocalDate;
 
 import models.enums.Gender;
 import models.enums.UserRole;
+import utils.CSVDateParser;
 
 public abstract class User extends Model {
 
+	/* ******************************  PROPERTIES  *************************************** */
+	
 	protected String name;
 	protected String surname;
 	protected Gender gender;
-	protected Date birthdate;
+	protected LocalDate birthdate;
 	protected String phone;
 	protected String address;
 	protected String username;
 	protected String password;
 	protected UserRole role;
+	
+	/* ******************************  CONSTRUCTORS  *************************************** */
 
 	public User(UserRole role) {
+		super();
 		this.role = role;
 		this.name = "";
 		this.surname = "";
 		this.gender = Gender.MALE;
-		this.birthdate = new Date();
+		this.birthdate = null;
 		this.phone = "";
 		this.address = "";
 		this.username = "";
 		this.password = "";
 	}
 	/**
+	 * @param role
 	 * @param name
 	 * @param surname
 	 * @param gender
@@ -41,8 +49,71 @@ public abstract class User extends Model {
 	 * @param username
 	 * @param password
 	 */
-	public User(UserRole role, String name, String surname, String gender, Date birthdate, String phone, String address,
+	public User(UserRole role, String name, String surname, String gender, LocalDate birthdate, String phone, String address,
 			String username, String password) {
+		super();
+		this.role = role;
+		this.name = name;
+		this.surname = surname;
+		this.gender = Gender.valueOf(gender);
+		this.birthdate = birthdate;
+		this.phone = phone;
+		this.address = address;
+		this.username = username;
+		this.password = password;
+	}
+	/**
+	 * @param role
+	 * @param name
+	 * @param surname
+	 * @param gender
+	 * @param birthdate
+	 * @param phone
+	 * @param address
+	 * @param username
+	 * @param password
+	 */
+	public User(UserRole role, String name, String surname, Gender gender, LocalDate birthdate, String phone, String address,
+			String username, String password) {
+		super();
+		this.role = role;
+		this.name = name;
+		this.surname = surname;
+		this.gender = gender;
+		this.birthdate = birthdate;
+		this.phone = phone;
+		this.address = address;
+		this.username = username;
+		this.password = password;
+	}
+
+	public User(UserRole role, String id) {
+		super(id);
+		this.role = role;
+		this.name = "";
+		this.surname = "";
+		this.gender = Gender.MALE;
+		this.birthdate = null;
+		this.phone = "";
+		this.address = "";
+		this.username = "";
+		this.password = "";
+	}
+	/**
+	 * @param role
+	 * @param id
+	 * @param name
+	 * @param surname
+	 * @param gender
+	 * @param birthdate
+	 * @param phone
+	 * @param address
+	 * @param username
+	 * @param password
+	 */
+	public User(UserRole role, String id, String name, String surname, String gender, LocalDate birthdate, String phone, String address,
+			String username, String password) {
+		super(id);
 		this.role = role;
 		this.name = name;
 		this.surname = surname;
@@ -55,6 +126,8 @@ public abstract class User extends Model {
 	}
 
 	/**
+	 * @param role
+	 * @param id
 	 * @param name
 	 * @param surname
 	 * @param gender
@@ -64,8 +137,9 @@ public abstract class User extends Model {
 	 * @param username
 	 * @param password
 	 */
-	public User(UserRole role, String name, String surname, Gender gender, Date birthdate, String phone, String address,
+	public User(UserRole role, String id, String name, String surname, Gender gender, LocalDate birthdate, String phone, String address,
 			String username, String password) {
+		super(id);
 		this.role = role;
 		this.name = name;
 		this.surname = surname;
@@ -76,7 +150,9 @@ public abstract class User extends Model {
 		this.username = username;
 		this.password = password;
 	}
-
+	
+	/* ******************************  METHODS  *************************************** */
+	
 	@Override
 	public Object get(String key) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
@@ -100,7 +176,7 @@ public abstract class User extends Model {
 		case "role":
 			return (Object) getRole();
 		default:
-			throw new IllegalArgumentException(key + " is not a valid key");
+			return super.get(key);
 		}
 	}
 
@@ -117,7 +193,7 @@ public abstract class User extends Model {
 			setGender((Gender) value);
 			break;
 		case "birthdate":
-			setBirthdate((Date) value);
+			setBirthdate((LocalDate) value);
 			break;
 		case "phone":
 			setPhone((String) value);
@@ -132,13 +208,13 @@ public abstract class User extends Model {
 			setPassword((String) value);
 			break;
 		default:
-			throw new IllegalArgumentException(key + " is not a valid key");
+			super.set(key, value);
 		}
 	}
 
 	@Override
 	public String toString() {
-		return String.join(";", new String[] { getRole().toString(), getName(), getSurname(), getGender().toString(),
+		return String.join(";", new String[] { super.toString(), getRole().toString(), getName(), getSurname(), getGender().toString(),
 				getBirthdate().toString(), getPhone(), getAddress(), getUsername(), getPassword() });
 	}
 
@@ -152,19 +228,60 @@ public abstract class User extends Model {
 		}
 		User user = (User) obj;
 		return (
-				this.getRole().equals(user.getRole()) &&
-				this.getUsername().equals(user.getUsername()) &&
-				this.getPassword().equals(user.getPassword()) &&
+				super.equals(user) &&
 				this.getRole().equals(user.getRole()) &&
 				this.getName().equals(user.getName()) &&
 				this.getSurname().equals(user.getSurname()) &&
 				this.getGender().equals(user.getGender()) &&
 				this.getBirthdate().equals(user.getBirthdate()) &&
 				this.getPhone().equals(user.getPhone()) &&
-				this.getAddress().equals(user.getAddress())
+				this.getAddress().equals(user.getAddress())  &&
+				this.getUsername().equals(user.getUsername()) &&
+				this.getPassword().equals(user.getPassword())
 			);
 	}
+	
+	@Override
+	public void update(Model newModel) throws IllegalArgumentException {
+        super.update(newModel);
+        if (!(newModel instanceof User)) throw new IllegalArgumentException("Not a User");
+        User user = (User) newModel;
+        this.role = user.role;
+        this.name = user.name;
+        this.surname = user.surname;
+        this.gender = user.gender;
+        this.birthdate = user.birthdate;
+        this.phone = user.phone;
+        this.address = user.address;
+        this.username = user.username;
+        this.password = user.password;
+	}
+	
+	@Override
+	public Model fromCSV(String csv) throws ParseException {
+		super.fromCSV(csv);
+        String[] values = csv.split(";");
+        if (values.length < 10) throw new ParseException("Invalid CSV record", 1);
+        try {
+        	this.role = UserRole.valueOf(values[1]);
+            this.name = values[2];
+            this.surname = values[3];
+            this.gender = Gender.valueOf(values[4]);
+            System.out.println(values[5]);
+            this.birthdate = CSVDateParser.parseString(values[5]);
+            this.phone = values[6];
+            this.address = values[7];
+            this.username = values[8];
+            this.password = values[9];
+            return this;
+        }
+		catch (Exception e) {
+			throw new ParseException("Invalid CSV record", 1);
+		}
+	}
 
+	/* ******************************  GETTERS AND SETTERS  *************************************** */
+	
 	/**
 	 * @return the role
 	 */
@@ -217,14 +334,14 @@ public abstract class User extends Model {
 	/**
 	 * @return the birthdate
 	 */
-	public Date getBirthdate() {
+	public LocalDate getBirthdate() {
 		return birthdate;
 	}
 
 	/**
 	 * @param birthdate the birthdate to set
 	 */
-	public void setBirthdate(Date birthdate) {
+	public void setBirthdate(LocalDate birthdate) {
 		this.birthdate = birthdate;
 	}
 

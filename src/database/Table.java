@@ -1,31 +1,158 @@
 package database;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import models.Model;
+import utils.Pair;
 
-public abstract class Table {
-	private String tableName;
-	private String primaryKey;
-	private String filePath;
-	private ArrayList<Model> rows;
-	private HashMap<String, HashMap<String, Model>> indecies;
-
-	public Table(String tableName, String primaryKey, String filePath) {
-		this.tableName = tableName;
-		this.primaryKey = primaryKey;
-		this.filePath = filePath;
-		this.rows = new ArrayList<Model>();
-		this.indecies = new HashMap<String, HashMap<String, Model>>();
-		this.AddIndex(primaryKey);
+public class Table<T extends Model> {
+	private File file;
+	private HashMap<String, T> rows;
+	private HashMap<String, HashMap<String, T>> indecies;
+	private T object;
+	
+	public Table(File file, T object) {
+		this.file = file;
+		this.object = object;
+		this.rows = new HashMap<String, T>();
+		this.indecies = new HashMap<String, HashMap<String, T>>();
+		if (!file.exists()) {
+            try {
+            	file.getParentFile().mkdirs();
+				file.createNewFile();
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+			}
+        }
 	}
-
 	public void AddIndex(String indexName) {
-		HashMap<String, Model> newIndex = new HashMap<String, Model>();
-		for (Model row : this.rows) {
+		HashMap<String, T> newIndex = new HashMap<String, T>();
+		for (T row : this.rows.values()) {
 			newIndex.put((String)row.get(indexName), row);
 		}
 		this.indecies.put(indexName, newIndex);
+	}
+	public void RemoveIndex(String indexName) {
+		this.indecies.remove(indexName);
+	}
+	@SuppressWarnings("unchecked")
+	public ArrayList<T> getRows() {
+		ArrayList<T> result = new ArrayList<T>();
+		for (T row : this.rows.values()) {
+        	try {
+				result.add((T)row.clone());
+			} catch (CloneNotSupportedException e) {
+				System.err.println(e.getMessage());
+			}
+        }
+		return result;
+	}
+	public void Insert(T row) {
+		this.rows.put(row.getId(), row);
+        for (String indexName : this.indecies.keySet()) {
+            this.indecies.get(indexName).put((String)row.get(indexName), row);
+        }
+	}
+	public void Delete(T row) {
+		this.rows.remove(row.getId());
+		RegenerateIndecies();
+	}
+	public void Delete(SelectCondition condition) {
+		for (T row : this.rows.values()) {
+			if (condition.check(row)) {
+				this.rows.remove(row.getId());
+			}
+		}
+		RegenerateIndecies();
+	}
+	public void DeleteByIndex(String indexName, String indexValue) {
+		if(!this.indecies.containsKey(indexName)) return;
+		T row = this.indecies.get(indexName).get(indexValue);
+		if(row == null) return;
+		this.rows.remove(row.getId());
+		RegenerateIndecies();
+	}
+ 	@SuppressWarnings("unchecked")
+	public ArrayList<T> Select(SelectCondition condition) {
+		ArrayList<T> result = new ArrayList<T>();
+		for (T row : this.rows.values()) {
+            if (condition.check(row)) {
+            	try {
+					result.add((T)row.clone());
+				} catch (CloneNotSupportedException e) {
+					System.err.println(e.getMessage());
+				}
+            }
+        }
+		return result;
+	}
+ 	
+	@SuppressWarnings("unchecked")
+	public T SelectByIndex(String indexName, String indexValue) {
+		if (!this.indecies.containsKey(indexName)) return null;
+		T row = this.indecies.get(indexName).get(indexValue);
+		try {
+			return (T)row.clone();
+		} catch (CloneNotSupportedException e) {
+			System.err.println(e.getMessage());
+			return null;
+		}
+	}
+
+	public void Update(SelectCondition condition, ArrayList<Pair<String, Object>> updates) {
+		for (T row : this.rows.values()) {
+			if (condition.check(row)) {
+				for (Pair<String, Object> update : updates) {
+					row.set(update.getKey(), update.getValue());
+				}
+			}
+		}
+		RegenerateIndecies();
+	}
+
+	public void UpdateByIndex(String indexName, String indexValue, ArrayList<Pair<String, Object>> updates) {
+		if (!this.indecies.containsKey(indexName)) return;
+		T row = this.indecies.get(indexName).get(indexValue);
+		if(row == null) return;
+		for (Pair<String, Object> update : updates) {
+			row.set(update.getKey(), update.getValue());
+		}
+		RegenerateIndecies();
+	}
+
+	private void RegenerateIndecies() {
+		for (String indexName : this.indecies.keySet()) {
+			this.indecies.remove(indexName);
+			this.AddIndex(indexName);
+		}
+	}
+	@SuppressWarnings("unchecked")
+	public void Load() throws IOException {
+		List<String> lines = Files.readAllLines(Path.of(file.getAbsolutePath()), StandardCharsets.UTF_8);
+		for (String line : lines) {
+			T row;
+			try {
+				row = (T)((T)this.object.clone()).fromCSV(line);
+				this.Insert(row);
+			} catch (ParseException | CloneNotSupportedException e) {
+				System.err.println(e.getMessage());
+			}
+		}
+	}
+
+	public void Save() throws IOException {
+		List<String> lines = new ArrayList<String>();
+		for (T row : this.rows.values()) {
+			lines.add(row.toString());
+		}
+		Files.write(Path.of(file.getAbsolutePath()), lines, StandardCharsets.UTF_8);
 	}
 }

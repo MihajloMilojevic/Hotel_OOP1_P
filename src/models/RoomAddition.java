@@ -1,65 +1,84 @@
 package models;
 
+import java.text.ParseException;
+
 public class RoomAddition extends Model {
-	private long id;
-	private String name;	
-	private static long lastId = 0;
+
+	/* ******************************  ATTRIBUTES  *************************************** */
+	// Attributes in the database
+	private String name;
 	
+	public RoomAddition() {
+		super();
+		this.name = null;
+	}
+
 	public RoomAddition(String name) {
-		this.id = ++lastId;
+		super();
         this.name = name;
-    }
-	public RoomAddition(long id, String name) {
-		this.id = id;
+	}
+	
+	public RoomAddition(String id, String name) {
+		super(id);
 		this.name = name;
 	}
+	
+	/* ******************************  METHODS  *************************************** */
+	
 	@Override
 	public Object get(String key) throws IllegalArgumentException {
 		switch (key) {
-			case "id":
-				return getId();
-			case "name":
-				return getName();
-			default:
-				throw new IllegalArgumentException("Invalid key: " + key);
+		case "name":
+			return (Object) this.name;
+		default:
+			return super.get(key);
 		}
 	}
 	@Override
-	public void set(String key, Object value) {
+	public void set(String key, Object value) throws IllegalArgumentException {
 		switch (key) {
 		case "name":
-			setName((String) value);
+			this.name = (String) value;
 			break;
 		default:
-			throw new IllegalArgumentException("Invalid key: " + key);
+			super.set(key, value);
 		}
+	}
+	@Override
+	public void update(Model newModel) throws IllegalArgumentException {
+		super.update(newModel);
+		if (!(newModel instanceof RoomAddition)) throw new IllegalArgumentException("Not  a RoomAddition object");
+		this.name = (String) newModel.get("name");
 	}
 	@Override
 	public String toString() {
-		return String.join(";", new String[] {String.valueOf(id), name});
-	}
-	@Override
-	public RoomAddition clone() {
-		return new RoomAddition(id, name);
+		return String.join(";", new String[] {super.toString(), this.name});
 	}
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (obj == this) {
 			return true;
 		}
 		if (obj == null || obj.getClass() != this.getClass()) {
 			return false;
 		}
-		RoomAddition roomAddition = (RoomAddition) obj;
-		return (this.getId() == roomAddition.getId() && this.getName().equals(roomAddition.getName()));
+		RoomAddition RoomAddition = (RoomAddition) obj;
+		return super.equals(obj) && this.name.equals(RoomAddition.name);
 	}
-	/**
-	 * @return the id
-	 */
-	public long getId() {
-		return id;
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return new RoomAddition(this.getId(), this.name);
+	}
+	@Override
+	public Model fromCSV(String csv) throws ParseException {
+		super.fromCSV(csv);
+		String[] values = csv.split(";");
+		if (values.length < 2) throw new ParseException("Invalid RoomType string", 1);
+		this.name = values[1];
+		return this;
 	}
 	
+	/* ******************************  GETTERS & SETTERS  *************************************** */
 	/**
 	 * @return the name
 	 */
@@ -73,5 +92,4 @@ public class RoomAddition extends Model {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 }

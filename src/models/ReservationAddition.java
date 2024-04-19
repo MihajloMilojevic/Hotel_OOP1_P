@@ -1,65 +1,84 @@
 package models;
 
+import java.text.ParseException;
+
 public class ReservationAddition extends Model {
-	private long id;
+
+	/* ******************************  ATTRIBUTES  *************************************** */
+	// Attributes in the database
 	private String name;
-	private static long lastId = 0;
+	
+	public ReservationAddition() {
+		super();
+		this.name = null;
+	}
 
 	public ReservationAddition(String name) {
-		this.id = ++lastId;
+		super();
         this.name = name;
-    }
-	public ReservationAddition(long id, String name) {
-		this.id = id;
+	}
+	
+	public ReservationAddition(String id, String name) {
+		super(id);
 		this.name = name;
 	}
+	
+	/* ******************************  METHODS  *************************************** */
+	
 	@Override
 	public Object get(String key) throws IllegalArgumentException {
 		switch (key) {
-			case "id":
-				return getId();
-			case "name":
-				return getName();
-			default:
-				throw new IllegalArgumentException("Invalid key: " + key);
+		case "name":
+			return (Object) this.name;
+		default:
+			return super.get(key);
 		}
 	}
 	@Override
-	public void set(String key, Object value) {
+	public void set(String key, Object value) throws IllegalArgumentException {
 		switch (key) {
 		case "name":
-			setName((String) value);
+			this.name = (String) value;
 			break;
 		default:
-			throw new IllegalArgumentException("Invalid key: " + key);
+			super.set(key, value);
 		}
+	}
+	@Override
+	public void update(Model newModel) throws IllegalArgumentException {
+		super.update(newModel);
+		if (!(newModel instanceof ReservationAddition)) throw new IllegalArgumentException("Not  a ReservationAddition object");
+		this.name = (String) newModel.get("name");
 	}
 	@Override
 	public String toString() {
-		return String.join(";", new String[] {String.valueOf(id), name});
-	}
-	@Override
-	public ReservationAddition clone() {
-		return new ReservationAddition(id, name);
+		return String.join(";", new String[] {super.toString(), this.name});
 	}
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (obj == this) {
 			return true;
 		}
 		if (obj == null || obj.getClass() != this.getClass()) {
 			return false;
 		}
-		ReservationAddition reservationAddition = (ReservationAddition) obj;
-		return (this.getId() == reservationAddition.getId() && this.getName().equals(reservationAddition.getName()));
+		ReservationAddition ReservationAddition = (ReservationAddition) obj;
+		return super.equals(obj) && this.name.equals(ReservationAddition.name);
 	}
-	/**
-	 * @return the id
-	 */
-	public long getId() {
-		return id;
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return new ReservationAddition(this.getId(), this.name);
+	}
+	@Override
+	public Model fromCSV(String csv) throws ParseException {
+		super.fromCSV(csv);
+		String[] values = csv.split(";");
+		if (values.length < 2) throw new ParseException("Invalid RoomType string", 1);
+		this.name = values[1];
+		return this;
 	}
 	
+	/* ******************************  GETTERS & SETTERS  *************************************** */
 	/**
 	 * @return the name
 	 */

@@ -1,16 +1,31 @@
 package models;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import models.enums.RoomStatus;
 
 public class Room extends Model {
-	public int number;
-	public RoomType type;
-	public RoomStatus status;
-	public ArrayList<RoomAddition> roomAdditions;
+	
+	/* ******************************  ATTRIBUTES  *************************************** */
+	
+	private int number;
+	private RoomType type;
+	private RoomStatus status;
+	private ArrayList<RoomAddition> roomAdditions;
+	
+	/* ******************************  CONSTRUCTORS  *************************************** */	
 	
 	public Room() {
+		super();
+		this.number = 0;
+		this.type = null;
+		this.status = RoomStatus.FREE;
+		this.roomAdditions = new ArrayList<RoomAddition>();
+	}
+	
+	public Room(String id) {
+		super(id);
 		this.number = 0;
 		this.type = null;
 		this.status = RoomStatus.FREE;
@@ -18,6 +33,15 @@ public class Room extends Model {
 	}
 
 	public Room(int number, RoomType type, RoomStatus status, ArrayList<RoomAddition> roomAdditions) {
+		super();
+		this.number = number;
+		this.type = type;
+		this.status = status;
+		this.roomAdditions = roomAdditions;
+	}
+	
+	public Room(String id, int number, RoomType type, RoomStatus status, ArrayList<RoomAddition> roomAdditions) {
+		super(id);
 		this.number = number;
 		this.type = type;
 		this.status = status;
@@ -25,12 +49,28 @@ public class Room extends Model {
 	}
 
 	public Room(int number, RoomType type, RoomStatus status) {
+		super();
+		this.number = number;
+		this.type = type;
+		this.status = status;
+		this.roomAdditions = new ArrayList<RoomAddition>();
+	}
+	public Room(String id, int number, RoomType type, RoomStatus status) {
+		super(id);
 		this.number = number;
 		this.type = type;
 		this.status = status;
 		this.roomAdditions = new ArrayList<RoomAddition>();
 	}
 	public Room(int number, RoomType type, String status, ArrayList<RoomAddition> roomAdditions) {
+		super();
+		this.number = number;
+		this.type = type;
+		this.status = RoomStatus.valueOf(status);
+		this.roomAdditions = roomAdditions;
+	}
+	public Room(String id, int number, RoomType type, String status, ArrayList<RoomAddition> roomAdditions) {
+		super(id);
 		this.number = number;
 		this.type = type;
 		this.status = RoomStatus.valueOf(status);
@@ -44,6 +84,16 @@ public class Room extends Model {
 		this.roomAdditions = new ArrayList<RoomAddition>();
 	}
 	
+	/* ******************************  METHODS  *************************************** */
+
+	public void addRoomAddition(RoomAddition roomAddition) {
+		this.roomAdditions.add(roomAddition);
+	}
+
+	public void removeRoomAddition(RoomAddition roomAddition) {
+		this.roomAdditions.remove(roomAddition);
+	}
+	
 	@Override
 	public Object get(String key) throws IllegalArgumentException {
 		switch (key) {
@@ -54,7 +104,7 @@ public class Room extends Model {
 			case "status":
 				return (Object) this.status;
 			default:
-				throw new IllegalArgumentException("Invalid key");
+				return super.get(key);
 		}
 	}
 	@Override
@@ -70,29 +120,25 @@ public class Room extends Model {
 			this.status = (RoomStatus) value;
 			break;
 		default:
-			throw new IllegalArgumentException("Invalid key");
+			super.set(key, value);
 		}
 	}
 	
-	public void addRoomAddition(RoomAddition roomAddition) {
-		this.roomAdditions.add(roomAddition);
-	}
-
-	public void removeRoomAddition(RoomAddition roomAddition) {
-		this.roomAdditions.remove(roomAddition);
-	}
 	@Override
 	public String toString() {
 		return String.join(";", new String[] { 
+				super.toString(),
 				String.valueOf(number), 
-				type.getName(), 
-				status.toString(),
-				String.join(",", roomAdditions.stream().map(RoomAddition::getName).toArray(String[]::new))
+				status.toString()
 			});
 	}
 	@Override
-	public Room clone() {
-		return new Room(number, type, status, roomAdditions);
+	public Object clone() throws CloneNotSupportedException {
+		ArrayList<RoomAddition> roomAdditionsClone = new ArrayList<RoomAddition>();
+		for (RoomAddition roomAddition : this.roomAdditions) {
+			roomAdditions.add((RoomAddition)roomAddition.clone());
+		}
+		return new Room(id, number, (RoomType)type.clone(), status, roomAdditionsClone);
 	}
     @Override
 	public boolean equals(Object obj) {
@@ -106,6 +152,20 @@ public class Room extends Model {
 		return (this.number == room.number && this.type.equals(room.type) && this.status.equals(room.status)
 				&& this.roomAdditions.equals(room.roomAdditions));
 	}
+    @Override
+	public Model fromCSV(String csv) throws ParseException {
+		super.fromCSV(csv);
+		String[] values = csv.split(";");
+		if (values.length < 3) throw new ParseException("Invalid RoomType string", 1);
+		this.number = Integer.parseInt(values[1]);
+		this.status = RoomStatus.valueOf(values[2]);
+		return this;
+	}
+    
+    
+    /* ******************************  GETTERS AND SETTERS  *************************************** */
+    
+    
 	/**
 	 * @return the number
 	 */
