@@ -1,5 +1,8 @@
 package app;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import database.Database;
 
 public class AppState {
@@ -13,6 +16,18 @@ public class AppState {
 		this.settings = AppSettings.getInstance();
         this.database = Database.getInstance(settings);
     }
+	
+	public void Load() throws IOException, ParseException {
+		settings.Load();
+		database.Load();
+		System.out.println("App state loaded.");
+	}
+	
+	public void Save() throws IOException, ParseException {
+		settings.Save();
+		database.Save();
+		System.out.println("App state saved.");
+	}
 
 	public static AppState getInstance() {
 		if (instance == null) {

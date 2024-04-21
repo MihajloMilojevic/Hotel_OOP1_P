@@ -80,13 +80,21 @@ public class Table<T extends Model> {
 		this.rows.remove(row.getId());
 		RegenerateIndecies();
 	}
- 	@SuppressWarnings("unchecked")
+
 	public ArrayList<T> Select(SelectCondition condition) {
+		return Select(condition, true);
+	}
+	
+ 	@SuppressWarnings("unchecked")
+	public ArrayList<T> Select(SelectCondition condition, boolean clone) {
 		ArrayList<T> result = new ArrayList<T>();
 		for (T row : this.rows.values()) {
             if (condition.check(row)) {
             	try {
-					result.add((T)row.clone());
+					if (clone)
+						result.add((T) row.clone());
+					else
+						result.add(row);
 				} catch (CloneNotSupportedException e) {
 					System.err.println(e.getMessage());
 				}
@@ -95,12 +103,35 @@ public class Table<T extends Model> {
 		return result;
 	}
  	
-	@SuppressWarnings("unchecked")
+ 	public T SelectById(String id) {
+	        return SelectById(id, true);
+ 	}
+ 	
+ 	@SuppressWarnings("unchecked")
+	public T SelectById(String id, boolean clone) {
+		T row = this.rows.get(id);
+		if (row == null)
+			return null;
+		try {
+			if (clone) return (T) row.clone();
+			return row;
+		} catch (CloneNotSupportedException e) {
+			System.err.println(e.getMessage());
+			return null;
+		}
+ 	}
+
 	public T SelectByIndex(String indexName, String indexValue) {
+		return SelectByIndex(indexName, indexValue, true);
+	}
+ 	
+	@SuppressWarnings("unchecked")
+	public T SelectByIndex(String indexName, String indexValue, boolean clone) {
 		if (!this.indecies.containsKey(indexName)) return null;
 		T row = this.indecies.get(indexName).get(indexValue);
 		try {
-			return (T)row.clone();
+			if(clone) return (T)row.clone();
+			return row;
 		} catch (CloneNotSupportedException e) {
 			System.err.println(e.getMessage());
 			return null;

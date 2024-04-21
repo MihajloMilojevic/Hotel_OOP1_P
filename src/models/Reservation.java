@@ -108,7 +108,7 @@ public class Reservation extends Model {
 		case "price":
 			return (Object) getPrice();
 		case "reservationAdditions":
-			return (Object) getreservationAdditions();
+			return (Object) getReservationAdditions();
 		default:
 			return super.get(key);
 		}
@@ -136,7 +136,7 @@ public class Reservation extends Model {
 			setPrice((double) value);
 			break;
 		case "reservationAdditions":
-			setreservationAdditions((ArrayList<ReservationAddition>) value);
+			setReservationAdditions((ArrayList<ReservationAddition>) value);
 			break;
 		default:
 			super.set(key, value);
@@ -145,7 +145,7 @@ public class Reservation extends Model {
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		ArrayList<ReservationAddition> reservationAdditionsClone = new ArrayList<ReservationAddition>();
-		for (ReservationAddition reservationAddition : getreservationAdditions()) {
+		for (ReservationAddition reservationAddition : getReservationAdditions()) {
 			reservationAdditionsClone.add((ReservationAddition)reservationAddition.clone());
 		}
 		return new Reservation(getId(), (Room)getRoom().clone(), (Guest)getGuest().clone(), LocalDate.from(getStartDate()), LocalDate.from(getEndDate()), getPrice(), reservationAdditionsClone);
@@ -186,7 +186,7 @@ public class Reservation extends Model {
 		setStartDate(reservation.getStartDate());
 		setEndDate(reservation.getEndDate());
 		setPrice(reservation.getPrice());
-		setreservationAdditions(reservation.getreservationAdditions());
+		setReservationAdditions(reservation.getReservationAdditions());
 	}
 	@Override
 	public Model fromCSV(String csv) throws ParseException {
@@ -202,6 +202,14 @@ public class Reservation extends Model {
 		this.endDate = CSVDateParser.parseString(values[3]);
 		this.price = Double.parseDouble(values[4]);
 		return this;
+	}
+	
+	public void addReservationAddition(ReservationAddition reservationAddition) {
+		this.reservationAdditions.add(reservationAddition);
+	}
+	
+	public void removeReservationAddition(ReservationAddition reservationAddition) {
+		this.reservationAdditions.remove(reservationAddition);
 	}
 	
 	/* ******************************  GETTERS & SETTERS  *************************************** */
@@ -293,14 +301,14 @@ public class Reservation extends Model {
 	/**
 	 * @return the reservationAdditions
 	 */
-	public ArrayList<ReservationAddition> getreservationAdditions() {
+	public ArrayList<ReservationAddition> getReservationAdditions() {
 		return reservationAdditions;
 	}
 
 	/**
 	 * @param reservationAdditions the reservationAdditions to set
 	 */
-	public void setreservationAdditions(ArrayList<ReservationAddition> reservationAdditions) {
+	public void setReservationAdditions(ArrayList<ReservationAddition> reservationAdditions) {
 		this.reservationAdditions = reservationAdditions;
 	}
 

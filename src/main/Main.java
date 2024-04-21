@@ -1,58 +1,26 @@
 package main;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.text.ParseException;
 
+import app.AppSettings;
 import app.AppState;
-import models.Admin;
-import models.enums.Gender;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ParseException {
 		AppState appState = AppState.getInstance();
-		/*
-		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("HELLO WORLD");
-		lines.add("Č Ć Ž Š Đ");
-		lines.add("1234567890");
-		lines.add(".,;:!?-+*");
-		lines.add("абвфкајфѕђѕцњњиеохцљј");
-		Files.write(Path.of("./data/test.txt"), lines, Charset.forName("UTF-8"));
-		*/
-
+		appState.Load();
 		
+		AppSettings settings = appState.getSettings();
+		settings.AddSetting("General", "language", "en");
+		settings.AddSetting("General", "theme", "dark");
+		settings.AddSetting("General", "font", "Arial");
+		settings.AddSetting("General", "fontSize", "12");
+		settings.AddSetting("General", "autoSave", "true");
+		settings.AddSetting("General", "autoSaveInterval", "5");
+		settings.AddSetting("General", "lastOpenedFile", "data/test.txt");
 		
-		Admin admin = new Admin(
-			"Mihajlo", 
-			"Milojević", 
-			Gender.MALE, 
-			LocalDate.of(2004, 5, 31), 
-			"+381649781191",
-			"Braće Dronjak 6, 21000 Novi Sad",
-			"mihajlo",
-			"mihajlo",
-			"Student",
-			2,
-			500_000.00
-		);
-		System.out.println("Inserting admin: " + admin);
-		appState
-			.getDatabase()
-			.getAdmins()
-			.Insert(admin);
-
-		appState
-            .getDatabase()
-            .getAdmins().Save();
-
-		/*
-		appState
-            .getDatabase()
-            .getAdmins().Load();
-        */
-		for (Admin a : appState.getDatabase().getAdmins().getRows()) {
-			System.out.println(a);
-		}
+		appState.Save();
 	}
 }
