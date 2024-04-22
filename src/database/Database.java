@@ -31,9 +31,7 @@ public class Database {
 		tables = new HashMap<String, Table<? extends Model>>();
 		connections = new ArrayList<Connection<? extends Model, ? extends Model>>();
 
-		/*
-		 * ****************************** TABLES ***************************************
-		 */
+		/* ****************************** TABLES *************************************** */
 
 		tables.put("guests", new Table<Guest>(
 				new File(settings.getSetting("database", "guests_file_path", "./data/default.csv")), new Guest()));
@@ -314,6 +312,16 @@ public class Database {
 				Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 			}
 		}));
+		
+		/* ****************************** INDECIES *************************************** */
+		getAdmins().AddIndex("username");
+		getReceptionists().AddIndex("username");
+		getMaids().AddIndex("username");
+		getGuests().AddIndex("username");
+		getRooms().AddIndex("number");
+		getRoomTypes().AddIndex("name");
+		getRoomAdditions().AddIndex("name");
+		getReservationAdditions().AddIndex("name");
 	}
 
 	public void Load() throws IOException, ParseException {
@@ -331,6 +339,12 @@ public class Database {
 		}
 		for (Connection<? extends Model, ? extends Model> connection : connections) {
 			connection.Save();
+		}
+	}
+	
+	public void Clear() {
+		for (Table<? extends Model> table : tables.values()) {
+			table.Clear();
 		}
 	}
 

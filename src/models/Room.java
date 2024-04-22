@@ -55,6 +55,23 @@ public class Room extends Model {
 		this.status = status;
 		this.roomAdditions = new ArrayList<RoomAddition>();
 	}
+
+	public Room(int number, RoomType type) {
+		super();
+		this.number = number;
+		this.type = type;
+		this.status = RoomStatus.FREE;
+		this.roomAdditions = new ArrayList<RoomAddition>();
+	}
+	
+	public Room(String id, int number, RoomType type) {
+		super(id);
+		this.number = number;
+		this.type = type;
+		this.status = RoomStatus.FREE;
+		this.roomAdditions = new ArrayList<RoomAddition>();
+	}
+	
 	public Room(String id, int number, RoomType type, RoomStatus status) {
 		super(id);
 		this.number = number;

@@ -73,6 +73,11 @@ public class Table<T extends Model> {
 		}
 		RegenerateIndecies();
 	}
+
+	public void DeleteById(String id) {
+		this.rows.remove(id);
+		RegenerateIndecies();
+	}
 	public void DeleteByIndex(String indexName, String indexValue) {
 		if(!this.indecies.containsKey(indexName)) return;
 		T row = this.indecies.get(indexName).get(indexValue);
@@ -159,12 +164,18 @@ public class Table<T extends Model> {
 		RegenerateIndecies();
 	}
 
+	public void Clear() {
+		this.rows.clear();
+		this.indecies.clear();
+	}
+	
 	private void RegenerateIndecies() {
 		for (String indexName : this.indecies.keySet()) {
 			this.indecies.remove(indexName);
 			this.AddIndex(indexName);
 		}
 	}
+	
 	@SuppressWarnings("unchecked")
 	public void Load() throws IOException {
 		List<String> lines = Files.readAllLines(Path.of(file.getAbsolutePath()), StandardCharsets.UTF_8);
