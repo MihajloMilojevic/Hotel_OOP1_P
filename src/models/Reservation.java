@@ -89,6 +89,28 @@ public class Reservation extends Model {
 		this.reservationAdditions = new ArrayList<ReservationAddition>();
 	}
 
+	public Reservation(Room room, Guest guest, LocalDate startDate, LocalDate endDate) {
+		super();
+		this.status = ReservationStatus.PENDING;
+		this.room = room;
+		this.guest = guest;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.price = 0;
+		this.reservationAdditions = new ArrayList<ReservationAddition>();
+	}
+
+	public Reservation(String id, Room room, Guest guest, LocalDate startDate, LocalDate endDate) {
+		super(id);
+		this.status = ReservationStatus.PENDING;
+		this.room = room;
+		this.guest = guest;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.price = 0;
+		this.reservationAdditions = new ArrayList<ReservationAddition>();
+	}
+
 	
 	/* ******************************  METHODS  *************************************** */
 	

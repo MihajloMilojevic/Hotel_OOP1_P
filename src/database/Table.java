@@ -43,12 +43,18 @@ public class Table<T extends Model> {
 	public void RemoveIndex(String indexName) {
 		this.indecies.remove(indexName);
 	}
-	@SuppressWarnings("unchecked")
 	public ArrayList<T> getRows() {
+		return getRows(true);
+	}
+	@SuppressWarnings("unchecked")
+	public ArrayList<T> getRows(boolean clone) {
 		ArrayList<T> result = new ArrayList<T>();
 		for (T row : this.rows.values()) {
         	try {
-				result.add((T)row.clone());
+        		if (clone)
+        			result.add((T)row.clone());
+        		else
+        			result.add(row);
 			} catch (CloneNotSupportedException e) {
 				System.err.println(e.getMessage());
 			}
@@ -58,7 +64,7 @@ public class Table<T extends Model> {
 	public void Insert(T row) {
 		this.rows.put(row.getId(), row);
         for (String indexName : this.indecies.keySet()) {
-            this.indecies.get(indexName).put((String)row.get(indexName), row);
+            this.indecies.get(indexName).put(row.get(indexName).toString(), row);
         }
 	}
 	public void Delete(T row) {

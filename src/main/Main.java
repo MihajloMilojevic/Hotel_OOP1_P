@@ -3,17 +3,11 @@ package main;
 import java.io.IOException;
 import java.text.ParseException;
 
-import app.AppSettings;
-import app.AppState;
+import views.KT2;
 
 public class Main {
 
 	public static void main(String[] args) throws IOException, ParseException {
-		AppState appState = AppState.getInstance();
-		appState.Load();
-		
-		
-		
-		appState.Save();
+		new KT2();
 	}
 }

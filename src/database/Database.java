@@ -340,6 +340,7 @@ public class Database {
 		for (Connection<? extends Model, ? extends Model> connection : connections) {
 			connection.Save();
 		}
+		System.out.println("Database saved.");
 	}
 	
 	public void Clear() {

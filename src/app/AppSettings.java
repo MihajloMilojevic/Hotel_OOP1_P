@@ -75,6 +75,9 @@ public class AppSettings {
 	}
 	
 	public void Save() throws IOException {
+		if (settings.isEmpty()) {
+			return;
+		}
 		ArrayList<String> lines = new ArrayList<String>();
 		for (String key : settings.get("defualt").keySet()) {
 			lines.add(key + " = " + settings.get("defualt").get(key));
