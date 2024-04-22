@@ -13,6 +13,7 @@ public class Room extends Model {
 	private RoomType type;
 	private RoomStatus status;
 	private ArrayList<RoomAddition> roomAdditions;
+	private Maid maid;
 	
 	/* ******************************  CONSTRUCTORS  *************************************** */	
 	
@@ -22,6 +23,7 @@ public class Room extends Model {
 		this.type = null;
 		this.status = RoomStatus.FREE;
 		this.roomAdditions = new ArrayList<RoomAddition>();
+		this.maid = null;
 	}
 	
 	public Room(String id) {
@@ -30,6 +32,7 @@ public class Room extends Model {
 		this.type = null;
 		this.status = RoomStatus.FREE;
 		this.roomAdditions = new ArrayList<RoomAddition>();
+		this.maid = null;
 	}
 
 	public Room(int number, RoomType type, RoomStatus status, ArrayList<RoomAddition> roomAdditions) {
@@ -38,6 +41,7 @@ public class Room extends Model {
 		this.type = type;
 		this.status = status;
 		this.roomAdditions = roomAdditions;
+		this.maid = null;
 	}
 	
 	public Room(String id, int number, RoomType type, RoomStatus status, ArrayList<RoomAddition> roomAdditions) {
@@ -46,6 +50,7 @@ public class Room extends Model {
 		this.type = type;
 		this.status = status;
 		this.roomAdditions = roomAdditions;
+		this.maid = null;
 	}
 
 	public Room(int number, RoomType type, RoomStatus status) {
@@ -54,6 +59,7 @@ public class Room extends Model {
 		this.type = type;
 		this.status = status;
 		this.roomAdditions = new ArrayList<RoomAddition>();
+		this.maid = null;
 	}
 
 	public Room(int number, RoomType type) {
@@ -62,6 +68,7 @@ public class Room extends Model {
 		this.type = type;
 		this.status = RoomStatus.FREE;
 		this.roomAdditions = new ArrayList<RoomAddition>();
+		this.maid = null;
 	}
 	
 	public Room(String id, int number, RoomType type) {
@@ -70,6 +77,7 @@ public class Room extends Model {
 		this.type = type;
 		this.status = RoomStatus.FREE;
 		this.roomAdditions = new ArrayList<RoomAddition>();
+		this.maid = null;
 	}
 	
 	public Room(String id, int number, RoomType type, RoomStatus status) {
@@ -78,6 +86,7 @@ public class Room extends Model {
 		this.type = type;
 		this.status = status;
 		this.roomAdditions = new ArrayList<RoomAddition>();
+		this.maid = null;
 	}
 	public Room(int number, RoomType type, String status, ArrayList<RoomAddition> roomAdditions) {
 		super();
@@ -85,6 +94,7 @@ public class Room extends Model {
 		this.type = type;
 		this.status = RoomStatus.valueOf(status);
 		this.roomAdditions = roomAdditions;
+		this.maid = null;
 	}
 	public Room(String id, int number, RoomType type, String status, ArrayList<RoomAddition> roomAdditions) {
 		super(id);
@@ -92,6 +102,7 @@ public class Room extends Model {
 		this.type = type;
 		this.status = RoomStatus.valueOf(status);
 		this.roomAdditions = roomAdditions;
+		this.maid = null;
 	}
 
 	public Room(int number, RoomType type, String status) {
@@ -99,6 +110,7 @@ public class Room extends Model {
 		this.type = type;
 		this.status = RoomStatus.valueOf(status);
 		this.roomAdditions = new ArrayList<RoomAddition>();
+		this.maid = null;
 	}
 	
 	/* ******************************  METHODS  *************************************** */
@@ -230,6 +242,20 @@ public class Room extends Model {
 	 */
 	public void setRoomAdditions(ArrayList<RoomAddition> roomAdditions) {
 		this.roomAdditions = roomAdditions;
+	}
+
+	/**
+	 * @return the maid
+	 */
+	public Maid getMaid() {
+		return maid;
+	}
+
+	/**
+	 * @param maid the maid to set
+	 */
+	public void setMaid(Maid maid) {
+		this.maid = maid;
 	}
 
 }

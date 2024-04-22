@@ -127,6 +127,37 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
+		connections.add(new Connection<Room, Maid>(
+					getRooms(), getMaids(), new File(settings.getSetting("database", "rooms_maids_connection_file_path",
+                        "./data/default.csv")),
+					new ConnectionActions<Room, Maid>() {
+						@Override
+                        public void Load(Table<Room> table1, Table<Maid> table2, String path)
+                                throws IOException, ParseException {
+                            List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
+                            for (String line : lines) {
+                                String[] parts = line.split(";");
+                                if (parts.length != 2) {
+                                    throw new ParseException("Invalid csv record", 0);
+                                }
+                                Room room = table1.SelectById(parts[0], false);
+                                Maid maid = table2.SelectById(parts[1], false);
+                                room.setMaid(maid);
+                            }
+                        }
+
+                        @Override
+                        public void Save(Table<Room> table1, Table<Maid> table2, String path)
+                                throws IOException, ParseException {
+                            List<String> lines = new ArrayList<String>();
+                            for (Room room : table1.getRows()) {
+                            	if(room.getMaid() == null) continue;
+                                lines.add(room.getId() + ";" + room.getMaid().getId());
+                            }
+                            Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
+                        }
+					}
+				));
 		connections.add(new Connection<Reservation, Room>(
 				getReservations(), getRooms(), new File(settings.getSetting("database",
 						"reservations_rooms_connection_file_path", "./data/default.csv")),
