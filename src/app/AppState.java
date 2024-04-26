@@ -13,15 +13,15 @@ public class AppState {
 	private AppState() {
     }
 	
-	public void Load() throws IOException, ParseException {
-		getSettings().Load();
-		getDatabase().Load();
+	public void load() throws IOException, ParseException {
+		getSettings().load();
+		getDatabase().load();
 		System.out.println("App state loaded.");
 	}
 	
-	public void Save() throws IOException, ParseException {
-		getSettings().Save();
-		getDatabase().Save();
+	public void save() throws IOException, ParseException {
+		getSettings().save();
+		getDatabase().save();
 		System.out.println("App state saved.");
 	}
 

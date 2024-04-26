@@ -9,103 +9,97 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
+import app.AppSettings;
+import exceptions.DuplicateIndexException;
 import models.Model;
+import utils.FileChecker;
 import utils.Pair;
 
 public class Table<T extends Model> {
-	private File file;
+	private String settingName;
 	private HashMap<String, T> rows;
 	private HashMap<String, HashMap<String, T>> indecies;
 	private T object;
+	private CustomTableParser customParser;
 	
-	public Table(File file, T object) {
-		this.file = file;
+	public Table(String settingName, T object) {
+		this.settingName = settingName;
 		this.object = object;
 		this.rows = new HashMap<String, T>();
 		this.indecies = new HashMap<String, HashMap<String, T>>();
-		if (!file.exists()) {
-            try {
-            	file.getParentFile().mkdirs();
-				file.createNewFile();
-			} catch (IOException e) {
-				System.err.println(e.getMessage());
-			}
-        }
+		
+		addIndex("id");
 	}
-	public void AddIndex(String indexName) {
+
+	public Table(String settingName, CustomTableParser customParser) {
+		this(settingName, (T)null);
+		this.customParser = customParser;
+		
+	}
+	public void addIndex(String indexName) {
 		HashMap<String, T> newIndex = new HashMap<String, T>();
 		for (T row : this.rows.values()) {
 			newIndex.put((String)row.get(indexName), row);
 		}
 		this.indecies.put(indexName, newIndex);
 	}
-	public void RemoveIndex(String indexName) {
+	public void removeIndex(String indexName) {
 		this.indecies.remove(indexName);
 	}
-	public ArrayList<T> getRows() {
-		return getRows(true);
-	}
+
 	@SuppressWarnings("unchecked")
-	public ArrayList<T> getRows(boolean clone) {
+	public ArrayList<T> getRows() {
 		ArrayList<T> result = new ArrayList<T>();
 		for (T row : this.rows.values()) {
         	try {
-        		if (clone)
-        			result.add((T)row.clone());
-        		else
-        			result.add(row);
+    			result.add((T)row.clone());
 			} catch (CloneNotSupportedException e) {
 				System.err.println(e.getMessage());
 			}
         }
 		return result;
 	}
-	public void Insert(T row) {
+	public void insert(T row) throws DuplicateIndexException {
+		if(!isUnique(row)) throw new DuplicateIndexException("Duplicate key");
 		this.rows.put(row.getId(), row);
         for (String indexName : this.indecies.keySet()) {
             this.indecies.get(indexName).put(row.get(indexName).toString(), row);
         }
 	}
-	public void Delete(T row) {
+	public void delete(T row) {
 		this.rows.remove(row.getId());
-		RegenerateIndecies();
+		regenerateIndecies();
 	}
-	public void Delete(SelectCondition condition) {
+	public void delete(SelectCondition condition) {
 		for (T row : this.rows.values()) {
 			if (condition.check(row)) {
 				this.rows.remove(row.getId());
 			}
 		}
-		RegenerateIndecies();
+		regenerateIndecies();
 	}
 
-	public void DeleteById(String id) {
+	public void deleteById(String id) {
 		this.rows.remove(id);
-		RegenerateIndecies();
+		regenerateIndecies();
 	}
-	public void DeleteByIndex(String indexName, String indexValue) {
+	public void deleteByIndex(String indexName, String indexValue) {
 		if(!this.indecies.containsKey(indexName)) return;
 		T row = this.indecies.get(indexName).get(indexValue);
 		if(row == null) return;
 		this.rows.remove(row.getId());
-		RegenerateIndecies();
+		regenerateIndecies();
 	}
 
-	public ArrayList<T> Select(SelectCondition condition) {
-		return Select(condition, true);
-	}
-	
  	@SuppressWarnings("unchecked")
-	public ArrayList<T> Select(SelectCondition condition, boolean clone) {
+	public ArrayList<T> select(SelectCondition condition) {
 		ArrayList<T> result = new ArrayList<T>();
 		for (T row : this.rows.values()) {
             if (condition.check(row)) {
             	try {
-					if (clone)
-						result.add((T) row.clone());
-					else
-						result.add(row);
+					result.add((T) row.clone());
 				} catch (CloneNotSupportedException e) {
 					System.err.println(e.getMessage());
 				}
@@ -114,42 +108,47 @@ public class Table<T extends Model> {
 		return result;
 	}
  	
- 	public T SelectById(String id) {
-	        return SelectById(id, true);
- 	}
- 	
  	@SuppressWarnings("unchecked")
-	public T SelectById(String id, boolean clone) {
+	public T selectById(String id) {
 		T row = this.rows.get(id);
 		if (row == null)
 			return null;
 		try {
-			if (clone) return (T) row.clone();
-			return row;
+			return (T) row.clone();
 		} catch (CloneNotSupportedException e) {
 			System.err.println(e.getMessage());
 			return null;
 		}
  	}
 
-	public T SelectByIndex(String indexName, String indexValue) {
-		return SelectByIndex(indexName, indexValue, true);
-	}
- 	
+
 	@SuppressWarnings("unchecked")
-	public T SelectByIndex(String indexName, String indexValue, boolean clone) {
+	public T selectByIndex(String indexName, String indexValue) {
 		if (!this.indecies.containsKey(indexName)) return null;
 		T row = this.indecies.get(indexName).get(indexValue);
 		try {
-			if(clone) return (T)row.clone();
-			return row;
+			return (T)row.clone();
 		} catch (CloneNotSupportedException e) {
 			System.err.println(e.getMessage());
 			return null;
 		}
 	}
 
-	public void Update(SelectCondition condition, ArrayList<Pair<String, Object>> updates) {
+	public void update(SelectCondition condition, ArrayList<Pair<String, Object>> updates) throws DuplicateIndexException {
+		for (T row : this.rows.values()) {
+			if (condition.check(row)) {
+				try {
+					@SuppressWarnings("unchecked")
+					T copy = (T) row.clone();
+					for (Pair<String, Object> update : updates) {
+						copy.set(update.getKey(), update.getValue());
+					}
+					if(!isUnique(copy)) throw new DuplicateIndexException("Duplicate key");
+				} catch (CloneNotSupportedException e) {
+					System.err.println(e.getMessage());
+				}
+			}
+		}
 		for (T row : this.rows.values()) {
 			if (condition.check(row)) {
 				for (Pair<String, Object> update : updates) {
@@ -157,50 +156,89 @@ public class Table<T extends Model> {
 				}
 			}
 		}
-		RegenerateIndecies();
+		regenerateIndecies();
 	}
 
-	public void UpdateByIndex(String indexName, String indexValue, ArrayList<Pair<String, Object>> updates) {
+	public void updateByIndex(String indexName, String indexValue, ArrayList<Pair<String, Object>> updates) throws DuplicateIndexException {
 		if (!this.indecies.containsKey(indexName)) return;
 		T row = this.indecies.get(indexName).get(indexValue);
 		if(row == null) return;
+		try {
+			@SuppressWarnings("unchecked")
+			T copy = (T) row.clone();
+			for (Pair<String, Object> update : updates) {
+				copy.set(update.getKey(), update.getValue());
+			}
+			if(!isUnique(copy)) throw new DuplicateIndexException("Duplicate key");
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		for (Pair<String, Object> update : updates) {
 			row.set(update.getKey(), update.getValue());
 		}
-		RegenerateIndecies();
+		regenerateIndecies();
 	}
 
-	public void Clear() {
+	public void clear() {
 		this.rows.clear();
 		this.indecies.clear();
 	}
 	
-	private void RegenerateIndecies() {
-		for (String indexName : this.indecies.keySet()) {
-			this.indecies.remove(indexName);
-			this.AddIndex(indexName);
+	private void regenerateIndecies() {
+		Set<String> keys = this.indecies.keySet();
+		this.indecies.clear();
+		for (String indexName : keys) {
+			this.addIndex(indexName);
 		}
 	}
 	
+	private boolean isUnique(T model) {
+		if(this.rows.containsKey(model.getId())) return false;
+		for (String indexName : this.indecies.keySet()) {
+			if (this.indecies.get(indexName).containsKey(model.get(indexName).toString()))
+				return false;
+		}
+		return true;
+	}
+	
 	@SuppressWarnings("unchecked")
-	public void Load() throws IOException {
+	public void load() throws IOException {
+		File file = FileChecker.getFile(AppSettings.getInstance().getSetting("database", this.settingName, "./data/" + this.settingName + ".csv"));
 		List<String> lines = Files.readAllLines(Path.of(file.getAbsolutePath()), StandardCharsets.UTF_8);
 		for (String line : lines) {
 			T row;
 			try {
-				row = (T)((T)this.object.clone()).fromCSV(line);
-				this.Insert(row);
-			} catch (ParseException | CloneNotSupportedException e) {
+				if (this.customParser != null) {
+					row = (T) this.customParser.parse(line);
+				} else {
+					row = (T) ((T) this.object.clone()).fromCSV(line);
+				}
+				this.insert(row);
+			} catch (Exception e) {
 				System.err.println(e.getMessage());
 			}
 		}
 	}
 
-	public void Save() throws IOException {
+	public void save() throws IOException {
+		File file = FileChecker.getFile(AppSettings.getInstance().getSetting("database", this.settingName, "./data/" + this.settingName + ".csv"));
 		List<String> lines = new ArrayList<String>();
 		for (T row : this.rows.values()) {
-			lines.add(row.toString());
+			try {
+				if (this.customParser != null) {
+					lines.add(this.customParser.stringify(row));
+				} else {            	
+					lines.add(row.toString());
+				}
+			} catch (ParseException e) {
+				System.err.println(e.getMessage());
+			}
 		}
 		Files.write(Path.of(file.getAbsolutePath()), lines, StandardCharsets.UTF_8);
+	}
+
+	public String getSettingName() {
+		return settingName;
 	}
 }

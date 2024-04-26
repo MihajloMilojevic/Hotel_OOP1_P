@@ -16,27 +16,29 @@ public class InitialDatabase {
 
 	public static void init(Database db) {
 		
+		try {
+			
 		/* ****************************** Users *************************************** */
 		
 		Admin mihajlo = new Admin("Mihajlo", "Milojević", Gender.MALE, LocalDate.of(2004, 5, 21), "+381649781191", "Braće Dronjak 6, Novi Sad", "admin", "admin", "Phd", 2, 500_000);
-		db.getAdmins().Insert(mihajlo);
+		db.getUsers().insert(mihajlo);
 		
 		Receptionist petar = new Receptionist("Petar", "Popović", Gender.MALE, LocalDate.of(2004, 6, 6), "+381628361185", "Bulevar despota Stefana 7, Novi Sad", "petar", "Petar123", "Bachelor", 1, 100_000);
 		Receptionist sara1 = new Receptionist("Sara", "Stojkov", Gender.FEMALE, LocalDate.of(2004, 9, 17), "+381612599941", "Maksima Gorkog 12, Novi Sad", "sara", "Sara987", "Master", 3, 130_000);
-		db.getReceptionists().Insert(petar);
-		db.getReceptionists().Insert(sara1);
+		db.getUsers().insert(petar);
+		db.getUsers().insert(sara1);
 		
 		Maid luka = new Maid("Luka", "Prlinčević", Gender.MALE, LocalDate.of(2004, 8, 26), "+381640862775", "Bulevar despota Stefana 7, Novi Sad", "luka", "Luka123", "Highschool", 0, 70_000);
 		Maid nikola = new Maid("Nikola", "Rogonjić", Gender.MALE, LocalDate.of(2004, 9, 10), "+381644606859", "Samaila 5, Kraljevo", "nikola", "Nikola123", "Highschool", 0, 75_000);
-		db.getMaids().Insert(luka);
-		db.getMaids().Insert(nikola);
+		db.getUsers().insert(luka);
+		db.getUsers().insert(nikola);
 		
 		Guest djordje = new Guest("Đorđe", "Milojević", Gender.MALE, LocalDate.of(2008, 5, 4), "+381642723956", "8. Mart 70, Kraljevo", "Djole", "Majmunce");
 		Guest sofija = new Guest("Sofija", "Obradović", Gender.FEMALE, LocalDate.of(2004, 4, 21), "+381659786412", "Bulevar vojvode Stepe 17, Novi Sad", "Sofija", "Sofija123");
 		Guest sara2 = new Guest("Sara", "Spasojević", Gender.FEMALE, LocalDate.of(2004, 4, 20), "+381628361185", "Ulica 9. maja 15, Kraljevo", "caja", "Sara123");
-		db.getGuests().Insert(djordje);
-		db.getGuests().Insert(sofija);
-		db.getGuests().Insert(sara2);
+		db.getUsers().insert(djordje);
+		db.getUsers().insert(sofija);
+		db.getUsers().insert(sara2);
 	
 		/* ****************************** Room Types *************************************** */
 	
@@ -47,13 +49,13 @@ public class InitialDatabase {
 		RoomType tripleTwoBeds = new RoomType("Triple Two Beds");
 		RoomType apartment = new RoomType("Apartment");
 		RoomType penthouse = new RoomType("Penthouse");
-		db.getRoomTypes().Insert(single);
-		db.getRoomTypes().Insert(doubleSingleBed);
-		db.getRoomTypes().Insert(doubleTwoBeds);
-		db.getRoomTypes().Insert(tripleThreeBeds);
-		db.getRoomTypes().Insert(tripleTwoBeds);
-		db.getRoomTypes().Insert(apartment);
-		db.getRoomTypes().Insert(penthouse);
+		db.getRoomTypes().insert(single);
+		db.getRoomTypes().insert(doubleSingleBed);
+		db.getRoomTypes().insert(doubleTwoBeds);
+		db.getRoomTypes().insert(tripleThreeBeds);
+		db.getRoomTypes().insert(tripleTwoBeds);
+		db.getRoomTypes().insert(apartment);
+		db.getRoomTypes().insert(penthouse);
 		
 		/* ****************************** Room Additions *************************************** */
 		
@@ -63,12 +65,12 @@ public class InitialDatabase {
 		RoomAddition tv = new RoomAddition("TV");
 		RoomAddition wifi = new RoomAddition("WiFi");
 		RoomAddition climate = new RoomAddition("Climate");
-		db.getRoomAdditions().Insert(balcony);
-		db.getRoomAdditions().Insert(cityView);
-		db.getRoomAdditions().Insert(jacuzzi);
-		db.getRoomAdditions().Insert(tv);
-		db.getRoomAdditions().Insert(wifi);
-		db.getRoomAdditions().Insert(climate);
+		db.getRoomAdditions().insert(balcony);
+		db.getRoomAdditions().insert(cityView);
+		db.getRoomAdditions().insert(jacuzzi);
+		db.getRoomAdditions().insert(tv);
+		db.getRoomAdditions().insert(wifi);
+		db.getRoomAdditions().insert(climate);
 		
 		/* ****************************** Reservation Additions *************************************** */
 		
@@ -82,16 +84,16 @@ public class InitialDatabase {
 		ReservationAddition parking = new ReservationAddition("Parking");
 		ReservationAddition roomService = new ReservationAddition("Room Service");
 		ReservationAddition extraBed = new ReservationAddition("Extra Bed");
-		db.getReservationAdditions().Insert(breakfast);
-		db.getReservationAdditions().Insert(lunch);
-		db.getReservationAdditions().Insert(dinner);
-		db.getReservationAdditions().Insert(allInclusive);
-		db.getReservationAdditions().Insert(spa);
-		db.getReservationAdditions().Insert(gym);
-		db.getReservationAdditions().Insert(pool);
-		db.getReservationAdditions().Insert(parking);
-		db.getReservationAdditions().Insert(roomService);
-		db.getReservationAdditions().Insert(extraBed);
+		db.getReservationAdditions().insert(breakfast);
+		db.getReservationAdditions().insert(lunch);
+		db.getReservationAdditions().insert(dinner);
+		db.getReservationAdditions().insert(allInclusive);
+		db.getReservationAdditions().insert(spa);
+		db.getReservationAdditions().insert(gym);
+		db.getReservationAdditions().insert(pool);
+		db.getReservationAdditions().insert(parking);
+		db.getReservationAdditions().insert(roomService);
+		db.getReservationAdditions().insert(extraBed);
 		
 		/* ****************************** Rooms *************************************** */
 		
@@ -244,137 +246,140 @@ public class InitialDatabase {
 		room801.addRoomAddition(wifi);
 		room801.addRoomAddition(climate);
 		
-		db.getRooms().Insert(room101);
-		db.getRooms().Insert(room102);
-		db.getRooms().Insert(room103);
-		db.getRooms().Insert(room104);
-		db.getRooms().Insert(room105);
-		db.getRooms().Insert(room106);
-		db.getRooms().Insert(room107);
-		db.getRooms().Insert(room108);
-		db.getRooms().Insert(room109);
-		db.getRooms().Insert(room110);
-		db.getRooms().Insert(room111);
-		db.getRooms().Insert(room112);
-		db.getRooms().Insert(room113);
-		db.getRooms().Insert(room114);
-		db.getRooms().Insert(room115);
-		db.getRooms().Insert(room116);
-		db.getRooms().Insert(room117);
-		db.getRooms().Insert(room118);
-		db.getRooms().Insert(room119);
-		db.getRooms().Insert(room120);
-		db.getRooms().Insert(room121);
-		db.getRooms().Insert(room122);
-		db.getRooms().Insert(room123);
-		db.getRooms().Insert(room124);
+		db.getRooms().insert(room101);
+		db.getRooms().insert(room102);
+		db.getRooms().insert(room103);
+		db.getRooms().insert(room104);
+		db.getRooms().insert(room105);
+		db.getRooms().insert(room106);
+		db.getRooms().insert(room107);
+		db.getRooms().insert(room108);
+		db.getRooms().insert(room109);
+		db.getRooms().insert(room110);
+		db.getRooms().insert(room111);
+		db.getRooms().insert(room112);
+		db.getRooms().insert(room113);
+		db.getRooms().insert(room114);
+		db.getRooms().insert(room115);
+		db.getRooms().insert(room116);
+		db.getRooms().insert(room117);
+		db.getRooms().insert(room118);
+		db.getRooms().insert(room119);
+		db.getRooms().insert(room120);
+		db.getRooms().insert(room121);
+		db.getRooms().insert(room122);
+		db.getRooms().insert(room123);
+		db.getRooms().insert(room124);
 		
-		db.getRooms().Insert(room201);
-		db.getRooms().Insert(room202);
-		db.getRooms().Insert(room203);
-		db.getRooms().Insert(room204);
-		db.getRooms().Insert(room205);
-		db.getRooms().Insert(room206);
-		db.getRooms().Insert(room207);
-		db.getRooms().Insert(room208);
-		db.getRooms().Insert(room209);
-		db.getRooms().Insert(room210);
-		db.getRooms().Insert(room211);
-		db.getRooms().Insert(room212);
-		db.getRooms().Insert(room213);
-		db.getRooms().Insert(room214);
-		db.getRooms().Insert(room215);
-		db.getRooms().Insert(room216);
-		db.getRooms().Insert(room217);
-		db.getRooms().Insert(room218);
-		db.getRooms().Insert(room219);
-		db.getRooms().Insert(room220);
-		db.getRooms().Insert(room221);
-		db.getRooms().Insert(room222);
-		db.getRooms().Insert(room223);
-		db.getRooms().Insert(room224);
+		db.getRooms().insert(room201);
+		db.getRooms().insert(room202);
+		db.getRooms().insert(room203);
+		db.getRooms().insert(room204);
+		db.getRooms().insert(room205);
+		db.getRooms().insert(room206);
+		db.getRooms().insert(room207);
+		db.getRooms().insert(room208);
+		db.getRooms().insert(room209);
+		db.getRooms().insert(room210);
+		db.getRooms().insert(room211);
+		db.getRooms().insert(room212);
+		db.getRooms().insert(room213);
+		db.getRooms().insert(room214);
+		db.getRooms().insert(room215);
+		db.getRooms().insert(room216);
+		db.getRooms().insert(room217);
+		db.getRooms().insert(room218);
+		db.getRooms().insert(room219);
+		db.getRooms().insert(room220);
+		db.getRooms().insert(room221);
+		db.getRooms().insert(room222);
+		db.getRooms().insert(room223);
+		db.getRooms().insert(room224);
 		
-		db.getRooms().Insert(room301);
-		db.getRooms().Insert(room302);
-		db.getRooms().Insert(room303);
-		db.getRooms().Insert(room304);
-		db.getRooms().Insert(room305);
-		db.getRooms().Insert(room306);
-		db.getRooms().Insert(room307);
-		db.getRooms().Insert(room308);
-		db.getRooms().Insert(room309);
-		db.getRooms().Insert(room310);
-		db.getRooms().Insert(room311);
-		db.getRooms().Insert(room312);
-		db.getRooms().Insert(room313);
-		db.getRooms().Insert(room314);
-		db.getRooms().Insert(room315);
-		db.getRooms().Insert(room316);
-		db.getRooms().Insert(room317);
-		db.getRooms().Insert(room318);
-		db.getRooms().Insert(room319);
-		db.getRooms().Insert(room320);
-		db.getRooms().Insert(room321);
-		db.getRooms().Insert(room322);
-		db.getRooms().Insert(room323);
-		db.getRooms().Insert(room324);
+		db.getRooms().insert(room301);
+		db.getRooms().insert(room302);
+		db.getRooms().insert(room303);
+		db.getRooms().insert(room304);
+		db.getRooms().insert(room305);
+		db.getRooms().insert(room306);
+		db.getRooms().insert(room307);
+		db.getRooms().insert(room308);
+		db.getRooms().insert(room309);
+		db.getRooms().insert(room310);
+		db.getRooms().insert(room311);
+		db.getRooms().insert(room312);
+		db.getRooms().insert(room313);
+		db.getRooms().insert(room314);
+		db.getRooms().insert(room315);
+		db.getRooms().insert(room316);
+		db.getRooms().insert(room317);
+		db.getRooms().insert(room318);
+		db.getRooms().insert(room319);
+		db.getRooms().insert(room320);
+		db.getRooms().insert(room321);
+		db.getRooms().insert(room322);
+		db.getRooms().insert(room323);
+		db.getRooms().insert(room324);
 		
-		db.getRooms().Insert(room401);
-		db.getRooms().Insert(room402);
-		db.getRooms().Insert(room403);
-		db.getRooms().Insert(room404);
-		db.getRooms().Insert(room405);
-		db.getRooms().Insert(room406);
-		db.getRooms().Insert(room407);
-		db.getRooms().Insert(room408);
-		db.getRooms().Insert(room409);
-		db.getRooms().Insert(room410);
-		db.getRooms().Insert(room411);
-		db.getRooms().Insert(room412);
-		db.getRooms().Insert(room413);
-		db.getRooms().Insert(room414);
-		db.getRooms().Insert(room415);
-		db.getRooms().Insert(room416);
-		db.getRooms().Insert(room417);
-		db.getRooms().Insert(room418);
-		db.getRooms().Insert(room419);
-		db.getRooms().Insert(room420);
-		db.getRooms().Insert(room421);
-		db.getRooms().Insert(room422);
-		db.getRooms().Insert(room423);
-		db.getRooms().Insert(room424);
+		db.getRooms().insert(room401);
+		db.getRooms().insert(room402);
+		db.getRooms().insert(room403);
+		db.getRooms().insert(room404);
+		db.getRooms().insert(room405);
+		db.getRooms().insert(room406);
+		db.getRooms().insert(room407);
+		db.getRooms().insert(room408);
+		db.getRooms().insert(room409);
+		db.getRooms().insert(room410);
+		db.getRooms().insert(room411);
+		db.getRooms().insert(room412);
+		db.getRooms().insert(room413);
+		db.getRooms().insert(room414);
+		db.getRooms().insert(room415);
+		db.getRooms().insert(room416);
+		db.getRooms().insert(room417);
+		db.getRooms().insert(room418);
+		db.getRooms().insert(room419);
+		db.getRooms().insert(room420);
+		db.getRooms().insert(room421);
+		db.getRooms().insert(room422);
+		db.getRooms().insert(room423);
+		db.getRooms().insert(room424);
 		
-		db.getRooms().Insert(room501);
-		db.getRooms().Insert(room502);
-		db.getRooms().Insert(room503);
-		db.getRooms().Insert(room504);
-		db.getRooms().Insert(room505);
-		db.getRooms().Insert(room506);
-		db.getRooms().Insert(room507);
-		db.getRooms().Insert(room508);
-		db.getRooms().Insert(room509);
-		db.getRooms().Insert(room510);
-		db.getRooms().Insert(room511);
-		db.getRooms().Insert(room512);
-		db.getRooms().Insert(room513);
-		db.getRooms().Insert(room514);
-		db.getRooms().Insert(room515);
-		db.getRooms().Insert(room516);
-		db.getRooms().Insert(room517);
-		db.getRooms().Insert(room518);
-		db.getRooms().Insert(room519);
-		db.getRooms().Insert(room520);
-		db.getRooms().Insert(room521);
-		db.getRooms().Insert(room522);
-		db.getRooms().Insert(room523);
-		db.getRooms().Insert(room524);
+		db.getRooms().insert(room501);
+		db.getRooms().insert(room502);
+		db.getRooms().insert(room503);
+		db.getRooms().insert(room504);
+		db.getRooms().insert(room505);
+		db.getRooms().insert(room506);
+		db.getRooms().insert(room507);
+		db.getRooms().insert(room508);
+		db.getRooms().insert(room509);
+		db.getRooms().insert(room510);
+		db.getRooms().insert(room511);
+		db.getRooms().insert(room512);
+		db.getRooms().insert(room513);
+		db.getRooms().insert(room514);
+		db.getRooms().insert(room515);
+		db.getRooms().insert(room516);
+		db.getRooms().insert(room517);
+		db.getRooms().insert(room518);
+		db.getRooms().insert(room519);
+		db.getRooms().insert(room520);
+		db.getRooms().insert(room521);
+		db.getRooms().insert(room522);
+		db.getRooms().insert(room523);
+		db.getRooms().insert(room524);
 		
-		db.getRooms().Insert(room601);
+		db.getRooms().insert(room601);
 		
-		db.getRooms().Insert(room701);
+		db.getRooms().insert(room701);
 		
-		db.getRooms().Insert(room801);
-		
+		db.getRooms().insert(room801);
+
+	} catch (Exception e) {
+		System.err.println(e.getMessage());
+	}
 	}
 
 }

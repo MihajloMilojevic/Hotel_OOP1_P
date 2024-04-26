@@ -19,6 +19,10 @@ public class AppSettings {
 	private AppSettings() {
 		settingsFile = new File(settingsFilePath);
 		try {
+			File parent = settingsFile.getParentFile();
+			if(parent != null && parent.isDirectory() && !parent.exists()) {
+				parent.mkdirs();
+			}
 			settingsFile.createNewFile();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -28,7 +32,7 @@ public class AppSettings {
 		
 	}
 	
-	public void AddSetting(String category, String key, String value) {
+	public void addSetting(String category, String key, String value) {
 		HashMap<String, String> categorySettings = settings.get(category);
 		if (categorySettings == null) {
 			categorySettings = new HashMap<String, String>();
@@ -37,7 +41,7 @@ public class AppSettings {
 		categorySettings.put(key, value);
 	}
 
-	public void RemoveSetting(String category, String key) {
+	public void removeSetting(String category, String key) {
 		HashMap<String, String> categorySettings = settings.get(category);
 		if (categorySettings == null) {
 			return;
@@ -45,11 +49,11 @@ public class AppSettings {
 		categorySettings.remove(key);
 	}
 	
-	public void RemoveCategory(String category) {
+	public void removeCategory(String category) {
 		settings.remove(category);
 	}
 	
-	public void Load() throws IOException {
+	public void load() throws IOException {
 		ArrayList<String> lines = (ArrayList<String>) Files.readAllLines(Path.of(settingsFile.getAbsolutePath()));
 		HashMap<String, String> currentCategory = new HashMap<String, String>();
 		String currentCategoryName = "defualt";
@@ -74,7 +78,7 @@ public class AppSettings {
 		}
 	}
 	
-	public void Save() throws IOException {
+	public void save() throws IOException {
 		if (settings.isEmpty()) {
 			return;
 		}
@@ -95,6 +99,7 @@ public class AppSettings {
 			}
 		}
 		Files.write(Path.of(settingsFile.getAbsolutePath()), lines, StandardCharsets.UTF_8);
+		System.out.println("Settings saved.");
 	}
 	
 	public String getSetting(String category, String key, String defaultValue) {

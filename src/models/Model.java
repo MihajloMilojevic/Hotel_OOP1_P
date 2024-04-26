@@ -83,6 +83,11 @@ public abstract class Model implements Cloneable {
 		}
 	}
 	
+	@Override
+	public int hashCode() {
+		return this.id.hashCode();
+	}
+	
 	/* ******************************  GETTERS AND SETTERS  *************************************** */
 	
 	/**

@@ -18,7 +18,10 @@ public class Connection<T extends Model, U extends Model> {
 		this.file = file;
 		if(!file.exists()) {
 			try {
-				file.getParentFile().mkdirs();
+				File parent = file.getParentFile();
+				if(parent != null && parent.isDirectory() && !parent.exists()) {
+					parent.mkdirs();
+				}
 				file.createNewFile();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -27,11 +30,11 @@ public class Connection<T extends Model, U extends Model> {
 		this.connectionActions = connectionActions;
 	}
 
-	public void Load() throws IOException, ParseException {
-        connectionActions.Load(table1, table2, file.getAbsolutePath());
+	public void load() throws IOException, ParseException {
+        connectionActions.load(table1, table2, file.getAbsolutePath());
     }
 
-	public void Save() throws IOException, ParseException {
-        connectionActions.Save(table1, table2, file.getAbsolutePath());
+	public void save() throws IOException, ParseException {
+        connectionActions.save(table1, table2, file.getAbsolutePath());
     }
 }
