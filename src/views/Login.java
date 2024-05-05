@@ -162,6 +162,7 @@ public class Login extends JFrame {
 				try {
 					AppState.getInstance().save();
 				} catch (Exception e) {
+					e.printStackTrace();
 					JOptionPane.showMessageDialog(windowEvent.getComponent(), "Error saving data. Data might be lost.");
 				}
 				System.exit(0);

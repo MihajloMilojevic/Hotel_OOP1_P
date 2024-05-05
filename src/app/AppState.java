@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.ParseException;
 
 import database.Database;
+import exceptions.NoElementException;
 import models.User;
 
 public class AppState {
@@ -14,7 +15,7 @@ public class AppState {
 
 	private User user;
 
-	public void load() throws IOException, ParseException {
+	public void load() throws IOException, ParseException, NoElementException {
 		getSettings().load();
 		getDatabase().load();
 		System.out.println("App state loaded.");

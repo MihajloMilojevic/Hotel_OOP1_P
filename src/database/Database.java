@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import app.AppSettings;
+import exceptions.NoElementException;
 import models.Admin;
 import models.Guest;
 import models.Maid;
@@ -78,7 +79,7 @@ public class Database {
 				new ConnectionActions<Room, RoomType>() {
 					@Override
 					public void load(Table<Room> table1, Table<RoomType> table2, String path)
-							throws IOException, ParseException {
+							throws IOException, ParseException, NoElementException {
 						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
 						for (String line : lines) {
 							String[] parts = line.split(";");
@@ -88,6 +89,7 @@ public class Database {
 							Room room = table1.selectById(parts[0]);
 							RoomType roomType = table2.selectById(parts[1]);
 							room.setType(roomType);
+							table1.update(room);
 						}
 					}
 
@@ -107,7 +109,7 @@ public class Database {
 				new ConnectionActions<Room, RoomAddition>() {
 					@Override
 					public void load(Table<Room> table1, Table<RoomAddition> table2, String path)
-							throws IOException, ParseException {
+							throws IOException, ParseException, NoElementException {
 						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
 						for (String line : lines) {
 							String[] parts = line.split(";");
@@ -117,6 +119,7 @@ public class Database {
 							Room room = table1.selectById(parts[0]);
 							RoomAddition roomAddition = table2.selectById(parts[1]);
 							room.addRoomAddition(roomAddition);
+							table1.update(room);
 						}
 					}
 
@@ -137,7 +140,7 @@ public class Database {
 				new ConnectionActions<Room, User>() {
 					@Override
 					public void load(Table<Room> table1, Table<User> table2, String path)
-							throws IOException, ParseException {
+							throws IOException, ParseException, NoElementException {
 						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
 						for (String line : lines) {
 							String[] parts = line.split(";");
@@ -147,6 +150,7 @@ public class Database {
 							Room room = table1.selectById(parts[0]);
 							Maid maid = (Maid)table2.selectById(parts[1]);
 							room.setMaid(maid);
+							table1.update(room);
 						}
 					}
 
@@ -168,7 +172,7 @@ public class Database {
 				new ConnectionActions<Reservation, Room>() {
 					@Override
 					public void load(Table<Reservation> table1, Table<Room> table2, String path)
-							throws IOException, ParseException {
+							throws IOException, ParseException, NoElementException {
 						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
 						for (String line : lines) {
 							String[] parts = line.split(";");
@@ -178,6 +182,7 @@ public class Database {
 							Reservation reservation = table1.selectById(parts[0]);
 							Room room = table2.selectById(parts[1]);
 							reservation.setRoom(room);
+							table1.update(reservation);
 						}
 					}
 
@@ -197,7 +202,7 @@ public class Database {
 				new ConnectionActions<Reservation, User>() {
 					@Override
 					public void load(Table<Reservation> table1, Table<User> table2, String path)
-							throws IOException, ParseException {
+							throws IOException, ParseException, NoElementException {
 						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
 						for (String line : lines) {
 							String[] parts = line.split(";");
@@ -207,6 +212,7 @@ public class Database {
 							Reservation reservation = table1.selectById(parts[0]);
 							Guest guest = (Guest)table2.selectById(parts[1]);
 							reservation.setGuest(guest);
+							table1.update(reservation);
 						}
 					}
 
@@ -226,7 +232,7 @@ public class Database {
 				new ConnectionActions<Reservation, ReservationAddition>() {
 					@Override
 					public void load(Table<Reservation> table1, Table<ReservationAddition> table2, String path)
-							throws IOException, ParseException {
+							throws IOException, ParseException, NoElementException {
 						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
 						for (String line : lines) {
 							String[] parts = line.split(";");
@@ -236,6 +242,7 @@ public class Database {
 							Reservation reservation = table1.selectById(parts[0]);
 							ReservationAddition reservationAddition = table2.selectById(parts[1]);
 							reservation.addReservationAddition(reservationAddition);
+							table1.update(reservation);
 						}
 					}
 
@@ -257,7 +264,7 @@ public class Database {
 				new ConnectionActions<PriceList, RoomType>() {
 					@Override
 					public void load(Table<PriceList> table1, Table<RoomType> table2, String path)
-							throws IOException, ParseException {
+							throws IOException, ParseException, NoElementException {
 						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
 						for (String line : lines) {
 							String[] parts = line.split(";");
@@ -267,6 +274,7 @@ public class Database {
 							PriceList priceList = table1.selectById(parts[0]);
 							RoomType roomType = table2.selectById(parts[1]);
 							priceList.getRoomTypePrices().put(roomType, Double.parseDouble(parts[2]));
+							table1.update(priceList);
 						}
 					}
 
@@ -290,7 +298,7 @@ public class Database {
 				new ConnectionActions<PriceList, ReservationAddition>() {
 					@Override
 					public void load(Table<PriceList> table1, Table<ReservationAddition> table2, String path)
-							throws IOException, ParseException {
+							throws IOException, ParseException, NoElementException {
 						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
 						for (String line : lines) {
 							String[] parts = line.split(";");
@@ -301,6 +309,7 @@ public class Database {
 							ReservationAddition reservationAddition = table2.selectById(parts[1]);
 							priceList.getReservationAdditionPrices().put(reservationAddition,
 									Double.parseDouble(parts[2]));
+							table1.update(priceList);
 						}
 					}
 
@@ -327,7 +336,7 @@ public class Database {
 		getReservationAdditions().addIndex("name");
 	}
 
-	public void load() throws IOException, ParseException {
+	public void load() throws IOException, ParseException, NoElementException {
 		for (Table<? extends Model> table : tables.values()) {
 			table.load();
 		}
@@ -427,5 +436,11 @@ public class Database {
 			instance = new Database(AppSettings.getInstance());
 		}
 		return instance;
+	}
+
+	public void test() {
+		for (Room room : getRooms().getRows()) {
+			System.out.println(room + " " + room.getType());
+		}
 	}
 }

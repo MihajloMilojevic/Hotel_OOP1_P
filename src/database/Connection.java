@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 
+import exceptions.NoElementException;
 import models.Model;
 
 public class Connection<T extends Model, U extends Model> {
@@ -30,7 +31,7 @@ public class Connection<T extends Model, U extends Model> {
 		this.connectionActions = connectionActions;
 	}
 
-	public void load() throws IOException, ParseException {
+	public void load() throws IOException, ParseException, NoElementException {
         connectionActions.load(table1, table2, file.getAbsolutePath());
     }
 

@@ -10,7 +10,6 @@ public class Main {
 			//InitialDatabase.init();
 			
 			AppState.getInstance().load();
-			
 			Login frame = new Login();
 			frame.setVisible(true);
 			System.out.println("GUI started");

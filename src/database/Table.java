@@ -13,6 +13,7 @@ import java.util.Set;
 
 import app.AppSettings;
 import exceptions.DuplicateIndexException;
+import exceptions.NoElementException;
 import models.Model;
 import utils.FileChecker;
 import utils.Pair;
@@ -138,6 +139,13 @@ public class Table<T extends Model> {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public void update(T row) throws NoElementException {
+		if(row == null) return;
+		if(isUnique(row)) throw new NoElementException("There is no element to update");
+		this.rows.put(row.getId(), row);
+		regenerateIndecies();
 	}
 
 	public void update(SelectCondition condition, ArrayList<Pair<String, Object>> updates) throws DuplicateIndexException {
