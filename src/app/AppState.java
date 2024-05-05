@@ -1,6 +1,5 @@
 package app;
 
-import java.awt.Toolkit;
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -50,7 +49,7 @@ public class AppState {
 		this.user = user;
 	}
 	
-
+	
 	/**
 	 * @return the settings
 	 */
@@ -63,9 +62,5 @@ public class AppState {
 	 */
 	public Database getDatabase() {
 		return Database.getInstance(getSettings());
-	}
-
-	public static Toolkit getToolkit() {
-		return Toolkit.getDefaultToolkit();
 	}
 }

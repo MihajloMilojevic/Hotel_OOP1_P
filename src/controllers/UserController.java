@@ -19,4 +19,8 @@ public class UserController {
 		AppState.getInstance().setUser(user);
 		return LoginStatus.SUCCESS;
     }
+
+	public static void logout() {
+		AppState.getInstance().setUser(null);
+	}
 }

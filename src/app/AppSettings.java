@@ -50,6 +50,7 @@ public class AppSettings {
 	}
 	
 	public void removeCategory(String category) {
+		System.out.println	("Removing category: " + category);
 		settings.remove(category);
 	}
 	
@@ -102,6 +103,10 @@ public class AppSettings {
 		System.out.println("Settings saved.");
 	}
 	
+	public void clear() {
+		settings.clear();
+	}
+	
 	public String getSetting(String category, String key, String defaultValue) {
 		HashMap<String, String> categorySettings = settings.get(category);
 		if (categorySettings == null) {
@@ -130,31 +135,31 @@ public class AppSettings {
             }
         }
 	}
+	public int size() {
+		return settings.size();
+	}
+
+	public ArrayList<String> getCategories() {
+		ArrayList<String> categories = new ArrayList<String>();
+		categories.add("defualt");
+		for (String category : settings.keySet()) {
+			if (category.equals("defualt")) {
+				continue;
+			}
+			categories.add(category);
+		}
+		return categories;
+	}
+
+	public HashMap<String, String> getCategory(String category) {
+		return settings.get(category);
+	}
+
+	public int categorySize(String category) {
+		HashMap<String, String> categorySettings = settings.get(category);
+		if (categorySettings == null) {
+			return 0;
+		}
+		return categorySettings.size();
+	}
 }
-
-
-/*
-
-Manually create settings.ini file with the following content:
-
-HashMap<String, String> dbSettings = new HashMap<String, String>();
-dbSettings.put("guests_file_path", "./data/guests.csv");
-dbSettings.put("maids_file_path", "./data/maids.csv");
-dbSettings.put("receptionists_file_path", "./data/receptionists.csv");
-dbSettings.put("admins_file_path", "./data/admins.csv");
-dbSettings.put("room_types_file_path", "./data/room_types.csv");
-dbSettings.put("room_additions_file_path", "./data/room_additions.csv");
-dbSettings.put("reservation_additions_file_path", "./data/reservation_additions.csv");
-dbSettings.put("rooms_file_path", "./data/rooms.csv");
-dbSettings.put("reservations_file_path", "./data/reservations.csv");
-dbSettings.put("price_lists_file_path", "./data/price_lists.csv");
-dbSettings.put("rooms_roomTypes_connection_file_path", "./data/rooms_roomTypes.csv");
-dbSettings.put("rooms_roomAdditions_connection_file_path", "./data/rooms_roomAdditions.csv");
-dbSettings.put("reservations_rooms_connection_file_path", "./data/reservations_rooms.csv");
-dbSettings.put("reservations_guests_connection_file_path", "./data/reservations_guests.csv");
-dbSettings.put("reservations_reservationAdditions_connection_file_path", "./data/reservations_reservationsAdditions.csv");
-dbSettings.put("priceLists_roomTypes_connection_file_path", "./data/prices_roomTypes.csv");
-dbSettings.put("priceLists_roomAdditions_connection_file_path", "./data/prices_roomAdditions.csv");
-dbSettings.put("priceLists_reservationAdditions_connection_file_path", "./data/prices_reservationAdditions.csv");
-settings.put("database", dbSettings);
-*/

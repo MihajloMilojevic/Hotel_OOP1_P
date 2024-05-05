@@ -26,6 +26,7 @@ import app.AppState;
 import controllers.UserController;
 import controllers.enums.LoginStatus;
 import models.User;
+import utils.WindowUtils;
 
 public class Login extends JFrame {
 
@@ -34,16 +35,17 @@ public class Login extends JFrame {
 	private JTextField textField;
 	private JPasswordField passwordField;
 
+
 	/**
 	 * Create the frame.
 	 */
 	public Login() {
-		setIconImage(new ImageIcon(AppState.getInstance().getSettings().getSetting("window", "icon_file_path", ""))
-				.getImage());
+		setIconImage(WindowUtils.getIconImage());
 		setForeground(new Color(255, 255, 255));
 		setBackground(new Color(73, 73, 73));
 		setBounds(100, 100, 500, 450);
 		setResizable(false);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(73, 73, 73));
 		contentPane.setBorder(new EmptyBorder(15, 15, 15, 15));
@@ -51,15 +53,15 @@ public class Login extends JFrame {
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[] { 0, 0, 0 };
-		gbl_contentPane.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_contentPane.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		gbl_contentPane.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-		gbl_contentPane.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_contentPane.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		contentPane.setLayout(gbl_contentPane);
 
 		JLabel lblNewLabel_2 = new JLabel("");
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_2.setIcon(
-				new ImageIcon("C:\\MIHAJLO_MILOJEVIC\\PROJEKTI\\MHotelify_OOP1\\assets\\logo\\main_small.png"));
+				new ImageIcon("./assets/logo/main_small.png"));
 		lblNewLabel_2.setMaximumSize(new Dimension(100, 100));
 		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
 		gbc_lblNewLabel_2.gridwidth = 2;
@@ -76,15 +78,15 @@ public class Login extends JFrame {
 		gbc_lblNewLabel.gridwidth = 2;
 		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel.gridx = 0;
-		gbc_lblNewLabel.gridy = 1;
+		gbc_lblNewLabel.gridy = 2;
 		contentPane.add(lblNewLabel, gbc_lblNewLabel);
 
 		Component verticalStrut_1_1 = Box.createVerticalStrut(10);
 		GridBagConstraints gbc_verticalStrut_1_1 = new GridBagConstraints();
 		gbc_verticalStrut_1_1.gridwidth = 2;
-		gbc_verticalStrut_1_1.insets = new Insets(0, 0, 5, 5);
+		gbc_verticalStrut_1_1.insets = new Insets(0, 0, 5, 0);
 		gbc_verticalStrut_1_1.gridx = 0;
-		gbc_verticalStrut_1_1.gridy = 2;
+		gbc_verticalStrut_1_1.gridy = 3;
 		contentPane.add(verticalStrut_1_1, gbc_verticalStrut_1_1);
 
 		JLabel lblNewLabel_1 = new JLabel("Username: ");
@@ -94,7 +96,7 @@ public class Login extends JFrame {
 		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel_1.gridx = 0;
-		gbc_lblNewLabel_1.gridy = 4;
+		gbc_lblNewLabel_1.gridy = 5;
 		contentPane.add(lblNewLabel_1, gbc_lblNewLabel_1);
 
 		textField = new JTextField();
@@ -103,7 +105,7 @@ public class Login extends JFrame {
 		gbc_textField.insets = new Insets(0, 0, 5, 0);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 4;
+		gbc_textField.gridy = 5;
 		contentPane.add(textField, gbc_textField);
 		textField.setColumns(10);
 
@@ -112,7 +114,7 @@ public class Login extends JFrame {
 		gbc_verticalStrut_1.gridwidth = 2;
 		gbc_verticalStrut_1.insets = new Insets(0, 0, 5, 0);
 		gbc_verticalStrut_1.gridx = 0;
-		gbc_verticalStrut_1.gridy = 5;
+		gbc_verticalStrut_1.gridy = 6;
 		contentPane.add(verticalStrut_1, gbc_verticalStrut_1);
 
 		JLabel lblNewLabel_1_1 = new JLabel("Password:");
@@ -122,7 +124,7 @@ public class Login extends JFrame {
 		gbc_lblNewLabel_1_1.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel_1_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_1_1.gridx = 0;
-		gbc_lblNewLabel_1_1.gridy = 6;
+		gbc_lblNewLabel_1_1.gridy = 7;
 		contentPane.add(lblNewLabel_1_1, gbc_lblNewLabel_1_1);
 
 		passwordField = new JPasswordField();
@@ -131,7 +133,7 @@ public class Login extends JFrame {
 		gbc_passwordField.insets = new Insets(0, 0, 5, 0);
 		gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_passwordField.gridx = 1;
-		gbc_passwordField.gridy = 6;
+		gbc_passwordField.gridy = 7;
 		contentPane.add(passwordField, gbc_passwordField);
 
 		Component verticalStrut_2 = Box.createVerticalStrut(10);
@@ -139,7 +141,7 @@ public class Login extends JFrame {
 		gbc_verticalStrut_2.gridwidth = 2;
 		gbc_verticalStrut_2.insets = new Insets(0, 0, 5, 0);
 		gbc_verticalStrut_2.gridx = 0;
-		gbc_verticalStrut_2.gridy = 7;
+		gbc_verticalStrut_2.gridy = 8;
 		contentPane.add(verticalStrut_2, gbc_verticalStrut_2);
 
 		JButton btnNewButton = new JButton("Login");
@@ -147,29 +149,11 @@ public class Login extends JFrame {
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.gridwidth = 2;
 		gbc_btnNewButton.gridx = 0;
-		gbc_btnNewButton.gridy = 8;
+		gbc_btnNewButton.gridy = 9;
 		contentPane.add(btnNewButton, gbc_btnNewButton);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		addWindowListener(new java.awt.event.WindowAdapter() {
-			@Override
-			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				int close = JOptionPane.showConfirmDialog(windowEvent.getComponent(), "Are you sure you want to exit?",
-						"Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-				if (close != JOptionPane.YES_OPTION)
-					return;
-
-				try {
-					AppState.getInstance().save();
-				} catch (Exception e) {
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(windowEvent.getComponent(), "Error saving data. Data might be lost.");
-				}
-				System.exit(0);
-			}
-		});
-
-		btnNewButton.addActionListener(new ActionListener() {
+		addWindowListener(WindowUtils.getWindowClosing());
+		ActionListener loginListener = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String username = textField.getText().trim();
 				String password = new String(passwordField.getPassword()).trim();
@@ -200,19 +184,26 @@ public class Login extends JFrame {
 						new MainAdmin().setVisible(true);
 						break;
 					case RECEPTIONIST:
-						JOptionPane.showMessageDialog(contentPane, "Receptionist");
+						dispose();
+						new MainReceptionist().setVisible(true);
 						break;
 					case MAID:
-						JOptionPane.showMessageDialog(contentPane, "Maid");
+						dispose();
+						new MainMaid().setVisible(true);
 						break;
 					case GUEST:
-						JOptionPane.showMessageDialog(contentPane, "Guest");
-						break;
+                        dispose();
+                        new MainGuest().setVisible(true);
+                        break;
 					}
 					break;
 				}
 			}
-		});
+		};
+		
+		btnNewButton.addActionListener(loginListener);
+		textField.addActionListener(loginListener);
+		passwordField.addActionListener(loginListener);
 	}
 
 }
