@@ -41,7 +41,7 @@ public class Database {
 			@Override
 			public Model parse(String csvString) throws ParseException {
 				String[] parts = csvString.split(";");
-				UserRole role = UserRole.valueOf(parts[0]);
+				UserRole role = UserRole.valueOf(parts[1]);
 				switch (role) {
 					case ADMIN:
 						return new Admin().fromCSV(csvString);

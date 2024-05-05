@@ -1,22 +1,31 @@
 package views;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import app.AppState;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import java.awt.Font;
-import javax.swing.SwingConstants;
-import java.awt.Color;
-import java.awt.Insets;
-import javax.swing.JTextField;
-import javax.swing.JPasswordField;
-import javax.swing.JButton;
+import controllers.UserController;
+import controllers.enums.LoginStatus;
+import models.User;
 
 public class Login extends JFrame {
 
@@ -25,37 +34,59 @@ public class Login extends JFrame {
 	private JTextField textField;
 	private JPasswordField passwordField;
 
-
 	/**
 	 * Create the frame.
 	 */
 	public Login() {
+		setIconImage(new ImageIcon(AppState.getInstance().getSettings().getSetting("window", "icon_file_path", ""))
+				.getImage());
 		setForeground(new Color(255, 255, 255));
 		setBackground(new Color(73, 73, 73));
-		setBounds(100, 100, 561, 328);
+		setBounds(100, 100, 500, 450);
+		setResizable(false);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(73, 73, 73));
 		contentPane.setBorder(new EmptyBorder(15, 15, 15, 15));
-		setTitle("Login");
+		setTitle("MHotelify | Login");
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 0, 0};
-		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWidths = new int[] { 0, 0, 0 };
+		gbl_contentPane.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_contentPane.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+		gbl_contentPane.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		contentPane.setLayout(gbl_contentPane);
-		
+
+		JLabel lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_2.setIcon(
+				new ImageIcon("C:\\MIHAJLO_MILOJEVIC\\PROJEKTI\\MHotelify_OOP1\\assets\\logo\\main_small.png"));
+		lblNewLabel_2.setMaximumSize(new Dimension(100, 100));
+		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
+		gbc_lblNewLabel_2.gridwidth = 2;
+		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 0);
+		gbc_lblNewLabel_2.gridx = 0;
+		gbc_lblNewLabel_2.gridy = 0;
+		contentPane.add(lblNewLabel_2, gbc_lblNewLabel_2);
+
 		JLabel lblNewLabel = new JLabel("Welcome Back");
 		lblNewLabel.setForeground(new Color(255, 255, 255));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 24));
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.gridwidth = 2;
 		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel.gridx = 0;
-		gbc_lblNewLabel.gridy = 0;
+		gbc_lblNewLabel.gridy = 1;
 		contentPane.add(lblNewLabel, gbc_lblNewLabel);
-		
+
+		Component verticalStrut_1_1 = Box.createVerticalStrut(10);
+		GridBagConstraints gbc_verticalStrut_1_1 = new GridBagConstraints();
+		gbc_verticalStrut_1_1.gridwidth = 2;
+		gbc_verticalStrut_1_1.insets = new Insets(0, 0, 5, 5);
+		gbc_verticalStrut_1_1.gridx = 0;
+		gbc_verticalStrut_1_1.gridy = 2;
+		contentPane.add(verticalStrut_1_1, gbc_verticalStrut_1_1);
+
 		JLabel lblNewLabel_1 = new JLabel("Username: ");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel_1.setForeground(new Color(255, 255, 255));
@@ -63,19 +94,27 @@ public class Login extends JFrame {
 		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel_1.gridx = 0;
-		gbc_lblNewLabel_1.gridy = 2;
+		gbc_lblNewLabel_1.gridy = 4;
 		contentPane.add(lblNewLabel_1, gbc_lblNewLabel_1);
-		
+
 		textField = new JTextField();
 		textField.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 0);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 2;
+		gbc_textField.gridy = 4;
 		contentPane.add(textField, gbc_textField);
 		textField.setColumns(10);
-		
+
+		Component verticalStrut_1 = Box.createVerticalStrut(10);
+		GridBagConstraints gbc_verticalStrut_1 = new GridBagConstraints();
+		gbc_verticalStrut_1.gridwidth = 2;
+		gbc_verticalStrut_1.insets = new Insets(0, 0, 5, 0);
+		gbc_verticalStrut_1.gridx = 0;
+		gbc_verticalStrut_1.gridy = 5;
+		contentPane.add(verticalStrut_1, gbc_verticalStrut_1);
+
 		JLabel lblNewLabel_1_1 = new JLabel("Password:");
 		lblNewLabel_1_1.setForeground(Color.WHITE);
 		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -83,41 +122,94 @@ public class Login extends JFrame {
 		gbc_lblNewLabel_1_1.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel_1_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_1_1.gridx = 0;
-		gbc_lblNewLabel_1_1.gridy = 4;
+		gbc_lblNewLabel_1_1.gridy = 6;
 		contentPane.add(lblNewLabel_1_1, gbc_lblNewLabel_1_1);
-		
+
 		passwordField = new JPasswordField();
 		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_passwordField = new GridBagConstraints();
 		gbc_passwordField.insets = new Insets(0, 0, 5, 0);
 		gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_passwordField.gridx = 1;
-		gbc_passwordField.gridy = 4;
+		gbc_passwordField.gridy = 6;
 		contentPane.add(passwordField, gbc_passwordField);
-		
+
+		Component verticalStrut_2 = Box.createVerticalStrut(10);
+		GridBagConstraints gbc_verticalStrut_2 = new GridBagConstraints();
+		gbc_verticalStrut_2.gridwidth = 2;
+		gbc_verticalStrut_2.insets = new Insets(0, 0, 5, 0);
+		gbc_verticalStrut_2.gridx = 0;
+		gbc_verticalStrut_2.gridy = 7;
+		contentPane.add(verticalStrut_2, gbc_verticalStrut_2);
+
 		JButton btnNewButton = new JButton("Login");
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.gridwidth = 2;
-		gbc_btnNewButton.insets = new Insets(0, 0, 0, 5);
 		gbc_btnNewButton.gridx = 0;
-		gbc_btnNewButton.gridy = 6;
+		gbc_btnNewButton.gridy = 8;
 		contentPane.add(btnNewButton, gbc_btnNewButton);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				int close = JOptionPane.showConfirmDialog(windowEvent.getComponent(), "Are you sure you want to exit?", "Exit",
-                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				
-				if (close != JOptionPane.YES_OPTION) return;
-			
+				int close = JOptionPane.showConfirmDialog(windowEvent.getComponent(), "Are you sure you want to exit?",
+						"Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+				if (close != JOptionPane.YES_OPTION)
+					return;
+
 				try {
 					AppState.getInstance().save();
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(windowEvent.getComponent(), "Error saving data. Data might be lost.");
 				}
 				System.exit(0);
+			}
+		});
+
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String username = textField.getText().trim();
+				String password = new String(passwordField.getPassword()).trim();
+
+				if (username.isBlank()) {
+					JOptionPane.showMessageDialog(contentPane, "Please enter a username.");
+					return;
+				}
+				if (password.isBlank()) {
+					JOptionPane.showMessageDialog(contentPane, "Please enter a password.");
+					return;
+				}
+				
+				LoginStatus loginStatus = UserController.login(username, password);
+
+				switch (loginStatus) {
+				case NO_USER:
+					JOptionPane.showMessageDialog(contentPane, "User with username '" + username + "' does not exist.");
+					break;
+				case WRONG_PASSWORD:
+					JOptionPane.showMessageDialog(contentPane, "Incorrect password.");
+					break;
+				case SUCCESS:
+					User user = AppState.getInstance().getUser();
+					switch (user.getRole()) {
+					case ADMIN:
+						dispose();
+						new MainAdmin().setVisible(true);
+						break;
+					case RECEPTIONIST:
+						JOptionPane.showMessageDialog(contentPane, "Receptionist");
+						break;
+					case MAID:
+						JOptionPane.showMessageDialog(contentPane, "Maid");
+						break;
+					case GUEST:
+						JOptionPane.showMessageDialog(contentPane, "Guest");
+						break;
+					}
+					break;
+				}
 			}
 		});
 	}

@@ -121,6 +121,15 @@ public class AppSettings {
 		return instance;
 	}
 
+	public void test() {
+        for (String category : settings.keySet()) {
+            System.out.println("[" + category + "]");
+            HashMap<String, String> categorySettings = settings.get(category);
+            for (String key : categorySettings.keySet()) {
+                System.out.println(key + " = " + categorySettings.get(key));
+            }
+        }
+	}
 }
 
 

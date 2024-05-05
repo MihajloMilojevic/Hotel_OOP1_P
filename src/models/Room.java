@@ -165,9 +165,10 @@ public class Room extends Model {
 	public Object clone() throws CloneNotSupportedException {
 		ArrayList<RoomAddition> roomAdditionsClone = new ArrayList<RoomAddition>();
 		for (RoomAddition roomAddition : this.roomAdditions) {
-			roomAdditions.add((RoomAddition)roomAddition.clone());
+			roomAdditionsClone.add((RoomAddition)roomAddition.clone());
 		}
-		return new Room(id, number, (RoomType)type.clone(), status, roomAdditionsClone);
+		
+		return new Room(id, number, type != null ? (RoomType)type.clone() : null, status, roomAdditionsClone);
 	}
     @Override
 	public boolean equals(Object obj) {

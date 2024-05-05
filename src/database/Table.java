@@ -57,6 +57,7 @@ public class Table<T extends Model> {
     			result.add((T)row.clone());
 			} catch (CloneNotSupportedException e) {
 				System.err.println(e.getMessage());
+				e.printStackTrace();
 			}
         }
 		return result;
@@ -102,6 +103,7 @@ public class Table<T extends Model> {
 					result.add((T) row.clone());
 				} catch (CloneNotSupportedException e) {
 					System.err.println(e.getMessage());
+					e.printStackTrace();
 				}
             }
         }
@@ -117,6 +119,7 @@ public class Table<T extends Model> {
 			return (T) row.clone();
 		} catch (CloneNotSupportedException e) {
 			System.err.println(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
  	}
@@ -126,10 +129,13 @@ public class Table<T extends Model> {
 	public T selectByIndex(String indexName, String indexValue) {
 		if (!this.indecies.containsKey(indexName)) return null;
 		T row = this.indecies.get(indexName).get(indexValue);
+		if (row == null)
+			return null;
 		try {
 			return (T)row.clone();
 		} catch (CloneNotSupportedException e) {
 			System.err.println(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -146,6 +152,7 @@ public class Table<T extends Model> {
 					if(!isUnique(copy)) throw new DuplicateIndexException("Duplicate key");
 				} catch (CloneNotSupportedException e) {
 					System.err.println(e.getMessage());
+					e.printStackTrace();
 				}
 			}
 		}
@@ -217,6 +224,7 @@ public class Table<T extends Model> {
 				this.insert(row);
 			} catch (Exception e) {
 				System.err.println(e.getMessage());
+				e.printStackTrace();
 			}
 		}
 	}
@@ -233,6 +241,7 @@ public class Table<T extends Model> {
 				}
 			} catch (ParseException e) {
 				System.err.println(e.getMessage());
+				e.printStackTrace();
 			}
 		}
 		Files.write(Path.of(file.getAbsolutePath()), lines, StandardCharsets.UTF_8);

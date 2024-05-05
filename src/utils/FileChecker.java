@@ -11,12 +11,13 @@ public class FileChecker {
 		if (!f.exists()) {
 			try {
 				File parent = f.getParentFile();
-				if(parent != null && parent.isDirectory() && !parent.exists()) {
+				if(parent != null && !parent.exists()) {
 					parent.mkdirs();
 				}
 				f.createNewFile();
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
+				e.printStackTrace();
 			}
 		}
 		return f;

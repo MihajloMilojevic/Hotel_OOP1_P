@@ -19,7 +19,7 @@ public class Connection<T extends Model, U extends Model> {
 		if(!file.exists()) {
 			try {
 				File parent = file.getParentFile();
-				if(parent != null && parent.isDirectory() && !parent.exists()) {
+				if(parent != null && !parent.exists()) {
 					parent.mkdirs();
 				}
 				file.createNewFile();

@@ -1,24 +1,25 @@
 package app;
 
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.text.ParseException;
 
 import database.Database;
+import models.User;
 
 public class AppState {
 
-	
+
 	private static AppState instance;
-	
-	private AppState() {
-    }
-	
+
+	private User user;
+
 	public void load() throws IOException, ParseException {
 		getSettings().load();
 		getDatabase().load();
 		System.out.println("App state loaded.");
 	}
-	
+
 	public void save() throws IOException, ParseException {
 		getSettings().save();
 		getDatabase().save();
@@ -31,6 +32,23 @@ public class AppState {
 		}
 		return instance;
 	}
+	
+	/* ******************* GETTERS AND SETTERS ******************* */
+
+	/**
+	 * @return the user
+	 */
+	public User getUser() {
+		return user;
+	}
+
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 
 	/**
 	 * @return the settings
@@ -44,5 +62,9 @@ public class AppState {
 	 */
 	public Database getDatabase() {
 		return Database.getInstance(getSettings());
+	}
+
+	public static Toolkit getToolkit() {
+		return Toolkit.getDefaultToolkit();
 	}
 }
