@@ -20,7 +20,7 @@ import javax.swing.border.EmptyBorder;
 
 import controllers.UserController;
 import utils.WindowUtils;
-import views.settings.Settings;
+import views.settings.SettingsDialog;
 import javax.swing.JTree;
 
 public class MainAdmin extends JFrame {
@@ -91,7 +91,7 @@ public class MainAdmin extends JFrame {
 		item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	new Settings().setVisible(true);
+            	new SettingsDialog().setVisible(true);
             }
         });
 		menu.add(item);

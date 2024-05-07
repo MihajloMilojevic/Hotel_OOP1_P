@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -23,6 +25,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -30,19 +34,25 @@ import javax.swing.tree.TreePath;
 import app.AppSettings;
 import utils.PopupListener;
 import utils.WindowUtils;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 
-public class Settings extends JDialog {
+public class SettingsDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
+	
+	private JButton editBtn;
+	private JTree tree;
+	
 
 	/**
 	 * Create the dialog.
 	 */
-	public Settings() {
+	public SettingsDialog() {
 		setResizable(true);
 		setModal(true);
-		setIconImage(WindowUtils.getIconImage());
+		setIconImage(new ImageIcon("./assets/icons/settings.png").getImage());
 		getContentPane().setBackground(new Color(73, 73, 73));
 		setBackground(new Color(73, 73, 73));
 		setTitle("Settings");
@@ -58,48 +68,65 @@ public class Settings extends JDialog {
 			JScrollPane scrollPane = new JScrollPane();
 			contentPanel.add(scrollPane, BorderLayout.CENTER);
 			{
-				JTree tree = new JTree();
+				tree = new JTree();
 				tree.setForeground(Color.WHITE);
 				tree.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 				tree.setEditable(false);
 				tree.setModel(new CustomTreeModel());
 				tree.setBackground(new Color(73, 73, 73));
 				tree.setCellRenderer(new CustomTreeCellRenderer());
-				JPopupMenu popup = new JPopupMenu();
-				JMenuItem item;
 				
-				item = new JMenuItem("Add");
-				item.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                    	if (tree.getSelectionCount() == 0) {
-                    		JOptionPane.showMessageDialog(tree, "Select a category first.", "Error", JOptionPane.ERROR_MESSAGE);
-                    	} else {
-                    		JOptionPane.showMessageDialog(null, "Add");
-                    	}
-                    }
-                });
-				popup.add(item);
+				tree.addTreeSelectionListener(new TreeSelectionListener() {
+					
+					@Override
+					public void valueChanged(TreeSelectionEvent e) {
+						editBtn.setEnabled(e.getPath().getPath().length == 3);
+					}
+				});
 				
-				item = new JMenuItem("Edit");
-				item.addActionListener(null);
-				popup.add(item);
-				
-				item = new JMenuItem("Delete");
-				item.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                    	if (tree.getSelectionCount() == 0) {
-                    		JOptionPane.showMessageDialog(tree, "Select a category or setting first.", "Error", JOptionPane.ERROR_MESSAGE);
-                    	} else {
-                    		((CustomTreeModel)tree.getModel()).remove(tree.getSelectionPath());
-                    		tree.updateUI();
-                    	}
-                    }
-                });
-				popup.add(item);
-				tree.addMouseListener(new PopupListener(popup));
 				scrollPane.setViewportView(tree);
+			}
+		}
+		{
+			JPanel panel = new JPanel();
+			FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+			flowLayout.setAlignment(FlowLayout.LEFT);
+			panel.setBackground(new Color(73, 73, 73));
+			contentPanel.add(panel, BorderLayout.NORTH);
+			{
+				editBtn = new JButton("Edit Selected Setting");
+				editBtn.setIcon(new ImageIcon("./assets/icons/edit.png"));
+				editBtn.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+				editBtn.setEnabled(false);
+				editBtn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						TreePath path = tree.getSelectionPath();
+						if(path == null) { 
+							JOptionPane.showMessageDialog(null, "Please select a setting to edit.", "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						if (path.getPath().length != 3) {
+							JOptionPane.showMessageDialog(null, "Please select a setting to edit.", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						String category = path.getPath()[1].toString();
+						String setting = path.getPath()[2].toString();
+						String value = AppSettings.getInstance().getSetting(category, setting, "");
+
+						EditSettingsDialog dialog = new EditSettingsDialog(category+ "." + setting, value);
+						
+						dialog.setVisible(true);
+
+						if (dialog.isOk()) {
+							((CustomTreeModel) tree.getModel()).editSetting(category, setting, dialog.getValue());
+							tree.updateUI();
+							JOptionPane.showMessageDialog(null, "Setting updated successfully.\nYou may need to restart the app to see the changes", "Success",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					}
+				});
+				panel.add(editBtn);
 			}
 		}
 		{
@@ -109,6 +136,7 @@ public class Settings extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
+				okButton.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
@@ -162,24 +190,10 @@ public class Settings extends JDialog {
             return false;
 		}
 		
-		public void remove(TreePath treePath) {
-			Object path[] = treePath.getPath();
-			ArrayList<String> a =  new ArrayList<String>();
-			for (Object o : path) {
-                a.add(o.toString());
-            }
-			System.out.println(path.length + " " + String.join("; ", a));
-			if (path.length == 1) {
-                settings.clear();
-            } else if (path.length == 2) {
-				settings.removeCategory(path[1].toString());
-			} else if (path.length == 3) {
-				settings.removeSetting(path[1].toString(),
-						path[2].toString());
-			}
-			System.out.println(settings.getCategories());
+		public void editSetting(String category, String setting, String value) {
+			settings.updateSetting(category, setting, value);
 		}
-
+		
 		@Override
 		public void valueForPathChanged(TreePath path, Object newValue) {
 			// TODO Auto-generated method stub

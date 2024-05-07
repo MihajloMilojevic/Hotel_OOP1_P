@@ -32,8 +32,9 @@ public class AppSettings {
 		
 	}
 	
-	public void addSetting(String category, String key, String value) {
+	public void updateSetting(String category, String key, String value) {
 		HashMap<String, String> categorySettings = settings.get(category);
+		
 		if (categorySettings == null) {
 			categorySettings = new HashMap<String, String>();
 			settings.put(category, categorySettings);
@@ -41,19 +42,6 @@ public class AppSettings {
 		categorySettings.put(key, value);
 	}
 
-	public void removeSetting(String category, String key) {
-		HashMap<String, String> categorySettings = settings.get(category);
-		if (categorySettings == null) {
-			return;
-		}
-		categorySettings.remove(key);
-	}
-	
-	public void removeCategory(String category) {
-		System.out.println	("Removing category: " + category);
-		settings.remove(category);
-	}
-	
 	public void load() throws IOException {
 		ArrayList<String> lines = (ArrayList<String>) Files.readAllLines(Path.of(settingsFile.getAbsolutePath()));
 		HashMap<String, String> currentCategory = new HashMap<String, String>();
@@ -80,12 +68,11 @@ public class AppSettings {
 	}
 	
 	public void save() throws IOException {
-		if (settings.isEmpty()) {
-			return;
-		}
 		ArrayList<String> lines = new ArrayList<String>();
-		for (String key : settings.get("defualt").keySet()) {
-			lines.add(key + " = " + settings.get("defualt").get(key));
+		if(settings.containsKey("defualt")) {
+			for (String key : settings.get("defualt").keySet()) {
+				lines.add(key + " = " + settings.get("defualt").get(key));
+			}
 		}
 		for (String category : settings.keySet()) {
 			if (category.equals("defualt")) {
@@ -141,7 +128,7 @@ public class AppSettings {
 
 	public ArrayList<String> getCategories() {
 		ArrayList<String> categories = new ArrayList<String>();
-		categories.add("defualt");
+		if(settings.containsKey("defualt")) categories.add("defualt");
 		for (String category : settings.keySet()) {
 			if (category.equals("defualt")) {
 				continue;
