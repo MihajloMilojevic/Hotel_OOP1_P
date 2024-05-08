@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -89,7 +90,8 @@ public class EditEmployeeDialog extends JDialog {
 		this.employee = employee;
 		setTitle("Edit Employee | " + this.employee.getId());
 		setModal(true);
-		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\MIHAJLO_MILOJEVIC\\PROJEKTI\\MHotelify_OOP1\\assets\\icons\\employees.png"));
+		setLocationRelativeTo(null);
+		setIconImage(new ImageIcon("./assets/icons/employees.png").getImage());
 		setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		getContentPane().setBackground(new Color(73, 73, 73));
