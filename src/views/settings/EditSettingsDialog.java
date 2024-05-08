@@ -37,7 +37,6 @@ public class EditSettingsDialog extends JDialog {
 	}
 
 	private static final long serialVersionUID = 1L;
-	private String name;
 	private String value;
 	private boolean ok = false;
 	private final JPanel contentPanel = new JPanel();
@@ -49,7 +48,6 @@ public class EditSettingsDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public EditSettingsDialog(String name, String value) {
-		this.name = name;
 		this.value = value;
 		setTitle("Edit Setting |" + name);
 		setResizable(false);

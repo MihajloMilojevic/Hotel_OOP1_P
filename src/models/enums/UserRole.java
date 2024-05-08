@@ -1,5 +1,6 @@
 package models.enums;
 
 public enum UserRole {
-	GUEST, MAID, RECEPTIONIST, ADMIN
+	GUEST, MAID, RECEPTIONIST, ADMIN;
+	
 }

@@ -32,7 +32,6 @@ public class KT2 {
 		AppState appState = AppState.getInstance();
 		try {
 			appState.getSettings().load();
-			System.out.println(appState.getSettings().getSetting("database", "admins_file_path", "Greska"));
 			System.out.println("Podesavanja aplikacije ucitana.\n");
 		} catch (IOException e) {
 			System.err.println("Greska prilikom ucitavanja podesavanja aplikacije");

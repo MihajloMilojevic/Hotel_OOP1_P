@@ -13,7 +13,7 @@ import utils.CSVDateParser;
 public abstract class User extends Model {
 
 	/* ******************************  PROPERTIES  *************************************** */
-	
+
 	protected String name;
 	protected String surname;
 	protected Gender gender;
@@ -289,6 +289,13 @@ public abstract class User extends Model {
 		return role;
 	}
 
+	/**
+	 * @param role the role to set
+	 */
+	public void setRole(UserRole role) {
+		this.role = role;
+	}
+	
 	/**
 	 * @return the name
 	 */
