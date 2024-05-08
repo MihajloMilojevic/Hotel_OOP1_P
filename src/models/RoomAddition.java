@@ -67,14 +67,16 @@ public class RoomAddition extends Model {
 	}
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		return new RoomAddition(this.getId(), this.name);
+		RoomAddition ra = new RoomAddition(this.getId(), this.name);
+		if (this.isDeleted()) ra.delete();
+		return ra;
 	}
 	@Override
 	public Model fromCSV(String csv) throws ParseException {
 		super.fromCSV(csv);
 		String[] values = csv.split(";");
-		if (values.length < 2) throw new ParseException("Invalid RoomType string", 1);
-		this.name = values[1];
+		if (values.length < 3) throw new ParseException("Invalid RoomType string", 1);
+		this.name = values[2];
 		return this;
 	}
 	

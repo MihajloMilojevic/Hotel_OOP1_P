@@ -106,7 +106,7 @@ public class Maid extends Employee {
 	/* ******************************  METHODS  *************************************** */
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		return new Maid(
+		Maid m = new Maid(
 				getId(),
 				getName(), 
 				getSurname(), 
@@ -120,5 +120,7 @@ public class Maid extends Employee {
 				getYearsOfWorkExperience(), 
 				getSalary()
 			);
+		if (this.isDeleted()) m.delete();
+	    return m;
 	}
 }

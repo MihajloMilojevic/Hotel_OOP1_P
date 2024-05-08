@@ -261,18 +261,18 @@ public abstract class User extends Model {
 	public Model fromCSV(String csv) throws ParseException {
 		super.fromCSV(csv);
         String[] values = csv.split(";");
-        if (values.length < 10) throw new ParseException("Invalid CSV record", 1);
+        if (values.length < 11) throw new ParseException("Invalid CSV record", 1);
         try {
-        	this.role = UserRole.valueOf(values[1]);
-            this.name = values[2];
-            this.surname = values[3];
-            this.gender = Gender.valueOf(values[4]);
+        	this.role = UserRole.valueOf(values[2]);
+            this.name = values[3];
+            this.surname = values[4];
+            this.gender = Gender.valueOf(values[5]);
             //System.out.println(values[5]);
-            this.birthdate = CSVDateParser.parseString(values[5]);
-            this.phone = values[6];
-            this.address = values[7];
-            this.username = values[8];
-            this.password = values[9];
+            this.birthdate = CSVDateParser.parseString(values[6]);
+            this.phone = values[7];
+            this.address = values[8];
+            this.username = values[9];
+            this.password = values[10];
             return this;
         }
 		catch (Exception e) {

@@ -107,9 +107,11 @@ public class Receptionist extends Employee {
 	}
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		return new Receptionist(getId(), getName(), getSurname(), getGender(), 
+		Receptionist r = new Receptionist(getId(), getName(), getSurname(), getGender(), 
 	        	LocalDate.from(getBirthdate()), getPhone(), getAddress(),
 				getUsername(), getPassword(), getLevelOfProfessionalEducation(), getYearsOfWorkExperience(),
 				getSalary());
+		if (this.isDeleted()) r.delete();
+		return r;
 	}
 }

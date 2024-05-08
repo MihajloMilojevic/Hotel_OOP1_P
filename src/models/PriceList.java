@@ -117,7 +117,9 @@ public class PriceList extends Model {
 			reservationAdditionPricesClone.put((ReservationAddition) reservationAddition.clone(),
 					getReservationAdditionPrices().get(reservationAddition));
 		}
-		return new PriceList(getId(), LocalDate.from(getStartDate()), LocalDate.from(getEndDate()), roomTypePricesClone, reservationAdditionPricesClone);
+		PriceList pl = new PriceList(getId(), LocalDate.from(getStartDate()), LocalDate.from(getEndDate()), roomTypePricesClone, reservationAdditionPricesClone);
+		if (this.isDeleted()) pl.delete();
+		return pl;
 	}
 	@Override
 	public String toString() {
@@ -156,9 +158,9 @@ public class PriceList extends Model {
 	public Model fromCSV(String csv) throws ParseException {
 		super.fromCSV(csv);
 		String[] values = csv.split(";");
-		if (values.length < 3) throw new ParseException("Invalid RoomType string", 1);
-		this.startDate = CSVDateParser.parseString(values[1]);
-		this.endDate = CSVDateParser.parseString(values[2]);
+		if (values.length < 4) throw new ParseException("Invalid RoomType string", 1);
+		this.startDate = CSVDateParser.parseString(values[2]);
+		this.endDate = CSVDateParser.parseString(values[3]);
 		return this;
 	}
 	

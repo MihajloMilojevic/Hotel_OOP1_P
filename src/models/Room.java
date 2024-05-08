@@ -168,7 +168,9 @@ public class Room extends Model {
 			roomAdditionsClone.add((RoomAddition)roomAddition.clone());
 		}
 		
-		return new Room(id, number, type != null ? (RoomType)type.clone() : null, status, roomAdditionsClone);
+		Room r = new Room(id, number, type != null ? (RoomType)type.clone() : null, status, roomAdditionsClone);
+		if (this.isDeleted()) r.delete();
+		return r;
 	}
     @Override
 	public boolean equals(Object obj) {
@@ -186,9 +188,9 @@ public class Room extends Model {
 	public Model fromCSV(String csv) throws ParseException {
 		super.fromCSV(csv);
 		String[] values = csv.split(";");
-		if (values.length < 3) throw new ParseException("Invalid RoomType string", 1);
-		this.number = Integer.parseInt(values[1]);
-		this.status = RoomStatus.valueOf(values[2]);
+		if (values.length < 4) throw new ParseException("Invalid RoomType string", 1);
+		this.number = Integer.parseInt(values[2]);
+		this.status = RoomStatus.valueOf(values[3]);
 		return this;
 	}
     

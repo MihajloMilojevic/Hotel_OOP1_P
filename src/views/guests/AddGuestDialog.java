@@ -1,4 +1,4 @@
-package views.admin;
+package views.guests;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -12,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -22,21 +21,20 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.toedter.calendar.JDateChooser;
 
-import models.Employee;
+import models.Guest;
+import models.Model;
 import models.enums.Gender;
-import models.enums.UserRole;
 
 
-public class EditEmployeeDialog extends JDialog {
+public class AddGuestDialog extends JDialog {
 
 	/**
 	 * @return the ok
@@ -46,26 +44,21 @@ public class EditEmployeeDialog extends JDialog {
 	}
 
 	/**
-	 * @return the employee
+	 * @return the guest
 	 */
-	public Employee getEmployee() {
-		return employee;
+	public Guest getGuest() {
+		return guest;
 	}
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	private JComboBox<UserRole> roleCb;
 	private JComboBox<Gender> genderCb;
 	private JTextField nameTf;
 	private JTextField surnameTf;
 	private JTextField usernameTf;
 	private JDateChooser birthdateDP;
 	private JTextField addressTf;
-	private JTextField profEducTf;
-	private JSpinner xpSp;
-	private JSpinner salarySp;
 	private JTextField phoneTf;
-	private JLabel lblNewLabel_2;
 	private JLabel lblNewLabel_3;
 	private JLabel lblNewLabel_4;
 	private JLabel lblNewLabel_5;
@@ -73,31 +66,30 @@ public class EditEmployeeDialog extends JDialog {
 	private JLabel lblNewLabel_7;
 	private JLabel lblNewLabel_8;
 	private JLabel lblNewLabel_9;
-	private JLabel lblNewLabel_1;
 	private JTextField idTf;
 	private JLabel lblNewLabel_2_1;
-	private JLabel lblNewLabel_1_2;
-	private JLabel lblNewLabel_1_1;
 	
-	private Employee employee;
+	private Guest guest;
 	private boolean ok;
+	private JPasswordField passwordFl;
+	private JLabel lblNewLabel_10;
+	private Component verticalStrut_1;
 
 	/**
 	 * Create the dialog.
 	 */
-	public EditEmployeeDialog(Employee employee) {
-		this.employee = employee;
-		setTitle("Edit Employee | " + this.employee.getId());
+	public AddGuestDialog() {
+		setTitle("Add New Guest");
 		setModal(true);
 		setLocationRelativeTo(null);
-		setIconImage(new ImageIcon("./assets/icons/employees.png").getImage());
+		setIconImage(new ImageIcon("./assets/icons/guests.png").getImage());
 		setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		getContentPane().setBackground(new Color(73, 73, 73));
 		setBackground(new Color(73, 73, 73));
 		getContentPane().setForeground(new Color(255, 255, 255));
 		setForeground(new Color(255, 255, 255));
-		setBounds(100, 100, 600, 600);
+		setBounds(100, 100, 600, 500);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(73, 73, 73));
 		contentPanel.setForeground(new Color(255, 255, 255));
@@ -115,12 +107,12 @@ public class EditEmployeeDialog extends JDialog {
 				scrollPane.setViewportView(panel);
 				GridBagLayout gbl_panel = new GridBagLayout();
 				gbl_panel.columnWidths = new int[]{0, 0, 0, 0};
-				gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+				gbl_panel.rowHeights = new int[]{0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 				gbl_panel.columnWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
-				gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+				gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 				panel.setLayout(gbl_panel);
 				{
-					JLabel lblNewLabel = new JLabel("Edit Employee");
+					JLabel lblNewLabel = new JLabel("Add Guest");
 					lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 					lblNewLabel.setForeground(new Color(255, 255, 255));
 					lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 24));
@@ -173,36 +165,6 @@ public class EditEmployeeDialog extends JDialog {
 					panel.add(verticalStrut, gbc_verticalStrut);
 				}
 				{
-					lblNewLabel_2 = new JLabel("Role:");
-					lblNewLabel_2.setForeground(new Color(255, 255, 255));
-					lblNewLabel_2.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-					GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-					gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
-					gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
-					gbc_lblNewLabel_2.gridx = 1;
-					gbc_lblNewLabel_2.gridy = 4;
-					panel.add(lblNewLabel_2, gbc_lblNewLabel_2);
-				}
-				{
-					roleCb = new JComboBox<UserRole>();
-					lblNewLabel_2.setLabelFor(roleCb);
-					roleCb.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-					GridBagConstraints gbc_roleCb = new GridBagConstraints();
-					gbc_roleCb.insets = new Insets(0, 0, 5, 0);
-					gbc_roleCb.fill = GridBagConstraints.HORIZONTAL;
-					gbc_roleCb.gridx = 2;
-					gbc_roleCb.gridy = 4;
-					panel.add(roleCb, gbc_roleCb);
-				}
-				{
-					Component verticalStrut = Box.createVerticalStrut(5);
-					GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
-					gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
-					gbc_verticalStrut.gridx = 1;
-					gbc_verticalStrut.gridy = 5;
-					panel.add(verticalStrut, gbc_verticalStrut);
-				}
-				{
 					lblNewLabel_3 = new JLabel("Name:");
 					lblNewLabel_3.setForeground(Color.WHITE);
 					lblNewLabel_3.setFont(new Font("Times New Roman", Font.PLAIN, 14));
@@ -210,7 +172,7 @@ public class EditEmployeeDialog extends JDialog {
 					gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
 					gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
 					gbc_lblNewLabel_3.gridx = 1;
-					gbc_lblNewLabel_3.gridy = 6;
+					gbc_lblNewLabel_3.gridy = 4;
 					panel.add(lblNewLabel_3, gbc_lblNewLabel_3);
 				}
 				{
@@ -221,7 +183,7 @@ public class EditEmployeeDialog extends JDialog {
 					gbc_nameTf.insets = new Insets(0, 0, 5, 0);
 					gbc_nameTf.fill = GridBagConstraints.HORIZONTAL;
 					gbc_nameTf.gridx = 2;
-					gbc_nameTf.gridy = 6;
+					gbc_nameTf.gridy = 4;
 					panel.add(nameTf, gbc_nameTf);
 					nameTf.setColumns(10);
 				}
@@ -230,7 +192,7 @@ public class EditEmployeeDialog extends JDialog {
 					GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
 					gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
 					gbc_verticalStrut.gridx = 1;
-					gbc_verticalStrut.gridy = 7;
+					gbc_verticalStrut.gridy = 5;
 					panel.add(verticalStrut, gbc_verticalStrut);
 				}
 				{
@@ -241,7 +203,7 @@ public class EditEmployeeDialog extends JDialog {
 					gbc_lblNewLabel_4.anchor = GridBagConstraints.WEST;
 					gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
 					gbc_lblNewLabel_4.gridx = 1;
-					gbc_lblNewLabel_4.gridy = 8;
+					gbc_lblNewLabel_4.gridy = 6;
 					panel.add(lblNewLabel_4, gbc_lblNewLabel_4);
 				}
 				{
@@ -253,7 +215,7 @@ public class EditEmployeeDialog extends JDialog {
 					gbc_surnameTf.insets = new Insets(0, 0, 5, 0);
 					gbc_surnameTf.fill = GridBagConstraints.HORIZONTAL;
 					gbc_surnameTf.gridx = 2;
-					gbc_surnameTf.gridy = 8;
+					gbc_surnameTf.gridy = 6;
 					panel.add(surnameTf, gbc_surnameTf);
 				}
 				{
@@ -261,7 +223,7 @@ public class EditEmployeeDialog extends JDialog {
 					GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
 					gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
 					gbc_verticalStrut.gridx = 1;
-					gbc_verticalStrut.gridy = 9;
+					gbc_verticalStrut.gridy = 7;
 					panel.add(verticalStrut, gbc_verticalStrut);
 				}
 				{
@@ -272,7 +234,7 @@ public class EditEmployeeDialog extends JDialog {
 					gbc_lblNewLabel_5.anchor = GridBagConstraints.WEST;
 					gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
 					gbc_lblNewLabel_5.gridx = 1;
-					gbc_lblNewLabel_5.gridy = 10;
+					gbc_lblNewLabel_5.gridy = 8;
 					panel.add(lblNewLabel_5, gbc_lblNewLabel_5);
 				}
 				{
@@ -284,8 +246,37 @@ public class EditEmployeeDialog extends JDialog {
 					gbc_usernameTf.insets = new Insets(0, 0, 5, 0);
 					gbc_usernameTf.fill = GridBagConstraints.HORIZONTAL;
 					gbc_usernameTf.gridx = 2;
-					gbc_usernameTf.gridy = 10;
+					gbc_usernameTf.gridy = 8;
 					panel.add(usernameTf, gbc_usernameTf);
+				}
+				{
+					verticalStrut_1 = Box.createVerticalStrut(5);
+					GridBagConstraints gbc_verticalStrut_1 = new GridBagConstraints();
+					gbc_verticalStrut_1.insets = new Insets(0, 0, 5, 5);
+					gbc_verticalStrut_1.gridx = 1;
+					gbc_verticalStrut_1.gridy = 9;
+					panel.add(verticalStrut_1, gbc_verticalStrut_1);
+				}
+				{
+					lblNewLabel_10 = new JLabel("Password:");
+					lblNewLabel_10.setForeground(Color.WHITE);
+					lblNewLabel_10.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+					GridBagConstraints gbc_lblNewLabel_10 = new GridBagConstraints();
+					gbc_lblNewLabel_10.insets = new Insets(0, 0, 5, 5);
+					gbc_lblNewLabel_10.anchor = GridBagConstraints.WEST;
+					gbc_lblNewLabel_10.gridx = 1;
+					gbc_lblNewLabel_10.gridy = 10;
+					panel.add(lblNewLabel_10, gbc_lblNewLabel_10);
+				}
+				{
+					passwordFl = new JPasswordField();
+					passwordFl.setFont(new Font("Tahoma", Font.PLAIN, 14));
+					GridBagConstraints gbc_passwordFl = new GridBagConstraints();
+					gbc_passwordFl.insets = new Insets(0, 0, 5, 0);
+					gbc_passwordFl.fill = GridBagConstraints.HORIZONTAL;
+					gbc_passwordFl.gridx = 2;
+					gbc_passwordFl.gridy = 10;
+					panel.add(passwordFl, gbc_passwordFl);
 				}
 				{
 					Component verticalStrut = Box.createVerticalStrut(5);
@@ -392,7 +383,7 @@ public class EditEmployeeDialog extends JDialog {
 					lblNewLabel_9.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 					GridBagConstraints gbc_lblNewLabel_9 = new GridBagConstraints();
 					gbc_lblNewLabel_9.anchor = GridBagConstraints.WEST;
-					gbc_lblNewLabel_9.insets = new Insets(0, 0, 5, 5);
+					gbc_lblNewLabel_9.insets = new Insets(0, 0, 0, 5);
 					gbc_lblNewLabel_9.gridx = 1;
 					gbc_lblNewLabel_9.gridy = 18;
 					panel.add(lblNewLabel_9, gbc_lblNewLabel_9);
@@ -403,103 +394,10 @@ public class EditEmployeeDialog extends JDialog {
 					phoneTf.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 					phoneTf.setColumns(10);
 					GridBagConstraints gbc_phoneTf = new GridBagConstraints();
-					gbc_phoneTf.insets = new Insets(0, 0, 5, 0);
 					gbc_phoneTf.fill = GridBagConstraints.HORIZONTAL;
 					gbc_phoneTf.gridx = 2;
 					gbc_phoneTf.gridy = 18;
 					panel.add(phoneTf, gbc_phoneTf);
-				}
-				{
-					Component verticalStrut = Box.createVerticalStrut(5);
-					GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
-					gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
-					gbc_verticalStrut.gridx = 1;
-					gbc_verticalStrut.gridy = 19;
-					panel.add(verticalStrut, gbc_verticalStrut);
-				}
-				{
-					lblNewLabel_1 = new JLabel("Professional education:");
-					lblNewLabel_1.setForeground(Color.WHITE);
-					lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-					GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-					gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
-					gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
-					gbc_lblNewLabel_1.gridx = 1;
-					gbc_lblNewLabel_1.gridy = 20;
-					panel.add(lblNewLabel_1, gbc_lblNewLabel_1);
-				}
-				{
-					profEducTf = new JTextField();
-					lblNewLabel_1.setLabelFor(profEducTf);
-					profEducTf.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-					profEducTf.setColumns(10);
-					GridBagConstraints gbc_profEducTf = new GridBagConstraints();
-					gbc_profEducTf.insets = new Insets(0, 0, 5, 0);
-					gbc_profEducTf.fill = GridBagConstraints.HORIZONTAL;
-					gbc_profEducTf.gridx = 2;
-					gbc_profEducTf.gridy = 20;
-					panel.add(profEducTf, gbc_profEducTf);
-				}
-				{
-					Component verticalStrut = Box.createVerticalStrut(5);
-					GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
-					gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
-					gbc_verticalStrut.gridx = 1;
-					gbc_verticalStrut.gridy = 21;
-					panel.add(verticalStrut, gbc_verticalStrut);
-				}
-				{
-					lblNewLabel_1_2 = new JLabel("Years of experience:");
-					lblNewLabel_1_2.setForeground(Color.WHITE);
-					lblNewLabel_1_2.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-					GridBagConstraints gbc_lblNewLabel_1_2 = new GridBagConstraints();
-					gbc_lblNewLabel_1_2.anchor = GridBagConstraints.WEST;
-					gbc_lblNewLabel_1_2.insets = new Insets(0, 0, 5, 5);
-					gbc_lblNewLabel_1_2.gridx = 1;
-					gbc_lblNewLabel_1_2.gridy = 22;
-					panel.add(lblNewLabel_1_2, gbc_lblNewLabel_1_2);
-				}
-				{
-					xpSp = new JSpinner();
-					lblNewLabel_1_2.setLabelFor(xpSp);
-					xpSp.setModel(new SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
-					xpSp.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-					GridBagConstraints gbc_xpSp = new GridBagConstraints();
-					gbc_xpSp.insets = new Insets(0, 0, 5, 0);
-					gbc_xpSp.fill = GridBagConstraints.HORIZONTAL;
-					gbc_xpSp.gridx = 2;
-					gbc_xpSp.gridy = 22;
-					panel.add(xpSp, gbc_xpSp);
-				}
-				{
-					Component verticalStrut = Box.createVerticalStrut(5);
-					GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
-					gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
-					gbc_verticalStrut.gridx = 1;
-					gbc_verticalStrut.gridy = 23;
-					panel.add(verticalStrut, gbc_verticalStrut);
-				}
-				{
-					lblNewLabel_1_1 = new JLabel("Salary:");
-					lblNewLabel_1_1.setForeground(Color.WHITE);
-					lblNewLabel_1_1.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-					GridBagConstraints gbc_lblNewLabel_1_1 = new GridBagConstraints();
-					gbc_lblNewLabel_1_1.anchor = GridBagConstraints.WEST;
-					gbc_lblNewLabel_1_1.insets = new Insets(0, 0, 0, 5);
-					gbc_lblNewLabel_1_1.gridx = 1;
-					gbc_lblNewLabel_1_1.gridy = 24;
-					panel.add(lblNewLabel_1_1, gbc_lblNewLabel_1_1);
-				}
-				{
-					salarySp = new JSpinner();
-					lblNewLabel_1_1.setLabelFor(salarySp);
-					salarySp.setModel(new SpinnerNumberModel(Double.valueOf(0), Double.valueOf(0), null, Double.valueOf(10000)));
-					salarySp.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-					GridBagConstraints gbc_salarySp = new GridBagConstraints();
-					gbc_salarySp.fill = GridBagConstraints.HORIZONTAL;
-					gbc_salarySp.gridx = 2;
-					gbc_salarySp.gridy = 24;
-					panel.add(salarySp, gbc_salarySp);
 				}
 				
 			}
@@ -514,62 +412,62 @@ public class EditEmployeeDialog extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						String id = idTf.getText().trim();
 						String name = nameTf.getText().trim();
 						String surname = surnameTf.getText().trim();
 						String username = usernameTf.getText().trim();
-						UserRole role = (UserRole) roleCb.getSelectedItem();
+						String password = new String(passwordFl.getPassword());
 						Gender gender = (Gender) genderCb.getSelectedItem();
-						LocalDate birthdate = birthdateDP.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 						String address = addressTf.getText().trim();
 						String phone = phoneTf.getText().trim();
-						String levelOfProfessionalEducation = profEducTf.getText().trim();
-						int yearsOfWorkExperience = (int) xpSp.getValue();
-						double salary = (double) salarySp.getValue();
+						
 						if (name.isBlank()) {
-							JOptionPane.showMessageDialog(EditEmployeeDialog.this, "Name is required", "Error", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(AddGuestDialog.this, "Name is required", "Error", JOptionPane.ERROR_MESSAGE);
 							return;
 						}
 						if (surname.isBlank()) {
-							JOptionPane.showMessageDialog(EditEmployeeDialog.this, "Surname is required", "Error",
+							JOptionPane.showMessageDialog(AddGuestDialog.this, "Surname is required", "Error",
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
 						if (username.isBlank()) {
-							JOptionPane.showMessageDialog(EditEmployeeDialog.this, "Username is required", "Error",
+							JOptionPane.showMessageDialog(AddGuestDialog.this, "Username is required", "Error",
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						if (birthdate == null) {
-							JOptionPane.showMessageDialog(EditEmployeeDialog.this, "Date of birth is required", "Error",
+						if (password.isBlank()) {
+							JOptionPane.showMessageDialog(AddGuestDialog.this, "Password is required", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						
+						if (birthdateDP.getDate() == null) {
+							JOptionPane.showMessageDialog(AddGuestDialog.this, "Date of birth is required", "Error",
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
 						if (address.isBlank()) {
-							JOptionPane.showMessageDialog(EditEmployeeDialog.this, "Address is required", "Error",
+							JOptionPane.showMessageDialog(AddGuestDialog.this, "Address is required", "Error",
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
 						if (phone.isBlank()) {
-							JOptionPane.showMessageDialog(EditEmployeeDialog.this, "Phone is required", "Error",
+							JOptionPane.showMessageDialog(AddGuestDialog.this, "Phone is required", "Error",
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						if (levelOfProfessionalEducation.isBlank()) {
-							JOptionPane.showMessageDialog(EditEmployeeDialog.this,
-									"Level of professional education is required", "Error", JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-						employee.setName(name);
-						employee.setSurname(surname);
-						employee.setUsername(username);
-						employee.setRole(role);
-						employee.setGender(gender);
-						employee.setBirthdate(birthdate);
-						employee.setAddress(address);
-						employee.setPhone(phone);
-						employee.setLevelOfProfessionalEducation(levelOfProfessionalEducation);
-						employee.setYearsOfWorkExperience(yearsOfWorkExperience);
-						employee.setSalary(salary);
+						
+
+						LocalDate birthdate = birthdateDP.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(); // under all validations since it can throw exception
+						guest = new Guest(id);
+						guest.setName(name);
+						guest.setSurname(surname);
+						guest.setUsername(username);
+						guest.setPassword(password);
+						guest.setGender(gender);
+						guest.setBirthdate(birthdate);
+						guest.setAddress(address);
+						guest.setPhone(phone);
 						ok = true;
 						dispose();
 					}
@@ -592,26 +490,11 @@ public class EditEmployeeDialog extends JDialog {
 			}
 		}
 		
-		roleCb.addItem(UserRole.ADMIN);
-		roleCb.addItem(UserRole.RECEPTIONIST);
-		roleCb.addItem(UserRole.MAID);
-		
 		genderCb.addItem(Gender.MALE);
 		genderCb.addItem(Gender.FEMALE);
 		
+		idTf.setText(Model.generateId());
 		
-		idTf.setText(employee.getId());
-		nameTf.setText(employee.getName());
-		surnameTf.setText(employee.getSurname());
-		usernameTf.setText(employee.getUsername());
-		roleCb.setSelectedItem(employee.getRole());
-		genderCb.setSelectedItem(employee.getGender());
-		birthdateDP.setDate(Date.from(employee.getBirthdate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-		addressTf.setText(employee.getAddress());
-		profEducTf.setText(employee.getLevelOfProfessionalEducation());
-		phoneTf.setText(employee.getPhone());
-		xpSp.setValue(employee.getYearsOfWorkExperience());
-		salarySp.setValue(employee.getSalary());
 	}
 
 }

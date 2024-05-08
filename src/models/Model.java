@@ -5,8 +5,9 @@ import java.text.ParseException;
 public abstract class Model implements Cloneable {
 	
 	/* ******************************  ATTRIBUTES  *************************************** */
-	
+
 	protected String id;
+	protected boolean isDeleted = false;
 	
 	/* ******************************  CONSTRUCTORS  *************************************** */
 	
@@ -20,6 +21,10 @@ public abstract class Model implements Cloneable {
 	
 	/* ******************************  METHODS  *************************************** */
 	
+	public void delete() {
+		this.isDeleted = true;
+	}
+	
 	/**
 	 * Get the value of the property for the given key
 	 * @param key of the property
@@ -29,6 +34,8 @@ public abstract class Model implements Cloneable {
 		switch (key) {
 		case "id":
 			return (Object) this.id;
+		case "isDeleted":
+			return (Object) this.isDeleted;
 		default:
 			throw new IllegalArgumentException("Invalid key");
 		}
@@ -53,7 +60,7 @@ public abstract class Model implements Cloneable {
 	}
 	@Override 
 	public String toString() {
-		return this.id;
+		return this.id + ";" + this.isDeleted;
 	}
 	
 	@Override
@@ -65,7 +72,7 @@ public abstract class Model implements Cloneable {
 			return false;
 		}
 		Model model = (Model) obj;
-		return this.id.equals(model.id);
+		return this.id.equals(model.id) && this.isDeleted == model.isDeleted;
 	}
 	
 	@Override 
@@ -75,10 +82,11 @@ public abstract class Model implements Cloneable {
 	
 	public Model fromCSV(String csv) throws ParseException {
 		String[] parts = csv.split(";");
-		if (parts.length == 0) {
+		if (parts.length < 2) {
 			throw new ParseException("Invalid csv record", 0);
 		} else {
 			this.id = parts[0];
+			this.isDeleted = Boolean.parseBoolean(parts[1]);
 			return this;
 		}
 	}
@@ -89,6 +97,13 @@ public abstract class Model implements Cloneable {
 	}
 	
 	/* ******************************  GETTERS AND SETTERS  *************************************** */
+	
+	/**
+	 * @return the isDeleted
+	 */
+	public boolean isDeleted() {
+		return isDeleted;
+	}
 	
 	/**
 	 * @return the id

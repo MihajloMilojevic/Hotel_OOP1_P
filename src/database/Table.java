@@ -42,6 +42,7 @@ public class Table<T extends Model> {
 	public void addIndex(String indexName) {
 		HashMap<String, T> newIndex = new HashMap<String, T>();
 		for (T row : this.rows.values()) {
+			if(row.isDeleted()) continue;
 			newIndex.put((String)row.get(indexName), row);
 		}
 		this.indecies.put(indexName, newIndex);
@@ -66,32 +67,37 @@ public class Table<T extends Model> {
 	public void insert(T row) throws DuplicateIndexException {
 		if(!isUnique(row)) throw new DuplicateIndexException("Duplicate key");
 		this.rows.put(row.getId(), row);
+		if(row.isDeleted()) return;
         for (String indexName : this.indecies.keySet()) {
             this.indecies.get(indexName).put(row.get(indexName).toString(), row);
         }
 	}
 	public void delete(T row) {
-		this.rows.remove(row.getId());
+		T dbRow = this.rows.get(row.getId());
+		if(dbRow != null) dbRow.delete();
 		regenerateIndecies();
 	}
 	public void delete(SelectCondition condition) {
 		for (T row : this.rows.values()) {
 			if (condition.check(row)) {
-				this.rows.remove(row.getId());
+				T dbRow = this.rows.get(row.getId());
+				if(dbRow != null) dbRow.delete();
 			}
 		}
 		regenerateIndecies();
 	}
 
 	public void deleteById(String id) {
-		this.rows.remove(id);
+		T dbRow = this.rows.get(id);
+		if(dbRow != null) dbRow.delete();
 		regenerateIndecies();
 	}
 	public void deleteByIndex(String indexName, String indexValue) {
 		if(!this.indecies.containsKey(indexName)) return;
 		T row = this.indecies.get(indexName).get(indexValue);
 		if(row == null) return;
-		this.rows.remove(row.getId());
+		T dbRow = this.rows.get(row.getId());
+		if(dbRow != null) dbRow.delete();
 		regenerateIndecies();
 	}
 
@@ -209,7 +215,7 @@ public class Table<T extends Model> {
 	}
 	
 	private boolean isUnique(T model) {
-		if(this.rows.containsKey(model.getId())) return false;
+		if(this.rows.containsKey(model.getId()) && !this.rows.get(model.getId()).isDeleted()) return false;
 		for (String indexName : this.indecies.keySet()) {
 			if (this.indecies.get(indexName).containsKey(model.get(indexName).toString()))
 				return false;

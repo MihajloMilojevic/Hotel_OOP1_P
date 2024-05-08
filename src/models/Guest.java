@@ -88,7 +88,7 @@ public final class Guest extends User {
 	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-        return new Guest(
+        Guest g = new Guest(
         	getId(),
         	getName(),
         	getSurname(),
@@ -99,5 +99,7 @@ public final class Guest extends User {
         	getUsername(),
         	getPassword()
     	);
+		if (this.isDeleted()) g.delete();
+		return g;
 	}
 }

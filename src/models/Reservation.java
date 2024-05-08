@@ -11,106 +11,115 @@ public class Reservation extends Model {
 	
 	/* ******************************  ATTRIBUTES  *************************************** */
 	
+
 	private ReservationStatus status;
-	private Room room;
+	private RoomType roomType;
 	private Guest guest;
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private double price;
 	private ArrayList<ReservationAddition> reservationAdditions;
+	private ArrayList<RoomAddition> roomAdditions;
 	
 	/* ******************************  CONSTRUCTORS  *************************************** */
 
 	public Reservation() {
 		super();
 		this.status = ReservationStatus.PENDING;
-		this.room = null;
+		this.roomType = null;
 		this.guest = null;
 		this.startDate = null;
 		this.endDate = null;
 		this.price = 0;
 		this.reservationAdditions = new ArrayList<ReservationAddition>();
+		this.roomAdditions = new ArrayList<RoomAddition>();
 	}
 	
 	public Reservation(String id) {
 		super(id);
 		this.status = ReservationStatus.PENDING;
-		this.room = null;
+		this.roomType = null;
 		this.guest = null;
 		this.startDate = null;
 		this.endDate = null;
 		this.price = 0;
 		this.reservationAdditions = new ArrayList<ReservationAddition>();
+		this.roomAdditions = new ArrayList<RoomAddition>();
 	}
 
-	public Reservation(Room room, Guest guest, LocalDate startDate, LocalDate endDate, double price,
-			ArrayList<ReservationAddition> reservationAdditions) {
+	public Reservation(RoomType roomType, Guest guest, LocalDate startDate, LocalDate endDate, double price,
+			ArrayList<ReservationAddition> reservationAdditions, ArrayList<RoomAddition> roomAdditions) {
 		super();
 		this.status = ReservationStatus.PENDING;
-		this.room = room;
+		this.roomType = roomType;
 		this.guest = guest;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.price = price;
 		this.reservationAdditions = reservationAdditions;
+		this.roomAdditions = roomAdditions;
 	}
 	
-	public Reservation(String id, Room room, Guest guest, LocalDate startDate, LocalDate endDate, double price,
-			ArrayList<ReservationAddition> reservationAdditions) {
+	public Reservation(String id, RoomType roomType, Guest guest, LocalDate startDate, LocalDate endDate, double price,
+			ArrayList<ReservationAddition> reservationAdditions, ArrayList<RoomAddition> roomAdditions) {
 		super(id);
 		this.status = ReservationStatus.PENDING;
-		this.room = room;
+		this.roomType = roomType;
 		this.guest = guest;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.price = price;
 		this.reservationAdditions = reservationAdditions;
+		this.roomAdditions = roomAdditions;
 	}
 	
-	public Reservation(Room room, Guest guest, LocalDate startDate, LocalDate endDate, double price) {
+	public Reservation(RoomType roomType, Guest guest, LocalDate startDate, LocalDate endDate, double price) {
 		super();
 		this.status = ReservationStatus.PENDING;
-		this.room = room;
+		this.roomType = roomType;
 		this.guest = guest;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.price = price;
 		this.reservationAdditions = new ArrayList<ReservationAddition>();
+		this.roomAdditions = new ArrayList<RoomAddition>();
 	}
 
-	public Reservation(String id, Room room, Guest guest, LocalDate startDate, LocalDate endDate, double price) {
+	public Reservation(String id, RoomType roomType, Guest guest, LocalDate startDate, LocalDate endDate, double price) {
 		super(id);
 		this.status = ReservationStatus.PENDING;
-		this.room = room;
+		this.roomType = roomType;
 		this.guest = guest;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.price = price;
 		this.reservationAdditions = new ArrayList<ReservationAddition>();
+		this.roomAdditions = new ArrayList<RoomAddition>();
 	}
 
-	public Reservation(Room room, Guest guest, LocalDate startDate, LocalDate endDate) {
+	public Reservation(RoomType roomType, Guest guest, LocalDate startDate, LocalDate endDate) {
 		super();
 		this.status = ReservationStatus.PENDING;
-		this.room = room;
+		this.roomType = roomType;
 		this.guest = guest;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.price = 0;
 		this.reservationAdditions = new ArrayList<ReservationAddition>();
+		this.roomAdditions = new ArrayList<RoomAddition>();
 	}
 
-	public Reservation(String id, Room room, Guest guest, LocalDate startDate, LocalDate endDate) {
+	public Reservation(String id, RoomType roomType, Guest guest, LocalDate startDate, LocalDate endDate) {
 		super(id);
 		this.status = ReservationStatus.PENDING;
-		this.room = room;
+		this.roomType = roomType;
 		this.guest = guest;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.price = 0;
 		this.reservationAdditions = new ArrayList<ReservationAddition>();
+		this.roomAdditions = new ArrayList<RoomAddition>();
 	}
-
 	
 	/* ******************************  METHODS  *************************************** */
 	
@@ -119,8 +128,8 @@ public class Reservation extends Model {
 		switch (key) {
 		case "status":
 			return (Object) getStatus();
-		case "room":
-			return (Object) getRoom();
+		case "roomTyoe":
+			return (Object) getRoomType();
 		case "guest":
 			return (Object) getGuest();
 		case "startDate":
@@ -131,6 +140,8 @@ public class Reservation extends Model {
 			return (Object) getPrice();
 		case "reservationAdditions":
 			return (Object) getReservationAdditions();
+		case "roomAdditions":
+			return (Object) getRoomAdditions();
 		default:
 			return super.get(key);
 		}
@@ -142,8 +153,8 @@ public class Reservation extends Model {
 		case "status":
 			setStatus((ReservationStatus) value);
 			break;
-		case "room":
-			setRoom((Room) value);
+		case "roomType":
+			setRoomType((RoomType) value);
 			break;
 		case "guest":
 			setGuest((Guest) value);
@@ -160,6 +171,10 @@ public class Reservation extends Model {
 		case "reservationAdditions":
 			setReservationAdditions((ArrayList<ReservationAddition>) value);
 			break;
+		case "roomAdditions":
+			setRoomAdditions(roomAdditions);
+			break;
+		
 		default:
 			super.set(key, value);
 		}
@@ -170,7 +185,13 @@ public class Reservation extends Model {
 		for (ReservationAddition reservationAddition : getReservationAdditions()) {
 			reservationAdditionsClone.add((ReservationAddition)reservationAddition.clone());
 		}
-		return new Reservation(getId(), (Room)getRoom().clone(), (Guest)getGuest().clone(), LocalDate.from(getStartDate()), LocalDate.from(getEndDate()), getPrice(), reservationAdditionsClone);
+		ArrayList<RoomAddition> roomAdditionsClone = new ArrayList<RoomAddition>();
+		for (RoomAddition roomAddition : getRoomAdditions()) {
+			roomAdditionsClone.add((RoomAddition)roomAddition.clone());
+		}
+		Reservation r = new Reservation(getId(), (RoomType)getRoomType().clone(), (Guest)getGuest().clone(), LocalDate.from(getStartDate()), LocalDate.from(getEndDate()), getPrice(), reservationAdditionsClone, roomAdditionsClone);
+		if (this.isDeleted()) r.delete();
+		return r;
 	}
 	@Override
 	public String toString() {
@@ -191,7 +212,7 @@ public class Reservation extends Model {
 			return false;
 		}
 		Reservation other = (Reservation) obj;
-		return status == other.status && room.equals(other.room) && guest.equals(other.guest)
+		return status == other.status && roomType.equals(other.roomType) && guest.equals(other.guest)
 				&& startDate.equals(other.startDate) && endDate.equals(other.endDate) && price == other.price
 				&& reservationAdditions.equals(other.reservationAdditions);
 	}
@@ -203,7 +224,7 @@ public class Reservation extends Model {
 		}
 		Reservation reservation = (Reservation) model;
 		setStatus(reservation.getStatus());
-		setRoom(reservation.getRoom());
+		setRoomType(reservation.getRoomType());
 		setGuest(reservation.getGuest());
 		setStartDate(reservation.getStartDate());
 		setEndDate(reservation.getEndDate());
@@ -214,24 +235,32 @@ public class Reservation extends Model {
 	public Model fromCSV(String csv) throws ParseException {
 		super.fromCSV(csv);
 		String[] values = csv.split(";");
-		if (values.length < 5) throw new ParseException("Invalid RoomType string", 1);
+		if (values.length < 6) throw new ParseException("Invalid RoomType string", 1);
 		getStatus().toString();
         getStartDate().toString();
         getEndDate().toString();
         String.valueOf(getPrice());
-        this.status = ReservationStatus.valueOf(values[1]);
-		this.startDate = CSVDateParser.parseString(values[2]);
-		this.endDate = CSVDateParser.parseString(values[3]);
-		this.price = Double.parseDouble(values[4]);
+        this.status = ReservationStatus.valueOf(values[2]);
+		this.startDate = CSVDateParser.parseString(values[3]);
+		this.endDate = CSVDateParser.parseString(values[4]);
+		this.price = Double.parseDouble(values[5]);
 		return this;
 	}
-	
+
 	public void addReservationAddition(ReservationAddition reservationAddition) {
 		this.reservationAdditions.add(reservationAddition);
 	}
 	
 	public void removeReservationAddition(ReservationAddition reservationAddition) {
 		this.reservationAdditions.remove(reservationAddition);
+	}
+	
+	public void addRoomAddition(RoomAddition roomAddition) {
+		this.roomAdditions.add(roomAddition);
+	}
+	
+	public void removeRoomAddition(RoomAddition roomAddition) {
+		this.roomAdditions.remove(roomAddition);
 	}
 	
 	/* ******************************  GETTERS & SETTERS  *************************************** */
@@ -253,15 +282,15 @@ public class Reservation extends Model {
 	/**
 	 * @return the room
 	 */
-	public Room getRoom() {
-		return room;
+	public RoomType getRoomType() {
+		return roomType;
 	}
 
 	/**
 	 * @param room the room to set
 	 */
-	public void setRoom(Room room) {
-		this.room = room;
+	public void setRoomType(RoomType roomType) {
+		this.roomType = roomType;
 	}
 
 	/**
@@ -332,6 +361,21 @@ public class Reservation extends Model {
 	 */
 	public void setReservationAdditions(ArrayList<ReservationAddition> reservationAdditions) {
 		this.reservationAdditions = reservationAdditions;
+	}
+	
+
+	/**
+	 * @return the roomAdditions
+	 */
+	public ArrayList<RoomAddition> getRoomAdditions() {
+		return roomAdditions;
+	}
+
+	/**
+	 * @param roomAdditions the roomAdditions to set
+	 */
+	public void setRoomAdditions(ArrayList<RoomAddition> roomAdditions) {
+		this.roomAdditions = roomAdditions;
 	}
 
 }

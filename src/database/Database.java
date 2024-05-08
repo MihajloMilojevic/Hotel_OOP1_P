@@ -42,7 +42,7 @@ public class Database {
 			@Override
 			public Model parse(String csvString) throws ParseException {
 				String[] parts = csvString.split(";");
-				UserRole role = UserRole.valueOf(parts[1]);
+				UserRole role = UserRole.valueOf(parts[2]);
 				switch (role) {
 					case ADMIN:
 						return new Admin().fromCSV(csvString);
@@ -166,12 +166,12 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
-		connections.add(new Connection<Reservation, Room>(
-				getReservations(), getRooms(), new File(settings.getSetting("database",
-						"reservations_rooms_connection_file_path", "./data/default.csv")),
-				new ConnectionActions<Reservation, Room>() {
+		connections.add(new Connection<Reservation, RoomType>(
+				getReservations(), getRoomTypes(), new File(settings.getSetting("database",
+						"reservations_room_types_connection_file_path", "./data/default.csv")),
+				new ConnectionActions<Reservation, RoomType>() {
 					@Override
-					public void load(Table<Reservation> table1, Table<Room> table2, String path)
+					public void load(Table<Reservation> table1, Table<RoomType> table2, String path)
 							throws IOException, ParseException, NoElementException {
 						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
 						for (String line : lines) {
@@ -180,18 +180,18 @@ public class Database {
 								throw new ParseException("Invalid csv record", 0);
 							}
 							Reservation reservation = table1.selectById(parts[0]);
-							Room room = table2.selectById(parts[1]);
-							reservation.setRoom(room);
+							RoomType roomType = table2.selectById(parts[1]);
+							reservation.setRoomType(roomType);
 							table1.update(reservation);
 						}
 					}
 
 					@Override
-					public void save(Table<Reservation> table1, Table<Room> table2, String path)
+					public void save(Table<Reservation> table1, Table<RoomType> table2, String path)
 							throws IOException, ParseException {
 						List<String> lines = new ArrayList<String>();
 						for (Reservation reservation : table1.getRows()) {
-							lines.add(reservation.getId() + ";" + reservation.getRoom().getId());
+							lines.add(reservation.getId() + ";" + reservation.getRoomType().getId());
 						}
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
@@ -253,6 +253,38 @@ public class Database {
 						for (Reservation reservation : table1.getRows()) {
 							for (ReservationAddition reservationAddition : reservation.getReservationAdditions()) {
 								lines.add(reservation.getId() + ";" + reservationAddition.getId());
+							}
+						}
+						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
+					}
+				}));
+		connections.add(new Connection<Reservation, RoomAddition>(
+				getReservations(), getRoomAdditions(), new File(settings.getSetting("database",
+						"reservations_roomAdditions_connection_file_path", "./data/default.csv")),
+				new ConnectionActions<Reservation, RoomAddition>() {
+					@Override
+					public void load(Table<Reservation> table1, Table<RoomAddition> table2, String path)
+							throws IOException, ParseException, NoElementException {
+						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
+						for (String line : lines) {
+							String[] parts = line.split(";");
+							if (parts.length != 2) {
+								throw new ParseException("Invalid csv record", 0);
+							}
+							Reservation reservation = table1.selectById(parts[0]);
+							RoomAddition reservationAddition = table2.selectById(parts[1]);
+							reservation.addRoomAddition(reservationAddition);
+							table1.update(reservation);
+						}
+					}
+
+					@Override
+					public void save(Table<Reservation> table1, Table<RoomAddition> table2, String path)
+							throws IOException, ParseException {
+						List<String> lines = new ArrayList<String>();
+						for (Reservation reservation : table1.getRows()) {
+							for (RoomAddition roomAddition : reservation.getRoomAdditions()) {
+								lines.add(reservation.getId() + ";" + roomAddition.getId());
 							}
 						}
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);

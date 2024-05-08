@@ -175,11 +175,11 @@ public abstract class Employee extends User {
 		super.fromCSV(csv);
 		//System.out.println(csv);
 		String[] values = csv.split(";");
-		if (values.length < 13) throw new ParseException("Invalid csv record", 2);
+		if (values.length < 14) throw new ParseException("Invalid csv record", 2);
 		try {
-			setLevelOfProfessionalEducation(values[10]);
-			setYearsOfWorkExperience(Integer.parseInt(values[11]));
-			setSalary(Double.parseDouble(values[12]));
+			setLevelOfProfessionalEducation(values[11]);
+			setYearsOfWorkExperience(Integer.parseInt(values[12]));
+			setSalary(Double.parseDouble(values[13]));
 			return this;
 	    } catch (Exception e) {
 			throw new ParseException("Invalid csv record", 2);

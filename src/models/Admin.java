@@ -110,7 +110,7 @@ public class Admin extends Employee {
 	/* ******************************  METHODS  *************************************** */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
-        return new Admin(
+        Admin a = new Admin(
         		this.getId(),
         		this.getName(), 
         		this.getSurname(), 
@@ -124,5 +124,7 @@ public class Admin extends Employee {
         		this.getYearsOfWorkExperience(), 
         		this.getSalary()
         	);
+			if (this.isDeleted()) a.delete();
+			return a;
     }
 }
