@@ -97,6 +97,8 @@ public class Database {
 							throws IOException, ParseException {
 						List<String> lines = new ArrayList<String>();
 						for (Room room : table1.getRows()) {
+							if (room.getType() == null)
+								continue;
 							lines.add(room.getId() + ";" + room.getType().getId());
 						}
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);

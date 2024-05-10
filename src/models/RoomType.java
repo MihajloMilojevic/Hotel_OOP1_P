@@ -10,7 +10,7 @@ public class RoomType extends Model {
 	
 	public RoomType() {
 		super();
-		this.name = null;
+		this.name = "";
 	}
 
 	public RoomType(String name) {

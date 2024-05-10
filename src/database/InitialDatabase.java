@@ -83,7 +83,7 @@ public class InitialDatabase {
 			RoomAddition jacuzzi = new RoomAddition("Jacuzzi");
 			RoomAddition tv = new RoomAddition("TV");
 			RoomAddition wifi = new RoomAddition("WiFi");
-			RoomAddition climate = new RoomAddition("Climate");
+			RoomAddition climate = new RoomAddition("AC Unit");
 			db.getRoomAdditions().insert(balcony);
 			db.getRoomAdditions().insert(cityView);
 			db.getRoomAdditions().insert(jacuzzi);

@@ -10,7 +10,7 @@ public class ReservationAddition extends Model {
 	
 	public ReservationAddition() {
 		super();
-		this.name = null;
+		this.name = "";
 	}
 
 	public ReservationAddition(String name) {

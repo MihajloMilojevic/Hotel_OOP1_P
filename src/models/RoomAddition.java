@@ -10,7 +10,7 @@ public class RoomAddition extends Model {
 	
 	public RoomAddition() {
 		super();
-		this.name = null;
+		this.name = "";
 	}
 
 	public RoomAddition(String name) {

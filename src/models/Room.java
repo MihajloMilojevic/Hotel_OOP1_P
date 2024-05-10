@@ -132,10 +132,15 @@ public class Room extends Model {
 				return (Object) this.type;
 			case "status":
 				return (Object) this.status;
+			case "roomAdditions":
+				return (Object) this.roomAdditions;
+			case "maid":
+				return (Object) this.maid;
 			default:
 				return super.get(key);
 		}
 	}
+	@SuppressWarnings("unchecked")
 	@Override
 	public void set(String key, Object value) {
 		switch (key) {
@@ -147,6 +152,12 @@ public class Room extends Model {
 			break;
 		case "status":
 			this.status = (RoomStatus) value;
+			break;
+		case "roomAdditions":
+			this.roomAdditions = (ArrayList<RoomAddition>) value;
+			break;
+		case "maid":
+			this.maid = (Maid) value;
 			break;
 		default:
 			super.set(key, value);
@@ -172,6 +183,19 @@ public class Room extends Model {
 		if (this.isDeleted()) r.delete();
 		return r;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void update(Model newModel) throws IllegalArgumentException {
+		super.update(newModel);
+		if (!(newModel instanceof Room)) throw new IllegalArgumentException("Not  a Room object");
+		setNumber((int) newModel.get("number"));
+		setType((RoomType) newModel.get("type"));
+		setStatus((RoomStatus) newModel.get("status"));
+		setRoomAdditions((ArrayList<RoomAddition>) newModel.get("roomAdditions"));
+		setMaid((Maid) newModel.get("maid"));
+	}
+	
     @Override
 	public boolean equals(Object obj) {
 		if (this == obj) {

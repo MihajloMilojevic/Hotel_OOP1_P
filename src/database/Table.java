@@ -149,7 +149,9 @@ public class Table<T extends Model> {
 	public void update(T row, boolean checkIfUnique) throws NoElementException {
 		if(row == null) return;
 		if(checkIfUnique && isUnique(row)) throw new NoElementException("There is no element to update");
-		this.rows.put(row.getId(), row);
+		T dbRow = this.rows.get(row.getId());
+		if(dbRow == null) throw new NoElementException("There is no element to update");
+		dbRow.update(row);
 		regenerateIndecies();
 	}
 	

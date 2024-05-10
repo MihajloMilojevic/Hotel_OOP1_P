@@ -98,10 +98,10 @@ public class AddRoomDialog extends JDialog {
 				panel.setBackground(new Color(73, 73, 73));
 				scrollPane.setViewportView(panel);
 				GridBagLayout gbl_panel = new GridBagLayout();
-				gbl_panel.columnWidths = new int[]{0, 0, 0, 0};
-				gbl_panel.rowHeights = new int[]{0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-				gbl_panel.columnWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
-				gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+				gbl_panel.columnWidths = new int[] {0, 0};
+				gbl_panel.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+				gbl_panel.columnWeights = new double[]{0.0, 0.0, 1.0};
+				gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 				panel.setLayout(gbl_panel);
 				{
 					JLabel lblNewLabel = new JLabel("Add Room");
@@ -222,7 +222,7 @@ public class AddRoomDialog extends JDialog {
 					lblNewLabel_5.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 					GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
 					gbc_lblNewLabel_5.anchor = GridBagConstraints.WEST;
-					gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
+					gbc_lblNewLabel_5.insets = new Insets(0, 0, 0, 5);
 					gbc_lblNewLabel_5.gridx = 1;
 					gbc_lblNewLabel_5.gridy = 8;
 					panel.add(lblNewLabel_5, gbc_lblNewLabel_5);
@@ -239,7 +239,8 @@ public class AddRoomDialog extends JDialog {
 						constrains.gridwidth = 1;
 						constrains.insets = new Insets(0, 0, 5, 0);
 						constrains.gridx = 2;
-						constrains.gridy = y++;
+						constrains.gridy = y;
+						y += 1;
 						panel.add(cb, constrains);
 					}
 				}
