@@ -111,7 +111,7 @@ public class Maid extends Employee {
 				getName(), 
 				getSurname(), 
 				getGender(), 
-	        	LocalDate.from(getBirthdate()),
+	        	getBirthdate() != null ? LocalDate.from(getBirthdate()) : null,
 				getPhone(), 
 				getAddress(), 
 				getUsername(),

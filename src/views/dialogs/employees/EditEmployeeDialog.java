@@ -1,4 +1,4 @@
-package views.admin;
+package views.dialogs.employees;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -89,7 +89,6 @@ public class EditEmployeeDialog extends JDialog {
 		this.employee = employee;
 		setTitle("Edit Employee | " + this.employee.getId());
 		setModal(true);
-		setLocationRelativeTo(null);
 		setIconImage(new ImageIcon("./assets/icons/employees.png").getImage());
 		setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -98,6 +97,7 @@ public class EditEmployeeDialog extends JDialog {
 		getContentPane().setForeground(new Color(255, 255, 255));
 		setForeground(new Color(255, 255, 255));
 		setBounds(100, 100, 600, 600);
+		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(73, 73, 73));
 		contentPanel.setForeground(new Color(255, 255, 255));

@@ -1,4 +1,4 @@
-package views.settings;
+package views.dialogs.settings;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -52,13 +52,13 @@ public class EditSettingsDialog extends JDialog {
 		setTitle("Edit Setting |" + name);
 		setResizable(false);
 		setModal(true);
-		setLocationRelativeTo(null);
 		setIconImage(new ImageIcon("./assets/icons/setting.png").getImage());
 		getContentPane().setForeground(new Color(255, 255, 255));
 		setForeground(new Color(255, 255, 255));
 		getContentPane().setBackground(new Color(73, 73, 73));
 		setBackground(new Color(73, 73, 73));
 		setBounds(100, 100, 450, 180);
+		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setForeground(new Color(255, 255, 255));
 		contentPanel.setBackground(new Color(73, 73, 73));

@@ -126,8 +126,8 @@ public class PriceList extends Model {
 		
 		return String.join(";", new String[] {
 			super.toString(),
-            getStartDate().toString(),
-            getEndDate().toString(),
+			CSVDateParser.formatDate(getStartDate()),
+			CSVDateParser.formatDate(getEndDate())
         });
 	}
 	@Override

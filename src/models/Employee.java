@@ -24,9 +24,15 @@ public abstract class Employee extends User {
 
 	public Employee(UserRole role) {
 		super(role);
+		this.levelOfProfessionalEducation = "";
+		this.yearsOfWorkExperience = 0;
+		this.salary = 0;
 	}
 	public Employee(UserRole role, String id) {
 		super(role, id);
+		this.levelOfProfessionalEducation = "";
+		this.yearsOfWorkExperience = 0;
+		this.salary = 0;
 	}
 	/**
 	 * @param role

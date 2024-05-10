@@ -35,7 +35,6 @@ public class Database {
 		connections = new ArrayList<Connection<? extends Model, ? extends Model>>();
 
 		/* ****************************** TABLES *************************************** */
-
 		
 		tables.put("users", new Table<User>("users_file_path", new CustomTableParser() {
 
@@ -89,7 +88,7 @@ public class Database {
 							Room room = table1.selectById(parts[0]);
 							RoomType roomType = table2.selectById(parts[1]);
 							room.setType(roomType);
-							table1.update(room);
+							table1.update(room, false);
 						}
 					}
 
@@ -119,7 +118,7 @@ public class Database {
 							Room room = table1.selectById(parts[0]);
 							RoomAddition roomAddition = table2.selectById(parts[1]);
 							room.addRoomAddition(roomAddition);
-							table1.update(room);
+							table1.update(room, false);
 						}
 					}
 
@@ -150,7 +149,7 @@ public class Database {
 							Room room = table1.selectById(parts[0]);
 							Maid maid = (Maid)table2.selectById(parts[1]);
 							room.setMaid(maid);
-							table1.update(room);
+							table1.update(room, false);
 						}
 					}
 
@@ -182,7 +181,7 @@ public class Database {
 							Reservation reservation = table1.selectById(parts[0]);
 							RoomType roomType = table2.selectById(parts[1]);
 							reservation.setRoomType(roomType);
-							table1.update(reservation);
+							table1.update(reservation, false);
 						}
 					}
 
@@ -212,7 +211,7 @@ public class Database {
 							Reservation reservation = table1.selectById(parts[0]);
 							Guest guest = (Guest)table2.selectById(parts[1]);
 							reservation.setGuest(guest);
-							table1.update(reservation);
+							table1.update(reservation, false);
 						}
 					}
 
@@ -242,7 +241,7 @@ public class Database {
 							Reservation reservation = table1.selectById(parts[0]);
 							ReservationAddition reservationAddition = table2.selectById(parts[1]);
 							reservation.addReservationAddition(reservationAddition);
-							table1.update(reservation);
+							table1.update(reservation, false);
 						}
 					}
 
@@ -274,7 +273,7 @@ public class Database {
 							Reservation reservation = table1.selectById(parts[0]);
 							RoomAddition reservationAddition = table2.selectById(parts[1]);
 							reservation.addRoomAddition(reservationAddition);
-							table1.update(reservation);
+							table1.update(reservation, false);
 						}
 					}
 
@@ -306,7 +305,7 @@ public class Database {
 							PriceList priceList = table1.selectById(parts[0]);
 							RoomType roomType = table2.selectById(parts[1]);
 							priceList.getRoomTypePrices().put(roomType, Double.parseDouble(parts[2]));
-							table1.update(priceList);
+							table1.update(priceList, false);
 						}
 					}
 
@@ -341,7 +340,7 @@ public class Database {
 							ReservationAddition reservationAddition = table2.selectById(parts[1]);
 							priceList.getReservationAdditionPrices().put(reservationAddition,
 									Double.parseDouble(parts[2]));
-							table1.update(priceList);
+							table1.update(priceList, false);
 						}
 					}
 

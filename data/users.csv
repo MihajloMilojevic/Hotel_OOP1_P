@@ -1,8 +1,8 @@
-41c8f283-fca1-41c8-b72a-bdbde2f512cf;FALSE;GUEST;Sofija;Obradović;FEMALE;21.4.2004;3,82E+11;Bulevar vojvode Stepe 17, Novi Sad;Sofija;Sofija123;;;
-21df4413-b77e-47fc-a70e-fe86d658df72;FALSE;MAID;Nikola;Rogonjić;MALE;10.9.2004;3,82E+11;Samaila 5, Kraljevo;nikola;Nikola123;Highschool;0;75000.0
-766c110f-f65d-49d5-a184-88377c354e24;FALSE;GUEST;Sara;Spasojević;FEMALE;20.4.2004;3,82E+11;Ulica 9. maja 15, Kraljevo;caja;Sara123;;;
-699c9858-6bd8-4cb0-a166-5187c580e1c3;FALSE;RECEPTIONIST;Petar;Popović;MALE;6.6.2004;3,82E+11;Bulevar despota Stefana 7, Novi Sad;petar;Petar123;Bachelor;1;100000.0
-3ee6f66c-075d-43c5-bea4-21aeff81167d;FALSE;GUEST;Đorđe;Milojević;MALE;4.5.2008;3,82E+11;8. Mart 70, Kraljevo;Djole;Majmunce;;;
-8650d0f2-8466-4574-9440-5e027d03439e;FALSE;RECEPTIONIST;Sara;Stojkov;FEMALE;17.9.2004;3,82E+11;Maksima Gorkog 12, Novi Sad;sara;Sara987;Master;3;130000.0
-535f3593-00bc-4787-9c6f-996dded2f96c;FALSE;ADMIN;Mihajlo;Milojević;MALE;21.5.2004;3,82E+11;Braće Dronjak 6, Novi Sad;admin;admin;Phd;2;500000.0
-51c2d335-5b5d-4da5-980d-d3c5a8977a3c;FALSE;MAID;Luka;Prlinčević;MALE;26.8.2004;3,82E+11;Bulevar despota Stefana 7, Novi Sad;luka;Luka123;Highschool;0;70000.0
+df3fb987-df26-4416-8b45-92004df2b4d7;false;MAID;Nikola;Rogonjić;MALE;2004-09-10;+381644606859;Samaila 5, Kraljevo;nikola;Nikola123;Highschool;0;75000.0
+58bc6e6f-e259-49d3-95cd-b22206510543;false;GUEST;Sofija;Obradović;FEMALE;2004-04-21;+381659786412;Bulevar vojvode Stepe 17, Novi Sad;Sofija;Sofija123
+8f5c20b5-1c40-4650-9af1-71d0706ba2d3;false;RECEPTIONIST;Petar;Popović;MALE;2004-06-06;+381628361185;Bulevar despota Stefana 7, Novi Sad;petar;Petar123;Bachelor;1;100000.0
+f2d2016e-9600-46cb-bfee-f789c5003d55;false;GUEST;Sara;Spasojević;FEMALE;2004-04-20;+381628361185;Ulica 9. maja 15, Kraljevo;caja;Sara123
+0dba13ed-a581-4161-b6f3-0def4443296a;false;RECEPTIONIST;Sara;Stojkov;FEMALE;2004-09-17;+381612599941;Maksima Gorkog 12, Novi Sad;sara;Sara987;Master;3;130000.0
+59fc660e-74f0-4c34-89a6-92d5995e6111;false;MAID;Luka;Prlinčević;MALE;2004-08-26;+381640862775;Bulevar despota Stefana 7, Novi Sad;luka;Luka123;Highschool;0;70000.0
+e115e29f-f1d3-41e0-9bdd-93b245520b28;false;ADMIN;Mihajlo;Milojević;MALE;2004-05-21;+381649781191;Braće Dronjak 6, Novi Sad;admin;admin;Phd;2;500000.0
+687e9d4f-5772-4fc3-bcc5-223ab57fe120;false;GUEST;Đorđe;Milojević;MALE;2008-05-04;+381642723956;8. Mart 70, Kraljevo;Djole;Majmunce

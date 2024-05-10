@@ -1,13 +1,22 @@
 package main;
 
+import javax.swing.JOptionPane;
+
 import app.AppState;
+import database.InitialDatabase;
 import views.Login;
 
 public class Main {
 
 	public static void main(String[] args) {
 		try {
-			//InitialDatabase.init();
+			
+			boolean init = false;
+			//boolean init = true;
+			if(init) {
+				InitialDatabase.init();
+				return;
+			}
 			
 			AppState.getInstance().load();
 			Login frame = new Login();
@@ -16,6 +25,7 @@ public class Main {
 			
 			
 		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 	}

@@ -32,7 +32,7 @@ public abstract class User extends Model {
 		this.name = "";
 		this.surname = "";
 		this.gender = Gender.MALE;
-		this.birthdate = null;
+		this.birthdate = LocalDate.now();
 		this.phone = "";
 		this.address = "";
 		this.username = "";
@@ -215,7 +215,7 @@ public abstract class User extends Model {
 	@Override
 	public String toString() {
 		return String.join(";", new String[] { super.toString(), getRole().toString(), getName(), getSurname(), getGender().toString(),
-				getBirthdate().toString(), getPhone(), getAddress(), getUsername(), getPassword() });
+				CSVDateParser.formatDate(getBirthdate()), getPhone(), getAddress(), getUsername(), getPassword() });
 	}
 
 	@Override

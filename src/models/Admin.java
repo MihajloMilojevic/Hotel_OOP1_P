@@ -115,7 +115,7 @@ public class Admin extends Employee {
         		this.getName(), 
         		this.getSurname(), 
         		this.getGender(),
-            	LocalDate.from(getBirthdate()),
+            	getBirthdate() != null ? LocalDate.from(getBirthdate()) : null,
         		this.getPhone(), 
         		this.getAddress(), 
         		this.getUsername(), 

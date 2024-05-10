@@ -198,8 +198,8 @@ public class Reservation extends Model {
 		return String.join(";", new String[] {
 			super.toString(),	
 			getStatus().toString(),
-            getStartDate().toString(),
-            getEndDate().toString(),
+			CSVDateParser.formatDate(getStartDate()),
+			CSVDateParser.formatDate(getEndDate()),
             String.valueOf(getPrice()),
 		});
 	}

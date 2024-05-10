@@ -1,4 +1,4 @@
-package views.guests;
+package views.dialogs.guests;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -81,7 +81,6 @@ public class AddGuestDialog extends JDialog {
 	public AddGuestDialog() {
 		setTitle("Add New Guest");
 		setModal(true);
-		setLocationRelativeTo(null);
 		setIconImage(new ImageIcon("./assets/icons/guests.png").getImage());
 		setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -90,6 +89,7 @@ public class AddGuestDialog extends JDialog {
 		getContentPane().setForeground(new Color(255, 255, 255));
 		setForeground(new Color(255, 255, 255));
 		setBounds(100, 100, 600, 500);
+		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(73, 73, 73));
 		contentPanel.setForeground(new Color(255, 255, 255));

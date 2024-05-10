@@ -9,7 +9,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import app.AppSettings;
 import exceptions.DuplicateIndexException;
@@ -21,7 +20,7 @@ import utils.Pair;
 public class Table<T extends Model> {
 	private String settingName;
 	private HashMap<String, T> rows;
-	private HashMap<String, HashMap<String, T>> indecies;
+	public HashMap<String, HashMap<String, T>> indecies;
 	private T object;
 	private CustomTableParser customParser;
 	
@@ -43,7 +42,7 @@ public class Table<T extends Model> {
 		HashMap<String, T> newIndex = new HashMap<String, T>();
 		for (T row : this.rows.values()) {
 			if(row.isDeleted()) continue;
-			newIndex.put((String)row.get(indexName), row);
+			newIndex.put(String.valueOf(row.get(indexName)), row);
 		}
 		this.indecies.put(indexName, newIndex);
 	}
@@ -147,26 +146,32 @@ public class Table<T extends Model> {
 		}
 	}
 	
-	public void update(T row) throws NoElementException {
+	public void update(T row, boolean checkIfUnique) throws NoElementException {
 		if(row == null) return;
-		if(isUnique(row)) throw new NoElementException("There is no element to update");
+		if(checkIfUnique && isUnique(row)) throw new NoElementException("There is no element to update");
 		this.rows.put(row.getId(), row);
 		regenerateIndecies();
 	}
+	
+	public void update(T row) throws NoElementException {
+		update(row, true);
+	}
 
-	public void update(SelectCondition condition, ArrayList<Pair<String, Object>> updates) throws DuplicateIndexException {
-		for (T row : this.rows.values()) {
-			if (condition.check(row)) {
-				try {
-					@SuppressWarnings("unchecked")
-					T copy = (T) row.clone();
-					for (Pair<String, Object> update : updates) {
-						copy.set(update.getKey(), update.getValue());
+	public void update(SelectCondition condition, ArrayList<Pair<String, Object>> updates, boolean checkIfUnique) throws DuplicateIndexException {
+		if(checkIfUnique) {
+			for (T row : this.rows.values()) {
+				if (condition.check(row)) {
+					try {
+						@SuppressWarnings("unchecked")
+						T copy = (T) row.clone();
+						for (Pair<String, Object> update : updates) {
+							copy.set(update.getKey(), update.getValue());
+						}
+						if(!isUnique(copy)) throw new DuplicateIndexException("Duplicate key");
+					} catch (CloneNotSupportedException e) {
+						System.err.println(e.getMessage());
+						e.printStackTrace();
 					}
-					if(!isUnique(copy)) throw new DuplicateIndexException("Duplicate key");
-				} catch (CloneNotSupportedException e) {
-					System.err.println(e.getMessage());
-					e.printStackTrace();
 				}
 			}
 		}
@@ -180,20 +185,27 @@ public class Table<T extends Model> {
 		regenerateIndecies();
 	}
 
-	public void updateByIndex(String indexName, String indexValue, ArrayList<Pair<String, Object>> updates) throws DuplicateIndexException {
+	public void update(SelectCondition condition, ArrayList<Pair<String, Object>> updates) throws DuplicateIndexException {
+		update(condition, updates, true);
+	}
+	
+	public void updateByIndex(String indexName, String indexValue, ArrayList<Pair<String, Object>> updates, boolean checkIfUnique) throws DuplicateIndexException {
 		if (!this.indecies.containsKey(indexName)) return;
 		T row = this.indecies.get(indexName).get(indexValue);
 		if(row == null) return;
-		try {
-			@SuppressWarnings("unchecked")
-			T copy = (T) row.clone();
-			for (Pair<String, Object> update : updates) {
-				copy.set(update.getKey(), update.getValue());
+		if (checkIfUnique) {
+			try {
+				@SuppressWarnings("unchecked")
+				T copy = (T) row.clone();
+				for (Pair<String, Object> update : updates) {
+					copy.set(update.getKey(), update.getValue());
+				}
+				if (!isUnique(copy))
+					throw new DuplicateIndexException("Duplicate key");
+			} catch (CloneNotSupportedException e) {
+				System.err.println(e.getMessage());
+				e.printStackTrace();
 			}
-			if(!isUnique(copy)) throw new DuplicateIndexException("Duplicate key");
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		for (Pair<String, Object> update : updates) {
 			row.set(update.getKey(), update.getValue());
@@ -201,13 +213,17 @@ public class Table<T extends Model> {
 		regenerateIndecies();
 	}
 
+	public void updateByIndex(String indexName, String indexValue, ArrayList<Pair<String, Object>> updates) throws DuplicateIndexException {
+		updateByIndex(indexName, indexValue, updates, true);
+	}
+	
 	public void clear() {
 		this.rows.clear();
 		this.indecies.clear();
 	}
 	
 	private void regenerateIndecies() {
-		Set<String> keys = this.indecies.keySet();
+		String[] keys = this.indecies.keySet().toArray(new String[0]);
 		this.indecies.clear();
 		for (String indexName : keys) {
 			this.addIndex(indexName);

@@ -1,4 +1,4 @@
-package views.settings;
+package views.dialogs.settings;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -43,7 +43,6 @@ public class SettingsDialog extends JDialog {
 	public SettingsDialog() {
 		setResizable(true);
 		setModal(true);
-		setLocationRelativeTo(null);
 		setIconImage(new ImageIcon("./assets/icons/settings.png").getImage());
 		getContentPane().setBackground(new Color(73, 73, 73));
 		setBackground(new Color(73, 73, 73));

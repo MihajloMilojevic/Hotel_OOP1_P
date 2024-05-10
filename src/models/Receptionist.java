@@ -108,7 +108,7 @@ public class Receptionist extends Employee {
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		Receptionist r = new Receptionist(getId(), getName(), getSurname(), getGender(), 
-	        	LocalDate.from(getBirthdate()), getPhone(), getAddress(),
+	        	getBirthdate() != null ? LocalDate.from(getBirthdate()) : null, getPhone(), getAddress(),
 				getUsername(), getPassword(), getLevelOfProfessionalEducation(), getYearsOfWorkExperience(),
 				getSalary());
 		if (this.isDeleted()) r.delete();
