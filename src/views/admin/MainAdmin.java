@@ -32,6 +32,7 @@ import exceptions.NoElementException;
 import models.Admin;
 import models.Employee;
 import models.Guest;
+import models.Reservation;
 import models.ReservationAddition;
 import models.Room;
 import models.RoomAddition;
@@ -98,6 +99,7 @@ public class MainAdmin extends JFrame {
 		addRoomAdditionsTab();
 		addRoomTypesTab();
 		addReservationAdditionsTab();
+		addReservationsTab();
 
 		addWindowListener(WindowUtils.getWindowClosing());
 
@@ -1013,5 +1015,148 @@ public class MainAdmin extends JFrame {
 		tabbedPane.addTab("Room Additions", new ImageIcon("./assets/icons/reservation_additions.png"), dataPanel, null);
 	}
 
-	
+	private void addReservationsTab() {
+		ArrayList<Pair<String, String>> columns = new ArrayList<Pair<String, String>>() {
+			/**
+			* 
+			*/
+			private static final long serialVersionUID = 4215012548686790091L;
+
+			{
+				add(new Pair<String, String>("ID", "id")); // 0
+				add(new Pair<String, String>("Status", "status")); // 1
+				add(new Pair<String, String>("Guest", "guest")); // 2
+				add(new Pair<String, String>("Room Type", "roomType")); // 3
+				add(new Pair<String, String>("Start Date", "startDate")); // 4
+				add(new Pair<String, String>("End Date", "endDate")); // 5
+				add(new Pair<String, String>("Room Additions", "roomAdditions")); // 6
+				add(new Pair<String, String>("Reservation Additions", "reservationAdditions")); // 7
+				add(new Pair<String, String>("Price", "price")); // 8
+			}
+		};
+		CustomTableModel<Reservation> model = new CustomTableModel<Reservation>(columns,
+				new CustomTableModel.TableDataManiplations<Reservation>() {
+
+					@Override
+					public ArrayList<Reservation> getData() {
+						return ReservationController.getReservations();
+					}
+
+					@Override
+					public void edit(Reservation model) throws NoElementException {
+						ReservationController.updateReservation(model);
+					}
+
+					@Override
+					public void remove(Reservation model) throws NoElementException {
+						ReservationController.deleteReservation(model);
+					}
+
+					@Override
+					public void add(Reservation model) throws DuplicateIndexException {
+						ReservationController.addReservation(model);
+					}
+
+				}, new Reservation()) {
+
+					private static final long serialVersionUID = -172170127567309241L;
+					
+					@Override
+					public Object getValueAt(int rowIndex, int columnIndex) {
+						if (columns.get(columnIndex).getValue().equals("roomAdditions")) {
+							return String.join(", ", ((Reservation) data.get(rowIndex)).getRoomAdditions().stream()
+									.map(ra -> ra.getName()).toArray(String[]::new));
+						}
+						if (columns.get(columnIndex).getValue().equals("reservationAdditions")) {
+							return String.join(", ", ((Reservation) data.get(rowIndex)).getReservationAdditions().stream()
+									.map(ra -> ra.getName()).toArray(String[]::new));
+						}
+						if (columns.get(columnIndex).getValue().equals("roomType")) {
+							if (((Reservation) data.get(rowIndex)).getRoomType() == null)
+								return "";
+							return ((Reservation) data.get(rowIndex)).getRoomType().getName();
+						}
+						if (columns.get(columnIndex).getValue().equals("guest")) {
+							Guest g = ((Guest) data.get(rowIndex).getGuest());
+							return g.getName() + " " + g.getSurname();
+						}
+						return super.getValueAt(rowIndex, columnIndex);
+					}
+
+					@Override
+					public Class<?> getColumnClass(int columnIndex) {
+						if (columns.get(columnIndex).getValue().equals("roomAdditions")) {
+							return String.class;
+						}
+						if (columns.get(columnIndex).getValue().equals("reservationAdditions")) {
+							return String.class;
+						}
+						if (columns.get(columnIndex).getValue().equals("roomType")) {
+							return String.class;
+						}
+						if (columns.get(columnIndex).getValue().equals("guest")) {
+							return String.class;
+						}
+						return super.getColumnClass(columnIndex);
+					}
+			
+		};
+		DataPanel<Reservation> dataPanel = new DataPanel<Reservation>(model);
+		TableColumnModel columnModel = dataPanel.getTable().getColumnModel();
+		columnModel.getColumn(0).setMinWidth(150);
+		columnModel.getColumn(1).setMinWidth(150);
+		columnModel.getColumn(2).setMinWidth(250);
+		columnModel.getColumn(3).setMinWidth(200);
+		columnModel.getColumn(4).setMinWidth(150);
+		columnModel.getColumn(5).setMinWidth(150);
+		columnModel.getColumn(6).setMinWidth(350);
+		columnModel.getColumn(7).setMinWidth(350);
+		columnModel.getColumn(8).setMinWidth(150);
+
+		dataPanel.getAddBtn().setText("Add Reservation");
+		dataPanel.getEditBtn().setText("Edit Reservation");
+		dataPanel.getDeleteBtn().setText("Delete Reservation");
+
+		dataPanel.getRefreshBtn().addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) {
+				((CustomTableModel<ReservationAddition>) dataPanel.getTable().getModel()).refresh();
+				dataPanel.getTable().updateUI();
+			}
+		});
+
+		dataPanel.getAddBtn().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		dataPanel.getEditBtn().addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+
+		dataPanel.getDeleteBtn().addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) {
+				CustomTableModel<Reservation> customTableModel = (CustomTableModel<Reservation>) dataPanel.getTable()
+						.getModel();
+				int res = JOptionPane.showConfirmDialog(contentPane,
+						"Are you sure you want to delete this reservation?", "Delete reservation",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (res != JOptionPane.YES_OPTION)
+					return;
+				try {
+					customTableModel.remove(dataPanel.getTable().getSelectedRow());
+				} catch (NoElementException e1) {
+					e1.printStackTrace();
+				}
+				dataPanel.getTable().updateUI();
+			}
+		});
+		tabbedPane.addTab("Reservations", new ImageIcon("./assets/icons/reservations.png"), dataPanel, null);
+	}
+
 }

@@ -169,7 +169,7 @@ public class Database {
 				}));
 		connections.add(new Connection<Reservation, RoomType>(
 				getReservations(), getRoomTypes(), new File(settings.getSetting("database",
-						"reservations_room_types_connection_file_path", "./data/default.csv")),
+						"reservations_roomTypes_connection_file_path", "./data/default.csv")),
 				new ConnectionActions<Reservation, RoomType>() {
 					@Override
 					public void load(Table<Reservation> table1, Table<RoomType> table2, String path)
@@ -373,6 +373,8 @@ public class Database {
 		for (Table<? extends Model> table : tables.values()) {
 			table.load();
 		}
+		System.out.println(getReservations().getRows().size());
+		test();
 		for (Connection<? extends Model, ? extends Model> connection : connections) {
 			connection.load();
 		}
@@ -472,8 +474,8 @@ public class Database {
 	}
 
 	public void test() {
-		for (Room room : getRooms().getRows()) {
-			System.out.println(room + " " + room.getType());
+		for (Reservation r : getReservations().getRows()) {
+			System.out.println(r);
 		}
 	}
 }

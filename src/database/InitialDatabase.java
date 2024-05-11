@@ -7,6 +7,7 @@ import models.Admin;
 import models.Guest;
 import models.Maid;
 import models.Receptionist;
+import models.Reservation;
 import models.ReservationAddition;
 import models.Room;
 import models.RoomAddition;
@@ -400,9 +401,20 @@ public class InitialDatabase {
 			db.getRooms().insert(room701);
 
 			db.getRooms().insert(room801);
-
+			
+			/* ****************************** Reservations *************************************** */
+			Reservation r1 = new Reservation(penthouse, djordje, LocalDate.of(2021, 6, 1), LocalDate.of(2021, 6, 10));
+			r1.addReservationAddition(breakfast);
+			r1.addReservationAddition(lunch);
+			r1.addReservationAddition(dinner);
+			r1.addRoomAddition(climate);
+			r1.addRoomAddition(tv);
+			r1.addRoomAddition(wifi);
+			
+			db.getReservations().insert(r1);
+			
 			db.save();
-
+			
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace();

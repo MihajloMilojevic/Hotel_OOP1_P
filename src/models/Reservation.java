@@ -189,7 +189,15 @@ public class Reservation extends Model {
 		for (RoomAddition roomAddition : getRoomAdditions()) {
 			roomAdditionsClone.add((RoomAddition)roomAddition.clone());
 		}
-		Reservation r = new Reservation(getId(), (RoomType)getRoomType().clone(), (Guest)getGuest().clone(), LocalDate.from(getStartDate()), LocalDate.from(getEndDate()), getPrice(), reservationAdditionsClone, roomAdditionsClone);
+		Reservation r = new Reservation(
+				getId(), 
+				getRoomType() != null ? (RoomType)getRoomType().clone() : null,
+				getGuest() != null ? (Guest)getGuest().clone() : null, 
+						getStartDate() != null ? LocalDate.from(getStartDate()) : null, 
+						getEndDate() != null ? LocalDate.from(getEndDate()) : null, 
+						getPrice(), 
+						reservationAdditionsClone, 
+						roomAdditionsClone);
 		if (this.isDeleted()) r.delete();
 		return r;
 	}
@@ -229,6 +237,7 @@ public class Reservation extends Model {
 		setStartDate(reservation.getStartDate());
 		setEndDate(reservation.getEndDate());
 		setPrice(reservation.getPrice());
+		setRoomAdditions(reservation.getRoomAdditions());
 		setReservationAdditions(reservation.getReservationAdditions());
 	}
 	@Override
@@ -236,9 +245,6 @@ public class Reservation extends Model {
 		super.fromCSV(csv);
 		String[] values = csv.split(";");
 		if (values.length < 6) throw new ParseException("Invalid RoomType string", 1);
-		getStatus().toString();
-        getStartDate().toString();
-        getEndDate().toString();
         String.valueOf(getPrice());
         this.status = ReservationStatus.valueOf(values[2]);
 		this.startDate = CSVDateParser.parseString(values[3]);

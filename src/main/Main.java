@@ -18,7 +18,7 @@ public class Main {
 			}
 			
 			AppState.getInstance().load();
-			//AppState.getInstance().getDatabase().test();
+			AppState.getInstance().getDatabase().test();
 			Login frame = new Login();
 			frame.setVisible(true);
 			System.out.println("GUI started");
