@@ -1,4 +1,4 @@
-package views.dialogs.room_types;
+package views.dialogs.reservation_additions;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class AddRoomTypesDialog extends JDialog {
+public class EditReservationAdditionDialog extends JDialog {
 
 	/**
 	 * @return the value
@@ -46,12 +46,12 @@ public class AddRoomTypesDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public AddRoomTypesDialog() {
-		this.value = "";
-		setTitle("Add Room Type");
+	public EditReservationAdditionDialog(String value) {
+		this.value = value;
+		setTitle("Edit Reservation Addition");
 		setResizable(false);
 		setModal(true);
-		setIconImage(new ImageIcon("./assets/icons/room_types.png").getImage());
+		setIconImage(new ImageIcon("./assets/icons/reservation_additions.png").getImage());
 		getContentPane().setForeground(new Color(255, 255, 255));
 		setForeground(new Color(255, 255, 255));
 		getContentPane().setBackground(new Color(73, 73, 73));
@@ -70,7 +70,7 @@ public class AddRoomTypesDialog extends JDialog {
 		gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
 		{
-			titleLb = new JLabel("Add Room Type");
+			titleLb = new JLabel("Edit Room Addition");
 			titleLb.setHorizontalAlignment(SwingConstants.CENTER);
 			titleLb.setForeground(Color.WHITE);
 			titleLb.setFont(new Font("Times New Roman", Font.PLAIN, 24));
@@ -91,7 +91,7 @@ public class AddRoomTypesDialog extends JDialog {
 			contentPanel.add(verticalStrut, gbc_verticalStrut);
 		}
 		{
-			JLabel lblCategoryName = new JLabel("Name: ");
+			JLabel lblCategoryName = new JLabel("Name");
 			lblCategoryName.setHorizontalAlignment(SwingConstants.LEFT);
 			lblCategoryName.setForeground(Color.WHITE);
 			lblCategoryName.setFont(new Font("Times New Roman", Font.PLAIN, 14));
@@ -123,7 +123,7 @@ public class AddRoomTypesDialog extends JDialog {
 				okButton.setActionCommand("OK");
 				okButton.addActionListener(e -> {
 					if (valueTf.getText().trim().isBlank()) {
-						JOptionPane.showMessageDialog(this, "Room type's name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(this, "Reservation addition's name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
 					ok = true;
@@ -143,7 +143,7 @@ public class AddRoomTypesDialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
-
+		valueTf.setText(value);
 	}
 	
 }

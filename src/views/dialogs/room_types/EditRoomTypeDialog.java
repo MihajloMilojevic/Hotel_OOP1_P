@@ -91,7 +91,7 @@ public class EditRoomTypeDialog extends JDialog {
 			contentPanel.add(verticalStrut, gbc_verticalStrut);
 		}
 		{
-			JLabel lblCategoryName = new JLabel("name");
+			JLabel lblCategoryName = new JLabel("Name: ");
 			lblCategoryName.setHorizontalAlignment(SwingConstants.LEFT);
 			lblCategoryName.setForeground(Color.WHITE);
 			lblCategoryName.setFont(new Font("Times New Roman", Font.PLAIN, 14));

@@ -93,22 +93,47 @@ public class RoomController {
 	}
 
 	public static void updateRoomType(RoomType roomType) throws NoElementException {
+		AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
+
+			@Override
+			public boolean check(Model row) {
+				Room room = (Room) row;
+				return room.getType().getId().equals(roomType.getId());
+			}
+		}).forEach(room -> {
+			room.setType(roomType);
+			try {
+				updateRoom(room);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 		AppState.getInstance().getDatabase().getRoomTypes().update(roomType);
 	}
 	
-	public static boolean deleteRoomType(RoomType roomType) {
+	public static void deleteRoomType(RoomType roomType) {
 		if (AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
 
 			@Override
 			public boolean check(Model row) {
 				Room room = (Room) row;
-				return room.getType().equals(roomType);
+				return room.getType().getId().equals(roomType.getId()) && !room.isDeleted();
 			}
 		}).size() > 0) {
-			return false;
+			return;
 		}
 		AppState.getInstance().getDatabase().getRoomTypes().delete(roomType);
-		return true;
+	}
+	
+	public static boolean isRoomTypeUsed(RoomType roomType) {
+		return AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
+
+			@Override
+			public boolean check(Model row) {
+				Room room = (Room) row;
+				return room.getType().getId().equals(roomType.getId()) && !room.isDeleted();
+			}
+		}).size() > 0;
 	}
 	
  	public static ArrayList<RoomType> getRoomTypes() {

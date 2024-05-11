@@ -24,6 +24,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableColumnModel;
 
 import app.AppState;
+import controllers.ReservationController;
 import controllers.RoomController;
 import controllers.UserController;
 import exceptions.DuplicateIndexException;
@@ -31,8 +32,10 @@ import exceptions.NoElementException;
 import models.Admin;
 import models.Employee;
 import models.Guest;
+import models.ReservationAddition;
 import models.Room;
 import models.RoomAddition;
+import models.RoomType;
 import models.User;
 import utils.CustomTableModel;
 import utils.Pair;
@@ -44,8 +47,11 @@ import views.dialogs.employees.EditEmployeeDialog;
 import views.dialogs.guests.AddGuestDialog;
 import views.dialogs.guests.EditGuestDialog;
 import views.dialogs.profile.UserProfileDialog;
+import views.dialogs.reservation_additions.AddReservationAdditionDialog;
 import views.dialogs.room_additions.AddRoomAdditionDialog;
 import views.dialogs.room_additions.EditRoomAdditionDialog;
+import views.dialogs.room_types.AddRoomTypesDialog;
+import views.dialogs.room_types.EditRoomTypeDialog;
 import views.dialogs.rooms.AddRoomDialog;
 import views.dialogs.rooms.EditRoomDialog;
 import views.dialogs.settings.SettingsDialog;
@@ -90,6 +96,8 @@ public class MainAdmin extends JFrame {
 		addGuestsTab();
 		addRoomsTab();
 		addRoomAdditionsTab();
+		addRoomTypesTab();
+		addReservationAdditionsTab();
 
 		addWindowListener(WindowUtils.getWindowClosing());
 
@@ -126,7 +134,6 @@ public class MainAdmin extends JFrame {
 							JOptionPane.showMessageDialog(contentPane, "Profile updated successfully", "Success",
 									JOptionPane.INFORMATION_MESSAGE);
 						} catch (NoElementException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 
@@ -301,7 +308,6 @@ public class MainAdmin extends JFrame {
 				try {
 					customTableModel.remove(dataPanel.getTable().getSelectedRow());
 				} catch (NoElementException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				dataPanel.getTable().updateUI();
@@ -448,7 +454,6 @@ public class MainAdmin extends JFrame {
 				try {
 					customTableModel.remove(dataPanel.getTable().getSelectedRow());
 				} catch (NoElementException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				dataPanel.getTable().updateUI();
@@ -570,7 +575,7 @@ public class MainAdmin extends JFrame {
 		});
 
 		dataPanel.getEditBtn().addActionListener(new ActionListener() {
-			//@SuppressWarnings("unchecked")
+			// @SuppressWarnings("unchecked")
 			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
 				CustomTableModel<Room> customTableModel = (CustomTableModel<Room>) dataPanel.getTable().getModel();
@@ -596,7 +601,7 @@ public class MainAdmin extends JFrame {
 				});
 			}
 		});
-		
+
 		dataPanel.getDeleteBtn().addActionListener(new ActionListener() {
 			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
@@ -608,7 +613,6 @@ public class MainAdmin extends JFrame {
 				try {
 					customTableModel.remove(dataPanel.getTable().getSelectedRow());
 				} catch (NoElementException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				dataPanel.getTable().updateUI();
@@ -617,7 +621,7 @@ public class MainAdmin extends JFrame {
 
 		tabbedPane.addTab("Rooms", new ImageIcon("./assets/icons/rooms.png"), dataPanel, null);
 	}
-	
+
 	private void addRoomAdditionsTab() {
 		ArrayList<Pair<String, String>> columns = new ArrayList<Pair<String, String>>() {
 			/**
@@ -658,11 +662,11 @@ public class MainAdmin extends JFrame {
 		TableColumnModel columnModel = dataPanel.getTable().getColumnModel();
 		columnModel.getColumn(0).setMinWidth(150);
 		columnModel.getColumn(1).setMinWidth(200);
-		
+
 		dataPanel.getAddBtn().setText("Add Room Addition");
 		dataPanel.getEditBtn().setText("Edit Room Addition");
 		dataPanel.getDeleteBtn().setText("Delete Room Addition");
-		
+
 		dataPanel.getRefreshBtn().addActionListener(new ActionListener() {
 			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
@@ -670,7 +674,7 @@ public class MainAdmin extends JFrame {
 				dataPanel.getTable().updateUI();
 			}
 		});
-		
+
 		dataPanel.getAddBtn().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -696,7 +700,7 @@ public class MainAdmin extends JFrame {
 
 			}
 		});
-		
+
 		dataPanel.getEditBtn().addActionListener(new ActionListener() {
 			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
@@ -713,7 +717,8 @@ public class MainAdmin extends JFrame {
 							return;
 						try {
 							roomAddition.setName(dialog.getValue());
-							((CustomTableModel) dataPanel.getTable().getModel()).edit(roomAddition);;
+							((CustomTableModel) dataPanel.getTable().getModel()).edit(roomAddition);
+							;
 						} catch (NoElementException e1) {
 							JOptionPane.showMessageDialog(contentPane, "Room addition not found", "Error",
 									JOptionPane.ERROR_MESSAGE);
@@ -724,7 +729,7 @@ public class MainAdmin extends JFrame {
 				});
 			}
 		});
-		
+
 		dataPanel.getDeleteBtn().addActionListener(new ActionListener() {
 			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
@@ -738,7 +743,6 @@ public class MainAdmin extends JFrame {
 				try {
 					customTableModel.remove(dataPanel.getTable().getSelectedRow());
 				} catch (NoElementException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				dataPanel.getTable().updateUI();
@@ -746,4 +750,268 @@ public class MainAdmin extends JFrame {
 		});
 		tabbedPane.addTab("Room Additions", new ImageIcon("./assets/icons/room_additions.png"), dataPanel, null);
 	}
+
+	private void addRoomTypesTab() {
+		ArrayList<Pair<String, String>> columns = new ArrayList<Pair<String, String>>() {
+			/**
+			* 
+			*/
+			private static final long serialVersionUID = 4215012548686790091L;
+
+			{
+				add(new Pair<String, String>("ID", "id")); // 0
+				add(new Pair<String, String>("Name", "name")); // 1
+			}
+		};
+		CustomTableModel<RoomType> model = new CustomTableModel<RoomType>(columns,
+				new CustomTableModel.TableDataManiplations<RoomType>() {
+
+					@Override
+					public ArrayList<RoomType> getData() {
+						return RoomController.getRoomTypes();
+					}
+
+					@Override
+					public void edit(RoomType model) throws NoElementException {
+						RoomController.updateRoomType(model);
+					}
+
+					@Override
+					public void remove(RoomType model) throws NoElementException {
+						RoomController.deleteRoomType(model);
+					}
+
+					@Override
+					public void add(RoomType model) throws DuplicateIndexException {
+						RoomController.addRoomType(model);
+					}
+
+				}, new RoomType());
+		DataPanel<RoomType> dataPanel = new DataPanel<RoomType>(model);
+		TableColumnModel columnModel = dataPanel.getTable().getColumnModel();
+		columnModel.getColumn(0).setMinWidth(150);
+		columnModel.getColumn(1).setMinWidth(200);
+
+		dataPanel.getAddBtn().setText("Add Room Type");
+		dataPanel.getEditBtn().setText("Edit Room Type");
+		dataPanel.getDeleteBtn().setText("Delete Room Type");
+
+		dataPanel.getRefreshBtn().addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) {
+				((CustomTableModel<RoomAddition>) dataPanel.getTable().getModel()).refresh();
+				dataPanel.getTable().updateUI();
+			}
+		});
+
+		dataPanel.getAddBtn().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				AddRoomTypesDialog dialog = new AddRoomTypesDialog();
+				dialog.setVisible(true);
+				dialog.addWindowListener(new WindowAdapter() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public void windowClosed(WindowEvent e) {
+						if (!dialog.isOk())
+							return;
+						try {
+							((CustomTableModel<RoomType>) dataPanel.getTable().getModel())
+									.add(new RoomType(dialog.getValue()));
+						} catch (DuplicateIndexException e1) {
+							JOptionPane.showMessageDialog(contentPane, "Room type with this name already exists",
+									"Error", JOptionPane.ERROR_MESSAGE);
+							e1.printStackTrace();
+						}
+						dataPanel.getTable().updateUI();
+					}
+				});
+
+			}
+		});
+
+		dataPanel.getEditBtn().addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) {
+				CustomTableModel<RoomType> customTableModel = (CustomTableModel<RoomType>) dataPanel.getTable()
+						.getModel();
+				RoomType roomType = (RoomType) customTableModel.get(dataPanel.getTable().getSelectedRow());
+				EditRoomTypeDialog dialog = new EditRoomTypeDialog(roomType.getName());
+				dialog.setVisible(true);
+				dialog.addWindowListener(new WindowAdapter() {
+					@SuppressWarnings("rawtypes")
+					@Override
+					public void windowClosed(WindowEvent e) {
+						if (!dialog.isOk())
+							return;
+						try {
+							roomType.setName(dialog.getValue());
+							((CustomTableModel) dataPanel.getTable().getModel()).edit(roomType);
+							;
+						} catch (NoElementException e1) {
+							JOptionPane.showMessageDialog(contentPane, "Room type not found", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							e1.printStackTrace();
+						}
+						dataPanel.getTable().updateUI();
+					}
+				});
+			}
+		});
+
+		dataPanel.getDeleteBtn().addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) {
+				CustomTableModel<RoomType> customTableModel = (CustomTableModel<RoomType>) dataPanel.getTable()
+						.getModel();
+				int res = JOptionPane.showConfirmDialog(contentPane, "Are you sure you want to delete this room type?",
+						"Delete room type", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (res != JOptionPane.YES_OPTION)
+					return;
+				try {
+					if (RoomController.isRoomTypeUsed(customTableModel.get(dataPanel.getTable().getSelectedRow()))) {
+						JOptionPane.showMessageDialog(contentPane,
+								"Room type is used in some rooms. Change those room's type first and try again.",
+								"Error", JOptionPane.ERROR_MESSAGE);
+					}
+					customTableModel.remove(dataPanel.getTable().getSelectedRow());
+				} catch (NoElementException e1) {
+					e1.printStackTrace();
+				}
+				dataPanel.getTable().updateUI();
+			}
+		});
+		tabbedPane.addTab("Room Types", new ImageIcon("./assets/icons/room_types.png"), dataPanel, null);
+	}
+
+	private void addReservationAdditionsTab() {
+		ArrayList<Pair<String, String>> columns = new ArrayList<Pair<String, String>>() {
+			/**
+			* 
+			*/
+			private static final long serialVersionUID = 4215012548686790091L;
+
+			{
+				add(new Pair<String, String>("ID", "id")); // 0
+				add(new Pair<String, String>("Name", "name")); // 1
+			}
+		};
+		CustomTableModel<ReservationAddition> model = new CustomTableModel<ReservationAddition>(columns,
+				new CustomTableModel.TableDataManiplations<ReservationAddition>() {
+
+					@Override
+					public ArrayList<ReservationAddition> getData() {
+						return ReservationController.getReservationAdditions();
+					}
+
+					@Override
+					public void edit(ReservationAddition model) throws NoElementException {
+						ReservationController.updateReservationAddition(model);
+					}
+
+					@Override
+					public void remove(ReservationAddition model) throws NoElementException {
+						ReservationController.deleteReservationAddition(model);
+					}
+
+					@Override
+					public void add(ReservationAddition model) throws DuplicateIndexException {
+						ReservationController.addReservationAddition(model);
+					}
+
+				}, new ReservationAddition());
+		DataPanel<ReservationAddition> dataPanel = new DataPanel<ReservationAddition>(model);
+		TableColumnModel columnModel = dataPanel.getTable().getColumnModel();
+		columnModel.getColumn(0).setMinWidth(150);
+		columnModel.getColumn(1).setMinWidth(200);
+
+		dataPanel.getAddBtn().setText("Add Reservation Addition");
+		dataPanel.getEditBtn().setText("Edit Reservation Addition");
+		dataPanel.getDeleteBtn().setText("Delete Reservation Addition");
+
+		dataPanel.getRefreshBtn().addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) {
+				((CustomTableModel<ReservationAddition>) dataPanel.getTable().getModel()).refresh();
+				dataPanel.getTable().updateUI();
+			}
+		});
+
+		dataPanel.getAddBtn().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				AddReservationAdditionDialog dialog = new AddReservationAdditionDialog();
+				dialog.setVisible(true);
+				dialog.addWindowListener(new WindowAdapter() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public void windowClosed(WindowEvent e) {
+						if (!dialog.isOk())
+							return;
+						try {
+							((CustomTableModel<ReservationAddition>) dataPanel.getTable().getModel())
+									.add(new ReservationAddition(dialog.getValue()));
+						} catch (DuplicateIndexException e1) {
+							JOptionPane.showMessageDialog(contentPane, "Reservation addition with this name already exists",
+									"Error", JOptionPane.ERROR_MESSAGE);
+							e1.printStackTrace();
+						}
+						dataPanel.getTable().updateUI();
+					}
+				});
+
+			}
+		});
+
+		dataPanel.getEditBtn().addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) {
+				CustomTableModel<ReservationAddition> customTableModel = (CustomTableModel<ReservationAddition>) dataPanel.getTable()
+						.getModel();
+				ReservationAddition reservationAddition = (ReservationAddition) customTableModel.get(dataPanel.getTable().getSelectedRow());
+				EditRoomAdditionDialog dialog = new EditRoomAdditionDialog(reservationAddition.getName());
+				dialog.setVisible(true);
+				dialog.addWindowListener(new WindowAdapter() {
+					@SuppressWarnings("rawtypes")
+					@Override
+					public void windowClosed(WindowEvent e) {
+						if (!dialog.isOk())
+							return;
+						try {
+							reservationAddition.setName(dialog.getValue());
+							((CustomTableModel) dataPanel.getTable().getModel()).edit(reservationAddition);
+							;
+						} catch (NoElementException e1) {
+							JOptionPane.showMessageDialog(contentPane, "Reservation addition not found", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							e1.printStackTrace();
+						}
+						dataPanel.getTable().updateUI();
+					}
+				});
+			}
+		});
+
+		dataPanel.getDeleteBtn().addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) {
+				CustomTableModel<ReservationAddition> customTableModel = (CustomTableModel<ReservationAddition>) dataPanel.getTable()
+						.getModel();
+				int res = JOptionPane.showConfirmDialog(contentPane,
+						"Are you sure you want to delete this reservation addition?", "Delete reservation addition",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (res != JOptionPane.YES_OPTION)
+					return;
+				try {
+					customTableModel.remove(dataPanel.getTable().getSelectedRow());
+				} catch (NoElementException e1) {
+					e1.printStackTrace();
+				}
+				dataPanel.getTable().updateUI();
+			}
+		});
+		tabbedPane.addTab("Room Additions", new ImageIcon("./assets/icons/reservation_additions.png"), dataPanel, null);
+	}
+
+	
 }
