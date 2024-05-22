@@ -1,3 +1,3 @@
 # MHotelify <string>IN PROGRESS</strong>
 
-Project for subject Object oriented programming 1. Details after completion.
+This project has been created as pre-exam obligation for Object oriented programming 1. The purpose of this project was to create desktop application in Java using SWING for managing bussines of a hotel. More details after completion.
