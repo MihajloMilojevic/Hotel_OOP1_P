@@ -154,6 +154,19 @@ public abstract class User extends Model {
 	/* ******************************  METHODS  *************************************** */
 	
 	@Override
+	public boolean isValid() {
+		if (this.name == null || this.name.isBlank()) return false;
+		if (this.surname == null || this.surname.isBlank()) return false;
+		if (this.username == null || this.username.isBlank()) return false;
+		if (this.password == null || this.password.isBlank()) return false;
+		if (this.role == null) return false;
+		if (this.phone == null || this.phone.isBlank()) return false;
+		if (this.address == null || this.address.isBlank()) return false;
+		if (this.birthdate == null || !this.birthdate.isBefore(LocalDate.now())) return false;
+		return super.isValid();
+	}
+	
+	@Override
 	public Object get(String key) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		switch (key) {

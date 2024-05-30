@@ -1,5 +1,6 @@
 package controllers;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import app.AppState;
@@ -7,8 +8,10 @@ import database.SelectCondition;
 import exceptions.DuplicateIndexException;
 import exceptions.NoElementException;
 import models.Model;
+import models.PriceList;
 import models.Reservation;
 import models.ReservationAddition;
+import models.RoomAddition;
 
 public class ReservationController {
 
@@ -99,5 +102,36 @@ public class ReservationController {
 	}
 	public static ReservationAddition getReservationAdditionByName(String name) {
 		return AppState.getInstance().getDatabase().getReservationAdditions().selectByIndex("name", name);
+	}
+	
+	public static float calculateTotalPrice(Reservation reservation) {
+		if (reservation == null || 
+			reservation.getStartDate() == null || 
+			reservation.getEndDate() == null || 
+			reservation.getRoomType() == null) {
+			System.out.println("Reservation is missing required fields");
+			return 0;
+		}
+		ArrayList<PriceList> priceLists = PriceListController.getPricesForPeriod(reservation.getStartDate(), reservation.getEndDate());
+		float totalPrice = 0;
+		LocalDate currentDate = reservation.getStartDate();
+		while (!currentDate.isAfter(reservation.getEndDate())) {
+			final LocalDate testDate = currentDate;
+			PriceList priceList = priceLists.stream()
+					.filter(p -> p.getStartDate().isBefore(testDate) && p.getEndDate().isAfter(testDate))
+					.findFirst().orElse(null);
+			if (priceList != null) {
+				totalPrice += priceList.getPrice(reservation.getRoomType());
+				for (ReservationAddition ra : reservation.getReservationAdditions()) {
+					totalPrice += priceList.getPrice(ra);
+				}
+				for (RoomAddition ra : reservation.getRoomAdditions()) {
+					totalPrice += priceList.getPrice(ra);
+				}
+			}
+			currentDate = currentDate.plusDays(1);
+		}
+		System.out.println("Total price: " + totalPrice);
+		return totalPrice;
 	}
 }

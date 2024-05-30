@@ -26,6 +26,12 @@ public class RoomType extends Model {
 	/* ******************************  METHODS  *************************************** */
 	
 	@Override
+	public boolean isValid() {
+		if (this.name == null || this.name.isBlank()) return false;
+		return super.isValid();
+	}
+	
+	@Override
 	public Object get(String key) throws IllegalArgumentException {
 		switch (key) {
 		case "name":

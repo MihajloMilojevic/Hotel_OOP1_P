@@ -124,6 +124,25 @@ public class Reservation extends Model {
 	/* ******************************  METHODS  *************************************** */
 	
 	@Override
+	public boolean isValid() {
+		if (this.roomType == null || !this.roomType.isValid()) return false;
+		if (this.guest == null || !this.guest.isValid()) return false;
+		if (this.startDate == null || this.endDate == null || this.startDate.isAfter(this.endDate)) return false;
+		if (this.price < 0) return false;
+		if (this.reservationAdditions == null) return false;
+		for (ReservationAddition reservationAddition : this.reservationAdditions) {
+			if (!reservationAddition.isValid())
+				return false;
+		}
+		if (this.roomAdditions == null) return false;
+		for (RoomAddition roomAddition : this.roomAdditions) {
+			if (!roomAddition.isValid())
+				return false;
+		}
+		return super.isValid();
+	}
+	
+	@Override
 	public Object get(String key) throws IllegalArgumentException {
 		switch (key) {
 		case "status":

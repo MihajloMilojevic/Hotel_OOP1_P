@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.ModuleLayer.Controller;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -24,6 +25,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableColumnModel;
 
 import app.AppState;
+import controllers.ControllerActionStatus;
 import controllers.ReservationController;
 import controllers.RoomController;
 import controllers.UserController;
@@ -49,6 +51,8 @@ import views.dialogs.guests.AddGuestDialog;
 import views.dialogs.guests.EditGuestDialog;
 import views.dialogs.profile.UserProfileDialog;
 import views.dialogs.reservation_additions.AddReservationAdditionDialog;
+import views.dialogs.reservations.AddReservationDialog;
+import views.dialogs.reservations.EditReservationDialog;
 import views.dialogs.room_additions.AddRoomAdditionDialog;
 import views.dialogs.room_additions.EditRoomAdditionDialog;
 import views.dialogs.room_types.AddRoomTypesDialog;
@@ -130,15 +134,25 @@ public class MainAdmin extends JFrame {
 						if (!dialog.isOk())
 							return;
 						User updatedUser = dialog.getUser();
-						try {
-							UserController.updateUser(updatedUser);
+						ControllerActionStatus status = UserController.updateUser(updatedUser);
+						switch (status) {
+						case SUCCESS:
 							AppState.getInstance().setUser(updatedUser);
 							JOptionPane.showMessageDialog(contentPane, "Profile updated successfully", "Success",
 									JOptionPane.INFORMATION_MESSAGE);
-						} catch (NoElementException e) {
-							e.printStackTrace();
+						case NO_RECORD:
+							JOptionPane.showMessageDialog(contentPane, "User not found", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							break;
+						case ERROR:
+							JOptionPane.showMessageDialog(contentPane, "An error occured", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							break;
+							default:
+							JOptionPane.showMessageDialog(contentPane, "An error occured", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							break;
 						}
-
 					}
 				});
 			}
@@ -179,145 +193,10 @@ public class MainAdmin extends JFrame {
 	}
 
 	private void addGuestsTab() {
-		ArrayList<Pair<String, String>> columns = new ArrayList<Pair<String, String>>() {
-			/**
-			* 
-			*/
-			private static final long serialVersionUID = 4215012548686790091L;
-
-			{
-				add(new Pair<String, String>("ID", "id")); // 0
-				add(new Pair<String, String>("Role", "role")); // 1
-				add(new Pair<String, String>("Name", "name")); // 2
-				add(new Pair<String, String>("Surname", "surname")); // 3
-				add(new Pair<String, String>("Username", "username")); // 4
-				add(new Pair<String, String>("Gender", "gender")); // 5
-				add(new Pair<String, String>("Date of birth", "birthdate")); // 6
-				add(new Pair<String, String>("Address", "address")); // 7
-				add(new Pair<String, String>("Phone", "phone")); // 8 // 11
-			}
-		};
-
-		CustomTableModel<Guest> model = new CustomTableModel<Guest>(columns,
-				new CustomTableModel.TableDataManiplations<Guest>() {
-
-					@Override
-					public ArrayList<Guest> getData() {
-						return UserController.getGuests();
-					}
-
-					@Override
-					public void edit(Guest model) throws NoElementException {
-						UserController.updateUser(model);
-					}
-
-					@Override
-					public void remove(Guest model) {
-						UserController.deleteUser(model);
-					}
-
-					@Override
-					public void add(Guest model) throws DuplicateIndexException {
-						UserController.addUser(model);
-					}
-
-				}, new Guest());
-
-		DataPanel<Guest> dataPanel = new DataPanel<Guest>(model);
-
-		TableColumnModel columnModel = dataPanel.getTable().getColumnModel();
-		columnModel.getColumn(0).setMinWidth(150);
-		columnModel.getColumn(1).setMinWidth(150);
-		columnModel.getColumn(2).setMinWidth(100);
-		columnModel.getColumn(3).setMinWidth(100);
-		columnModel.getColumn(4).setMinWidth(100);
-		columnModel.getColumn(5).setMinWidth(100);
-		columnModel.getColumn(6).setMinWidth(100);
-		columnModel.getColumn(7).setMinWidth(300);
-		columnModel.getColumn(8).setMinWidth(150);
-
-		dataPanel.getAddBtn().setText("Add Guest");
-		dataPanel.getEditBtn().setText("Edit Guest");
-		dataPanel.getDeleteBtn().setText("Delete Guest");
-
-		dataPanel.getRefreshBtn().addActionListener(new ActionListener() {
-			@SuppressWarnings("unchecked")
-			public void actionPerformed(ActionEvent e) {
-				((CustomTableModel<Guest>) dataPanel.getTable().getModel()).refresh();
-				dataPanel.getTable().updateUI();
-			}
-		});
-		dataPanel.getAddBtn().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				AddGuestDialog dialog = new AddGuestDialog();
-				dialog.setVisible(true);
-				dialog.addWindowListener(new WindowAdapter() {
-					@SuppressWarnings("unchecked")
-					@Override
-					public void windowClosed(WindowEvent e) {
-						if (!dialog.isOk())
-							return;
-						try {
-							((CustomTableModel<Guest>) dataPanel.getTable().getModel()).add(dialog.getGuest());
-						} catch (DuplicateIndexException e1) {
-							JOptionPane.showMessageDialog(contentPane, "User with this username already exists",
-									"Error", JOptionPane.ERROR_MESSAGE);
-							e1.printStackTrace();
-						}
-						dataPanel.getTable().updateUI();
-					}
-				});
-
-			}
-		});
-		dataPanel.getEditBtn().addActionListener(new ActionListener() {
-			@SuppressWarnings("unchecked")
-			public void actionPerformed(ActionEvent e) {
-
-				CustomTableModel<Guest> customTableModel = (CustomTableModel<Guest>) dataPanel.getTable().getModel();
-				Guest guest = (Guest) customTableModel.get(dataPanel.getTable().getSelectedRow());
-				EditGuestDialog dialog = new EditGuestDialog(guest);
-				dialog.setVisible(true);
-				dialog.addWindowListener(new WindowAdapter() {
-					@SuppressWarnings("rawtypes")
-					@Override
-					public void windowClosed(WindowEvent e) {
-						if (!dialog.isOk())
-							return;
-						try {
-							((CustomTableModel) dataPanel.getTable().getModel()).edit(guest);
-							;
-						} catch (NoElementException e1) {
-							JOptionPane.showMessageDialog(contentPane, "Guest not found", "Error",
-									JOptionPane.ERROR_MESSAGE);
-							e1.printStackTrace();
-						}
-						dataPanel.getTable().updateUI();
-					}
-				});
-
-			}
-		});
-		dataPanel.getDeleteBtn().addActionListener(new ActionListener() {
-			@SuppressWarnings("unchecked")
-			public void actionPerformed(ActionEvent e) {
-				CustomTableModel<Guest> customTableModel = (CustomTableModel<Guest>) dataPanel.getTable().getModel();
-				int res = JOptionPane.showConfirmDialog(contentPane, "Are you sure you want to delete this user?",
-						"Delete user", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				if (res != JOptionPane.YES_OPTION)
-					return;
-				try {
-					customTableModel.remove(dataPanel.getTable().getSelectedRow());
-				} catch (NoElementException e1) {
-					e1.printStackTrace();
-				}
-				dataPanel.getTable().updateUI();
-			}
-		});
+		
 		tabbedPane.addTab("Guests", new ImageIcon("./assets/icons/guests.png"), dataPanel, null);
 	}
-
+	
 	private void addEmpoloyeesTab() {
 		ArrayList<Pair<String, String>> columns = new ArrayList<Pair<String, String>>() {
 			/**
@@ -508,11 +387,11 @@ public class MainAdmin extends JFrame {
 
 			@Override
 			public Object getValueAt(int rowIndex, int columnIndex) {
-				if (columns.get(columnIndex).getValue().equals("roomAdditions")) {
+				if (columns.get(columnIndex).getSecond().equals("roomAdditions")) {
 					return String.join(", ", ((Room) data.get(rowIndex)).getRoomAdditions().stream()
 							.map(ra -> ra.getName()).toArray(String[]::new));
 				}
-				if (columns.get(columnIndex).getValue().equals("type")) {
+				if (columns.get(columnIndex).getSecond().equals("type")) {
 					if (((Room) data.get(rowIndex)).getType() == null)
 						return "";
 					return ((Room) data.get(rowIndex)).getType().getName();
@@ -522,10 +401,10 @@ public class MainAdmin extends JFrame {
 
 			@Override
 			public Class<?> getColumnClass(int columnIndex) {
-				if (columns.get(columnIndex).getValue().equals("roomAdditions")) {
+				if (columns.get(columnIndex).getSecond().equals("roomAdditions")) {
 					return String.class;
 				}
-				if (columns.get(columnIndex).getValue().equals("type")) {
+				if (columns.get(columnIndex).getSecond().equals("type")) {
 					return String.class;
 				}
 				return super.getColumnClass(columnIndex);
@@ -1063,20 +942,20 @@ public class MainAdmin extends JFrame {
 					
 					@Override
 					public Object getValueAt(int rowIndex, int columnIndex) {
-						if (columns.get(columnIndex).getValue().equals("roomAdditions")) {
+						if (columns.get(columnIndex).getSecond().equals("roomAdditions")) {
 							return String.join(", ", ((Reservation) data.get(rowIndex)).getRoomAdditions().stream()
 									.map(ra -> ra.getName()).toArray(String[]::new));
 						}
-						if (columns.get(columnIndex).getValue().equals("reservationAdditions")) {
+						if (columns.get(columnIndex).getSecond().equals("reservationAdditions")) {
 							return String.join(", ", ((Reservation) data.get(rowIndex)).getReservationAdditions().stream()
 									.map(ra -> ra.getName()).toArray(String[]::new));
 						}
-						if (columns.get(columnIndex).getValue().equals("roomType")) {
+						if (columns.get(columnIndex).getSecond().equals("roomType")) {
 							if (((Reservation) data.get(rowIndex)).getRoomType() == null)
 								return "";
 							return ((Reservation) data.get(rowIndex)).getRoomType().getName();
 						}
-						if (columns.get(columnIndex).getValue().equals("guest")) {
+						if (columns.get(columnIndex).getSecond().equals("guest")) {
 							Guest g = ((Guest) data.get(rowIndex).getGuest());
 							return g.getName() + " " + g.getSurname();
 						}
@@ -1085,16 +964,16 @@ public class MainAdmin extends JFrame {
 
 					@Override
 					public Class<?> getColumnClass(int columnIndex) {
-						if (columns.get(columnIndex).getValue().equals("roomAdditions")) {
+						if (columns.get(columnIndex).getSecond().equals("roomAdditions")) {
 							return String.class;
 						}
-						if (columns.get(columnIndex).getValue().equals("reservationAdditions")) {
+						if (columns.get(columnIndex).getSecond().equals("reservationAdditions")) {
 							return String.class;
 						}
-						if (columns.get(columnIndex).getValue().equals("roomType")) {
+						if (columns.get(columnIndex).getSecond().equals("roomType")) {
 							return String.class;
 						}
-						if (columns.get(columnIndex).getValue().equals("guest")) {
+						if (columns.get(columnIndex).getSecond().equals("guest")) {
 							return String.class;
 						}
 						return super.getColumnClass(columnIndex);
@@ -1127,14 +1006,53 @@ public class MainAdmin extends JFrame {
 
 		dataPanel.getAddBtn().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				AddReservationDialog dialog = new AddReservationDialog(null);
+				dialog.setVisible(true);
+				dialog.addWindowListener(new WindowAdapter() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public void windowClosed(WindowEvent e) {
+						if (!dialog.isOk())
+							return;
+						try {
+							((CustomTableModel<Reservation>) dataPanel.getTable().getModel())
+									.add(dialog.getReservation());
+						} catch (DuplicateIndexException e1) {
+							JOptionPane.showMessageDialog(contentPane, "Reservation with this ID already exists",
+									"Error", JOptionPane.ERROR_MESSAGE);
+							e1.printStackTrace();
+						}
+						dataPanel.getTable().updateUI();
+					}
+				});
 			}
 		});
 
 		dataPanel.getEditBtn().addActionListener(new ActionListener() {
 			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
-				
+				CustomTableModel<Reservation> customTableModel = (CustomTableModel<Reservation>) dataPanel.getTable()
+						.getModel();
+				Reservation reservation = (Reservation) customTableModel.get(dataPanel.getTable().getSelectedRow());
+				EditReservationDialog dialog = new EditReservationDialog(reservation);
+				dialog.setVisible(true);
+				dialog.addWindowListener(new WindowAdapter() {
+					@SuppressWarnings("rawtypes")
+					@Override
+					public void windowClosed(WindowEvent e) {
+						if (!dialog.isOk())
+							return;
+						try {
+							((CustomTableModel) dataPanel.getTable().getModel()).edit(reservation);
+							;
+						} catch (NoElementException e1) {
+							JOptionPane.showMessageDialog(contentPane, "Reservation not found", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							e1.printStackTrace();
+						}
+						dataPanel.getTable().updateUI();
+					}
+				});
 			}
 		});
 
@@ -1156,7 +1074,8 @@ public class MainAdmin extends JFrame {
 				dataPanel.getTable().updateUI();
 			}
 		});
+		
 		tabbedPane.addTab("Reservations", new ImageIcon("./assets/icons/reservations.png"), dataPanel, null);
 	}
-
+	
 }

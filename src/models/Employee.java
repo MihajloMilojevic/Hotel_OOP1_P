@@ -114,6 +114,14 @@ public abstract class Employee extends User {
 	/* ******************************  METHODS  *************************************** */
 	
 	@Override
+	public boolean isValid() {
+		if (levelOfProfessionalEducation == null || levelOfProfessionalEducation.isBlank()) return false;
+		if (yearsOfWorkExperience < 0) return false;
+		if (salary < 0) return false;
+		return super.isValid();
+	}
+	
+	@Override
 	public Object get(String key) throws IllegalArgumentException {
 		switch (key) {
 		case "levelOfProfessionalEducation":

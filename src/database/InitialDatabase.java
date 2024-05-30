@@ -6,6 +6,7 @@ import app.AppState;
 import models.Admin;
 import models.Guest;
 import models.Maid;
+import models.PriceList;
 import models.Receptionist;
 import models.Reservation;
 import models.ReservationAddition;
@@ -246,6 +247,8 @@ public class InitialDatabase {
 			Room room522 = new Room(522, apartment);
 			Room room523 = new Room(523, apartment);
 			Room room524 = new Room(524, apartment);
+			
+			
 
 			Room room601 = new Room(601, penthouse);
 			room601.addRoomAddition(balcony);
@@ -401,6 +404,112 @@ public class InitialDatabase {
 			db.getRooms().insert(room701);
 
 			db.getRooms().insert(room801);
+
+			/* ****************************** Price Lists *************************************** */
+
+			PriceList may = new PriceList(LocalDate.of(2024, 5, 1),  LocalDate.of(2024, 5, 31));
+			may.setPrice(single, 1000);
+			may.setPrice(doubleSingleBed, 1200);
+			may.setPrice(doubleTwoBeds, 1400);
+			may.setPrice(tripleThreeBeds, 1600);
+			may.setPrice(tripleTwoBeds, 1800);
+			may.setPrice(apartment, 2000);
+			may.setPrice(penthouse, 3000);
+			may.setPrice(breakfast, 120);
+			may.setPrice(lunch, 300);
+			may.setPrice(dinner, 200);
+			may.setPrice(allInclusive, 600);
+			may.setPrice(spa, 500);
+			may.setPrice(gym, 300);
+			may.setPrice(pool, 300);
+			may.setPrice(parking, 300);
+			may.setPrice(roomService, 300);
+			may.setPrice(extraBed, 500);
+			may.setPrice(balcony, 150);
+			may.setPrice(cityView, 200);
+			may.setPrice(jacuzzi, 300);
+			may.setPrice(tv, 100);
+			may.setPrice(wifi, 100);
+			may.setPrice(climate, 200);
+			db.getPriceLists().insert(may);
+			
+			PriceList june = new PriceList(LocalDate.of(2024, 6, 1),  LocalDate.of(2024, 6, 30));
+			june.setPrice(single, 1200);
+			june.setPrice(doubleSingleBed, 1400);
+			june.setPrice(doubleTwoBeds, 1600);
+			june.setPrice(tripleThreeBeds, 1800);
+			june.setPrice(tripleTwoBeds, 2000);
+			june.setPrice(apartment, 2200);
+			june.setPrice(penthouse, 3200);
+			june.setPrice(breakfast, 140);
+			june.setPrice(lunch, 320);
+			june.setPrice(dinner, 220);
+			june.setPrice(allInclusive, 700);
+			june.setPrice(spa, 600);
+			june.setPrice(gym, 400);
+			june.setPrice(pool, 400);
+			june.setPrice(parking, 400);
+			june.setPrice(roomService, 400);
+			june.setPrice(extraBed, 600);
+			june.setPrice(balcony, 200);
+			june.setPrice(cityView, 250);
+			june.setPrice(jacuzzi, 350);
+			june.setPrice(tv, 150);
+			june.setPrice(wifi, 150);
+			june.setPrice(climate, 250);
+			db.getPriceLists().insert(june);
+			
+			PriceList july = new PriceList(LocalDate.of(2024, 7, 1),  LocalDate.of(2024, 7, 31));
+			july.setPrice(single, 1400);
+			july.setPrice(doubleSingleBed, 1600);
+			july.setPrice(doubleTwoBeds, 1800);
+			july.setPrice(tripleThreeBeds, 2000);
+			july.setPrice(tripleTwoBeds, 2200);
+			july.setPrice(apartment, 2400);
+			july.setPrice(penthouse, 3400);
+			july.setPrice(breakfast, 160);
+			july.setPrice(lunch, 340);
+			july.setPrice(dinner, 240);
+			july.setPrice(allInclusive, 800);
+			july.setPrice(spa, 700);
+			july.setPrice(gym, 500);
+			july.setPrice(pool, 500);
+			july.setPrice(parking, 500);
+			july.setPrice(roomService, 500);
+			july.setPrice(extraBed, 700);
+			july.setPrice(balcony, 250);
+			july.setPrice(cityView, 300);
+			july.setPrice(jacuzzi, 400);
+			july.setPrice(tv, 200);
+			july.setPrice(wifi, 200);
+			july.setPrice(climate, 300);
+			db.getPriceLists().insert(july);
+			
+			PriceList rest = new PriceList(LocalDate.of(2024, 8, 1),  null);
+			rest.setPrice(single, 1000);
+			rest.setPrice(doubleSingleBed, 1200);
+			rest.setPrice(doubleTwoBeds, 1400);
+			rest.setPrice(tripleThreeBeds, 1600);
+			rest.setPrice(tripleTwoBeds, 1800);
+			rest.setPrice(apartment, 2000);
+			rest.setPrice(penthouse, 3000);
+			rest.setPrice(breakfast, 120);
+			rest.setPrice(lunch, 300);
+			rest.setPrice(dinner, 200);
+			rest.setPrice(allInclusive, 600);
+			rest.setPrice(spa, 500);
+			rest.setPrice(gym, 300);
+			rest.setPrice(pool, 300);
+			rest.setPrice(parking, 300);
+			rest.setPrice(roomService, 300);
+			rest.setPrice(extraBed, 500);
+			rest.setPrice(balcony, 150);
+			rest.setPrice(cityView, 200);
+			rest.setPrice(jacuzzi, 300);
+			rest.setPrice(tv, 100);
+			rest.setPrice(wifi, 100);
+			rest.setPrice(climate, 200);
+			db.getPriceLists().insert(rest);
 			
 			/* ****************************** Reservations *************************************** */
 			Reservation r1 = new Reservation(penthouse, djordje, LocalDate.of(2021, 6, 1), LocalDate.of(2021, 6, 10));

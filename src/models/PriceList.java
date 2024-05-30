@@ -14,6 +14,7 @@ public class PriceList extends Model {
 	private LocalDate endDate;
 	private HashMap<RoomType, Double> roomTypePrices;
 	private HashMap<ReservationAddition, Double> reservationAdditionPrices;
+	private HashMap<RoomAddition, Double> roomAdditionPrices;
 	
 	/* ******************************  CONSTRUCTORS  *************************************** */
 
@@ -23,6 +24,7 @@ public class PriceList extends Model {
 		this.endDate = null;
 		this.roomTypePrices = new HashMap<RoomType, Double>();
 		this.reservationAdditionPrices = new HashMap<ReservationAddition, Double>();
+		this.roomAdditionPrices = new HashMap<RoomAddition, Double>();
 	}
 	public PriceList(String id) {
 		super(id);
@@ -30,24 +32,27 @@ public class PriceList extends Model {
 		this.endDate = null;
 		this.roomTypePrices = new HashMap<RoomType, Double>();
 		this.reservationAdditionPrices = new HashMap<ReservationAddition, Double>();
+		this.roomAdditionPrices = new HashMap<RoomAddition, Double>();
 	}
 
 	public PriceList(LocalDate startDate, LocalDate endDate, HashMap<RoomType, Double> roomTypePrices,
-			HashMap<ReservationAddition, Double> reservationAdditionPrices) {
+			HashMap<ReservationAddition, Double> reservationAdditionPrices, HashMap<RoomAddition, Double> roomAdditionPrices) {
 		super();
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.roomTypePrices = roomTypePrices;
 		this.reservationAdditionPrices = reservationAdditionPrices;
+		this.roomAdditionPrices = roomAdditionPrices;
 	}
 
 	public PriceList(String id, LocalDate startDate, LocalDate endDate, HashMap<RoomType, Double> roomTypePrices,
-			HashMap<ReservationAddition, Double> reservationAdditionPrices) {
+			HashMap<ReservationAddition, Double> reservationAdditionPrices, HashMap<RoomAddition, Double> roomAdditionPrices) {
 		super(id);
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.roomTypePrices = roomTypePrices;
 		this.reservationAdditionPrices = reservationAdditionPrices;
+		this.roomAdditionPrices = roomAdditionPrices;
 	}
 
 	public PriceList(LocalDate startDate, LocalDate endDate) {
@@ -56,6 +61,7 @@ public class PriceList extends Model {
 		this.endDate = endDate;
 		this.roomTypePrices = new HashMap<RoomType, Double>();
 		this.reservationAdditionPrices = new HashMap<ReservationAddition, Double>();
+		this.roomAdditionPrices = new HashMap<RoomAddition, Double>();
 	}
 
 	public PriceList(String id, LocalDate startDate, LocalDate endDate) {
@@ -64,9 +70,32 @@ public class PriceList extends Model {
 		this.endDate = endDate;
 		this.roomTypePrices = new HashMap<RoomType, Double>();
 		this.reservationAdditionPrices = new HashMap<ReservationAddition, Double>();
+		this.roomAdditionPrices = new HashMap<RoomAddition, Double>();
 	}
 
 	/* ******************************  METHODS  *************************************** */
+	
+	@Override
+	public boolean isValid() {
+		if (startDate == null) return false;
+		if (endDate != null && startDate.isAfter(endDate)) return false;
+		if (roomTypePrices == null) return false;
+		for (RoomType roomType : roomTypePrices.keySet()) {
+			if (!roomType.isValid() || roomTypePrices.get(roomType) < 0)
+				return false;
+		}
+		if (reservationAdditionPrices == null) return false;
+		for (ReservationAddition reservationAddition : reservationAdditionPrices.keySet()) {
+			if (!reservationAddition.isValid() || reservationAdditionPrices.get(reservationAddition) < 0)
+				return false;
+		}
+		if (roomAdditionPrices == null) return false;
+		for (RoomAddition roomAddition : roomAdditionPrices.keySet()) {
+			if (!roomAddition.isValid() || roomAdditionPrices.get(roomAddition) < 0)
+				return false;
+		}
+		return super.isValid();
+	}
 	
 	@Override
 	public Object get(String key) throws IllegalArgumentException {
@@ -79,6 +108,8 @@ public class PriceList extends Model {
 			return (Object) getRoomTypePrices();
 		case "reservationAdditionPrices":
 			return (Object) getReservationAdditionPrices();
+		case "roomAdditionPrices":
+			return (Object) getRoomAdditionPrices();
 		case "id":
 			return (Object) getId();
 		default:
@@ -102,6 +133,9 @@ public class PriceList extends Model {
 		case "reservationAdditionPrices":
 			setReservationAdditionPrices((HashMap<ReservationAddition, Double>) value);
 			break;
+		case "roomAdditionPrices":
+			setRoomAdditionPrices((HashMap<RoomAddition, Double>) value);
+			break;
 		default:
 		    super.set(key, value);
 		}
@@ -117,7 +151,11 @@ public class PriceList extends Model {
 			reservationAdditionPricesClone.put((ReservationAddition) reservationAddition.clone(),
 					getReservationAdditionPrices().get(reservationAddition));
 		}
-		PriceList pl = new PriceList(getId(), LocalDate.from(getStartDate()), LocalDate.from(getEndDate()), roomTypePricesClone, reservationAdditionPricesClone);
+		HashMap<RoomAddition, Double> roomAdditionPricesClone = new HashMap<RoomAddition, Double>();
+		for (RoomAddition roomAddition : getRoomAdditionPrices().keySet()) {
+			roomAdditionPricesClone.put((RoomAddition) roomAddition.clone(), getRoomAdditionPrices().get(roomAddition));
+		}
+		PriceList pl = new PriceList(getId(), getStartDate() != null ? LocalDate.from(getStartDate()) : null, getEndDate() != null ? LocalDate.from(getEndDate()) : null, roomTypePricesClone, reservationAdditionPricesClone, roomAdditionPricesClone);
 		if (this.isDeleted()) pl.delete();
 		return pl;
 	}
@@ -139,7 +177,7 @@ public class PriceList extends Model {
 		PriceList other = (PriceList) obj;
 		return getStartDate().equals(other.getStartDate())
                 && getEndDate().equals(other.getEndDate()) && getRoomTypePrices().equals(other.getRoomTypePrices())
-                && getReservationAdditionPrices().equals(other.getReservationAdditionPrices());
+                && getReservationAdditionPrices().equals(other.getReservationAdditionPrices()) && getRoomAdditionPrices().equals(other.getRoomAdditionPrices());
 	}
 	
 	@Override
@@ -152,19 +190,51 @@ public class PriceList extends Model {
 		setEndDate(priceList.getEndDate());
 		setRoomTypePrices(priceList.getRoomTypePrices());
 		setReservationAdditionPrices(priceList.getReservationAdditionPrices());
+		setRoomAdditionPrices(priceList.getRoomAdditionPrices());
 	}
 	
 	@Override
 	public Model fromCSV(String csv) throws ParseException {
 		super.fromCSV(csv);
 		String[] values = csv.split(";");
-		if (values.length < 4) throw new ParseException("Invalid RoomType string", 1);
+		if (values.length < 3) throw new ParseException("Invalid PriceList string", 1);
 		this.startDate = CSVDateParser.parseString(values[2]);
-		this.endDate = CSVDateParser.parseString(values[3]);
+		if (values.length > 3) 
+			this.endDate = CSVDateParser.parseString(values[3]);
 		return this;
 	}
 	
 	/* ******************************  GETTERS AND SETTERS  *************************************** */
+	
+	public double getPrice(RoomType roomType) {
+		if (!roomTypePrices.containsKey(roomType)) 
+			return 0.0;
+		return roomTypePrices.get(roomType);
+	}
+
+	public double getPrice(ReservationAddition reservationAddition) {
+		if (!reservationAdditionPrices.containsKey(reservationAddition))
+			return 0.0;
+		return reservationAdditionPrices.get(reservationAddition);
+	}
+	
+	public double getPrice(RoomAddition roomAddition) {
+		if (!roomAdditionPrices.containsKey(roomAddition))
+			return 0.0;
+		return roomAdditionPrices.get(roomAddition);
+	}
+	
+	public void setPrice(RoomType roomType, double price) {
+		roomTypePrices.put(roomType, price);
+	}
+	
+	public void setPrice(ReservationAddition reservationAddition, double price) {
+		reservationAdditionPrices.put(reservationAddition, price);
+	}
+	
+	public void setPrice(RoomAddition roomAddition, double price) {
+		roomAdditionPrices.put(roomAddition, price);
+	}
 	
 	/**
 	 * @return the startDate
@@ -221,6 +291,18 @@ public class PriceList extends Model {
 	 */
 	public void setReservationAdditionPrices(HashMap<ReservationAddition, Double> reservationAdditionPrices) {
 		this.reservationAdditionPrices = reservationAdditionPrices;
+	}
+	/**
+	 * @return the roomAdditionPrices
+	 */
+	public HashMap<RoomAddition, Double> getRoomAdditionPrices() {
+		return roomAdditionPrices;
+	}
+	/**
+	 * @param roomAdditionPrices the roomAdditionPrices to set
+	 */
+	public void setRoomAdditionPrices(HashMap<RoomAddition, Double> roomAdditionPrices) {
+		this.roomAdditionPrices = roomAdditionPrices;
 	}
 
 	

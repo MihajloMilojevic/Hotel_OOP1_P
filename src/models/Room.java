@@ -124,6 +124,19 @@ public class Room extends Model {
 	}
 	
 	@Override
+	public boolean isValid() {
+		if (this.number < 0) return false;
+		if (this.type == null || !this.type.isValid()) return false;
+		if (this.status == null) return false;
+		if (this.roomAdditions == null) return false;
+		for (RoomAddition roomAddition : this.roomAdditions) {
+			if (!roomAddition.isValid())
+				return false;
+		}
+		return super.isValid();
+	}
+	
+	@Override
 	public Object get(String key) throws IllegalArgumentException {
 		switch (key) {
 			case "number":

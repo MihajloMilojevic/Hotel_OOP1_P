@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import app.AppState;
-import controllers.enums.LoginStatus;
 import database.Database;
 import database.SelectCondition;
 import exceptions.DuplicateIndexException;
@@ -17,33 +16,68 @@ import models.User;
 
 public class UserController {
 
-	public static LoginStatus login(String username, String password) {
+	public static ControllerActionStatus login(String username, String password) {
+		if (username.isBlank() || password.isBlank()) {
+			return ControllerActionStatus.INCOPLETE_DATA;
+		}
 		Database db = AppState.getInstance().getDatabase();
         User user = (User) db.getUsers().selectByIndex("username", username);
         if (user == null) {
-            return LoginStatus.NO_USER;
+            return ControllerActionStatus.NO_RECORD;
         }
 		if (!user.getPassword().equals(password)) {
-			return LoginStatus.WRONG_PASSWORD;
+			return ControllerActionStatus.WRONG_PASSWORD;
 		}
 		AppState.getInstance().setUser(user);
-		return LoginStatus.SUCCESS;
+		return ControllerActionStatus.SUCCESS;
     }
 
-	public static void logout() {
+	public static ControllerActionStatus logout() {
 		AppState.getInstance().setUser(null);
+		return ControllerActionStatus.SUCCESS;
 	}
 
-	public static void deleteUser(User user) {
-		AppState.getInstance().getDatabase().getUsers().delete(user);
+	public static ControllerActionStatus deleteUser(User user) {
+		try {
+			AppState.getInstance().getDatabase().getUsers().delete(user);
+		} catch (Exception e) {
+			return ControllerActionStatus.ERROR;
+		}
+		return ControllerActionStatus.SUCCESS;
 	}
 
-	public static void updateUser(User user) throws NoElementException {
-		AppState.getInstance().getDatabase().getUsers().update(user);
+	public static ControllerActionStatus updateUser(User user) {
+		try {
+			if (user == null) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			if (!user.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			AppState.getInstance().getDatabase().getUsers().update(user);
+			return ControllerActionStatus.SUCCESS;
+		} catch (NoElementException e) {
+            return ControllerActionStatus.NO_RECORD;
+        } catch (Exception e) {
+            return ControllerActionStatus.ERROR;
+        }
 	}
 
-	public static void addUser(User user) throws DuplicateIndexException {
-		AppState.getInstance().getDatabase().getUsers().insert(user);
+	public static ControllerActionStatus addUser(User user) {
+		try {
+			if (user == null) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			if (!user.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			AppState.getInstance().getDatabase().getUsers().insert(user);
+			return ControllerActionStatus.SUCCESS;
+		} catch (DuplicateIndexException e) {
+			return ControllerActionStatus.DUPLICATE_INDEX;
+		} catch (Exception e) {
+			return ControllerActionStatus.ERROR;
+		}
 	}
 	
 	public static ArrayList<Employee> getEmployees() {

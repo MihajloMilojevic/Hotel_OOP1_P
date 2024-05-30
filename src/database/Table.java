@@ -167,7 +167,7 @@ public class Table<T extends Model> {
 						@SuppressWarnings("unchecked")
 						T copy = (T) row.clone();
 						for (Pair<String, Object> update : updates) {
-							copy.set(update.getKey(), update.getValue());
+							copy.set(update.getFirst(), update.getSecond());
 						}
 						if(!isUnique(copy)) throw new DuplicateIndexException("Duplicate key");
 					} catch (CloneNotSupportedException e) {
@@ -180,7 +180,7 @@ public class Table<T extends Model> {
 		for (T row : this.rows.values()) {
 			if (condition.check(row)) {
 				for (Pair<String, Object> update : updates) {
-					row.set(update.getKey(), update.getValue());
+					row.set(update.getFirst(), update.getSecond());
 				}
 			}
 		}
@@ -200,7 +200,7 @@ public class Table<T extends Model> {
 				@SuppressWarnings("unchecked")
 				T copy = (T) row.clone();
 				for (Pair<String, Object> update : updates) {
-					copy.set(update.getKey(), update.getValue());
+					copy.set(update.getFirst(), update.getSecond());
 				}
 				if (!isUnique(copy))
 					throw new DuplicateIndexException("Duplicate key");
@@ -210,7 +210,7 @@ public class Table<T extends Model> {
 			}
 		}
 		for (Pair<String, Object> update : updates) {
-			row.set(update.getKey(), update.getValue());
+			row.set(update.getFirst(), update.getSecond());
 		}
 		regenerateIndecies();
 	}

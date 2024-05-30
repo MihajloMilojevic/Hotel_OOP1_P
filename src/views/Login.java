@@ -23,8 +23,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import app.AppState;
+import controllers.ControllerActionStatus;
 import controllers.UserController;
-import controllers.enums.LoginStatus;
 import models.User;
 import utils.WindowUtils;
 import views.admin.MainAdmin;
@@ -169,36 +169,41 @@ public class Login extends JFrame {
 					return;
 				}
 				
-				LoginStatus loginStatus = UserController.login(username, password);
+				ControllerActionStatus loginStatus = UserController.login(username, password);
 
 				switch (loginStatus) {
-				case NO_USER:
-					JOptionPane.showMessageDialog(contentPane, "User with username '" + username + "' does not exist.");
-					break;
-				case WRONG_PASSWORD:
-					JOptionPane.showMessageDialog(contentPane, "Incorrect password.");
-					break;
-				case SUCCESS:
-					User user = AppState.getInstance().getUser();
-					switch (user.getRole()) {
-					case ADMIN:
-						dispose();
-						new MainAdmin().setVisible(true);
+					case NO_RECORD:
+						JOptionPane.showMessageDialog(contentPane, "User with username '" + username + "' does not exist.");
 						break;
-					case RECEPTIONIST:
-						dispose();
-						new MainReceptionist().setVisible(true);
+					case WRONG_PASSWORD:
+						JOptionPane.showMessageDialog(contentPane, "Incorrect password.");
 						break;
-					case MAID:
-						dispose();
-						new MainMaid().setVisible(true);
+					case SUCCESS:
+						User user = AppState.getInstance().getUser();
+						switch (user.getRole()) {
+						case ADMIN:
+							dispose();
+							new MainAdmin().setVisible(true);
+							break;
+						case RECEPTIONIST:
+							dispose();
+							new MainReceptionist().setVisible(true);
+							break;
+						case MAID:
+							dispose();
+							new MainMaid().setVisible(true);
+							break;
+						case GUEST:
+	                        dispose();
+	                        new MainGuest().setVisible(true);
+	                        break;
+						}
 						break;
-					case GUEST:
-                        dispose();
-                        new MainGuest().setVisible(true);
-                        break;
-					}
-					break;
+					case INCOPLETE_DATA:
+						JOptionPane.showMessageDialog(contentPane, "Please enter a username and password.");
+						break;
+					default:
+						JOptionPane.showMessageDialog(contentPane, "An error occurred. Please try again.");
 				}
 			}
 		};

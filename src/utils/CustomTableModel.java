@@ -4,8 +4,7 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import exceptions.DuplicateIndexException;
-import exceptions.NoElementException;
+import controllers.ControllerActionStatus;
 import models.Model;
 
 public class CustomTableModel<T extends Model> extends AbstractTableModel {
@@ -37,19 +36,22 @@ public class CustomTableModel<T extends Model> extends AbstractTableModel {
 		return data.get(selectedRow);
 	}
 	
-	public void edit(T item) throws NoElementException {
-		dataManipulations.edit(item);
+	public ControllerActionStatus edit(T item) {
+		ControllerActionStatus status = dataManipulations.edit(item);
 		refresh();	
+		return status;
 	}
 
-	public void remove(int selectedRow) throws NoElementException {
-		dataManipulations.remove(data.get(selectedRow));
-		refresh();	
+	public ControllerActionStatus remove(int selectedRow)  {
+		ControllerActionStatus status = dataManipulations.remove(data.get(selectedRow));
+		refresh();
+		return status;
 	}
 
-	public void add(T item) throws DuplicateIndexException {
-		dataManipulations.add(item);
-		refresh();	
+	public ControllerActionStatus add(T item) {
+		ControllerActionStatus status = dataManipulations.add(item);
+		refresh();
+		return status;
 	}
 	
 	public void refresh() {
@@ -68,14 +70,14 @@ public class CustomTableModel<T extends Model> extends AbstractTableModel {
 
 	@Override
 	public String getColumnName(int columnIndex) {
-		return columns.get(columnIndex).getKey();
+		return columns.get(columnIndex).getFirst();
 	}
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		Object value = model.get(columns.get(columnIndex).getValue());
+		Object value = model.get(columns.get(columnIndex).getSecond());
 		if (value == null) {
-			System.out.println("Value is null for " + columns.get(columnIndex).getValue() + " in " + model.getClass().getName() + " model");
+			System.out.println("Value is null for " + columns.get(columnIndex).getSecond() + " in " + model.getClass().getName() + " model");
 			return Object.class;
 		}
 		return value.getClass();
@@ -89,13 +91,13 @@ public class CustomTableModel<T extends Model> extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return data.get(rowIndex).get(columns.get(columnIndex).getValue());
+		return data.get(rowIndex).get(columns.get(columnIndex).getSecond());
 	}
 	
 	public static interface TableDataManiplations<T extends Model> {
 		public ArrayList<T> getData();
-		public void edit(T model) throws NoElementException;
-		public void remove(T model) throws NoElementException;
-		public void add(T model) throws DuplicateIndexException;
+		public ControllerActionStatus edit(T model);
+		public ControllerActionStatus remove(T model);
+		public ControllerActionStatus add(T model);
 	}
 }

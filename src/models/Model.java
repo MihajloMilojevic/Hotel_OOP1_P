@@ -25,6 +25,11 @@ public abstract class Model implements Cloneable {
 		this.isDeleted = true;
 	}
 	
+	public boolean isValid() {
+		if (this.id == null || this.id.isBlank()) return false;
+		return true;
+	}
+	
 	/**
 	 * Get the value of the property for the given key
 	 * @param key of the property

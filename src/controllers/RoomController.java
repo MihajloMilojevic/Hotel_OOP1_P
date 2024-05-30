@@ -25,107 +25,183 @@ public class RoomController {
 		return rooms;
 	}
 
-	public static void addRoom(Room room) throws DuplicateIndexException { 
-		AppState.getInstance().getDatabase().getRooms().insert(room);
-	}
-
-	public static void updateRoom(Room room) throws NoElementException {
-		AppState.getInstance().getDatabase().getRooms().update(room);
-	}
-
-	public static void deleteRoom(Room room) throws NoElementException {
-		AppState.getInstance().getDatabase().getRooms().delete(room);
-	}
-
-	public static void addRoomAddition(RoomAddition roomAddition) throws DuplicateIndexException { 
-		AppState.getInstance().getDatabase().getRoomAdditions().insert(roomAddition);
-	}
-
-	public static void updateRoomAddition(RoomAddition roomAddition) throws NoElementException {
-		ArrayList<Room> rooms = AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
-
-			@Override
-			public boolean check(Model row) {
-				Room room = (Room) row;
-				return room.getRoomAdditions().stream().map(RoomAddition::getId).toList().contains(roomAddition.getId());
+	public static ControllerActionStatus addRoom(Room room) { 
+		try {
+			if (room == null || !room.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
 			}
-		});
-		rooms.forEach(room -> {
-			ArrayList<RoomAddition> newRoomAdditions = new ArrayList<>();
-			for (RoomAddition ra : room.getRoomAdditions()) {
-				if (ra.getId().equals(roomAddition.getId())) {
-					newRoomAdditions.add(roomAddition);
-				} else {
-					newRoomAdditions.add(ra);
+			AppState.getInstance().getDatabase().getRooms().insert(room);
+			return ControllerActionStatus.SUCCESS;
+		} catch (DuplicateIndexException e) {
+			return ControllerActionStatus.DUPLICATE_INDEX;
+		} catch (Exception e) {
+			return ControllerActionStatus.ERROR;
+		}
+	}
+
+	public static ControllerActionStatus updateRoom(Room room)  {
+		try {
+			if (room == null || !room.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			AppState.getInstance().getDatabase().getRooms().update(room);
+			return ControllerActionStatus.SUCCESS;
+		} catch (NoElementException e) {
+			return ControllerActionStatus.NO_RECORD;
+		} catch (Exception e) {
+			return ControllerActionStatus.ERROR;
+		}
+	}
+
+	public static ControllerActionStatus deleteRoom(Room room)  {
+		try {
+			if (room == null) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			AppState.getInstance().getDatabase().getRooms().delete(room);
+			return ControllerActionStatus.SUCCESS;
+		} catch (Exception e) {
+			return ControllerActionStatus.ERROR;
+		}
+	}
+
+	public static ControllerActionStatus addRoomAddition(RoomAddition roomAddition)  {
+		try {
+			if (roomAddition == null || !roomAddition.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			AppState.getInstance().getDatabase().getRoomAdditions().insert(roomAddition);
+			return ControllerActionStatus.SUCCESS;
+		} catch (DuplicateIndexException e) {
+            return ControllerActionStatus.DUPLICATE_INDEX;
+        } catch (Exception e) {
+            return ControllerActionStatus.ERROR;
+        }
+	}
+
+	public static ControllerActionStatus updateRoomAddition(RoomAddition roomAddition) {
+		try {
+			if (roomAddition == null || !roomAddition.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			ArrayList<Room> rooms = AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
+
+				@Override
+				public boolean check(Model row) {
+					Room room = (Room) row;
+					return room.getRoomAdditions().stream().map(RoomAddition::getId).toList().contains(roomAddition.getId());
 				}
-			}
-			room.setRoomAdditions(newRoomAdditions);
-			try {
-				updateRoom(room);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-		AppState.getInstance().getDatabase().getRoomAdditions().update(roomAddition);
+			});
+			rooms.forEach(room -> {
+				ArrayList<RoomAddition> newRoomAdditions = new ArrayList<>();
+				for (RoomAddition ra : room.getRoomAdditions()) {
+					if (ra.getId().equals(roomAddition.getId())) {
+						newRoomAdditions.add(roomAddition);
+					} else {
+						newRoomAdditions.add(ra);
+					}
+				}
+				room.setRoomAdditions(newRoomAdditions);
+				ControllerActionStatus status = updateRoom(room);
+				if (status != ControllerActionStatus.SUCCESS) {
+					throw new RuntimeException("Error updating room");
+				}
+			});
+			AppState.getInstance().getDatabase().getRoomAdditions().update(roomAddition);
+			return ControllerActionStatus.SUCCESS;
+		} catch (NoElementException e) {
+			return ControllerActionStatus.NO_RECORD;
+		} catch (Exception e) {
+			return ControllerActionStatus.ERROR;
+		}
 	}
 
-	public static void deleteRoomAddition(RoomAddition roomAddition) throws NoElementException {
-		AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
+	public static ControllerActionStatus deleteRoomAddition(RoomAddition roomAddition) {
+		try {
+			if (roomAddition == null) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
 
-			@Override
-			public boolean check(Model row) {
-				Room room = (Room) row;
-				return room.getRoomAdditions().contains(roomAddition);
-			}
-		}).forEach(room -> {
-			room.removeRoomAddition(roomAddition);
-			try {
-				updateRoom(room);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-		AppState.getInstance().getDatabase().getRoomAdditions().delete(roomAddition);
+				@Override
+				public boolean check(Model row) {
+					Room room = (Room) row;
+					return room.getRoomAdditions().contains(roomAddition);
+				}
+			}).forEach(room -> {
+				room.removeRoomAddition(roomAddition);
+				ControllerActionStatus status = updateRoom(room);
+				if (status != ControllerActionStatus.SUCCESS) {
+					throw new RuntimeException("Error updating room");
+				}
+			});
+			AppState.getInstance().getDatabase().getRoomAdditions().delete(roomAddition);
+			return ControllerActionStatus.SUCCESS;
+		} catch (Exception e) {
+			return ControllerActionStatus.ERROR;
+		}
 	}
 
-	public static void addRoomType(RoomType roomType) throws DuplicateIndexException {
-		AppState.getInstance().getDatabase().getRoomTypes().insert(roomType);
+	public static ControllerActionStatus addRoomType(RoomType roomType)  {
+		try {
+			if (roomType == null || !roomType.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			AppState.getInstance().getDatabase().getRoomTypes().insert(roomType);
+			return ControllerActionStatus.SUCCESS;
+		} catch (DuplicateIndexException e) {
+			return ControllerActionStatus.DUPLICATE_INDEX;
+		} catch (Exception e) {
+			return ControllerActionStatus.ERROR;
+		}
 	}
 
-	public static void updateRoomType(RoomType roomType) throws NoElementException {
-		AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
+	public static ControllerActionStatus updateRoomType(RoomType roomType)  {
+		try {
+			if (roomType == null || !roomType.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
 
-			@Override
-			public boolean check(Model row) {
-				Room room = (Room) row;
-				return room.getType().getId().equals(roomType.getId());
-			}
-		}).forEach(room -> {
-			room.setType(roomType);
-			try {
-				updateRoom(room);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-		AppState.getInstance().getDatabase().getRoomTypes().update(roomType);
+				@Override
+				public boolean check(Model row) {
+					Room room = (Room) row;
+					return room.getType().getId().equals(roomType.getId());
+				}
+			}).forEach(room -> {
+				room.setType(roomType);
+				ControllerActionStatus status = updateRoom(room);
+				if (status != ControllerActionStatus.SUCCESS) {
+					throw new RuntimeException("Error updating room");
+				}
+			});
+			AppState.getInstance().getDatabase().getRoomTypes().update(roomType);
+			return ControllerActionStatus.SUCCESS;
+		} catch (NoElementException e) {
+			return ControllerActionStatus.NO_RECORD;
+		} catch (Exception e) {
+			return ControllerActionStatus.ERROR;
+		}
 	}
 	
-	public static void deleteRoomType(RoomType roomType) {
-		if (AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
-
-			@Override
-			public boolean check(Model row) {
-				Room room = (Room) row;
-				return room.getType().getId().equals(roomType.getId()) && !room.isDeleted();
+	public static ControllerActionStatus deleteRoomType(RoomType roomType) {
+		try {
+			if (roomType == null) {
+				return ControllerActionStatus.INCOPLETE_DATA;
 			}
-		}).size() > 0) {
-			return;
-		}
-		AppState.getInstance().getDatabase().getRoomTypes().delete(roomType);
+			if (isRoomTypeUsed(roomType)) {
+				return ControllerActionStatus.IN_USE;
+			}
+			AppState.getInstance().getDatabase().getRoomTypes().delete(roomType);
+			return ControllerActionStatus.SUCCESS;
+		} catch (Exception e) {
+            return ControllerActionStatus.ERROR;
+        }
 	}
 	
 	public static boolean isRoomTypeUsed(RoomType roomType) {
+		if (roomType == null) return false;
+		if (roomType.isDeleted()) return false;
 		return AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
 
 			@Override

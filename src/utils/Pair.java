@@ -2,40 +2,40 @@ package utils;
 
 public class Pair<K, V> {
 
-	private K key;
-	private V value;
+	private K first;
+	private V second;
 	
-	public Pair(K key, V value) {
-		this.key = key;
-        this.value = value;
+	public Pair(K first, V second) {
+		this.first = first;
+        this.second = second;
 	}
 
 	/**
-	 * @return the key
+	 * @return first element of the pair
 	 */
-	public K getKey() {
-		return key;
+	public K getFirst() {
+		return first;
 	}
 
 	/**
-	 * @param key the key to set
+	 * @param first - first element of pair to set
 	 */
-	public void setKey(K key) {
-		this.key = key;
+	public void setFirst(K first) {
+		this.first = first;
 	}
 
 	/**
-	 * @return the value
+	 * @return the second element of the pair
 	 */
-	public V getValue() {
-		return value;
+	public V getSecond() {
+		return second;
 	}
 
 	/**
-	 * @param value the value to set
+	 * @param second - second element of pair to set
 	 */
-	public void setValue(V value) {
-		this.value = value;
+	public void setValue(V second) {
+		this.second = second;
 	}
 	
 }
