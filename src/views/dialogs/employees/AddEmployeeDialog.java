@@ -84,7 +84,7 @@ public class AddEmployeeDialog extends JDialog {
 	private JLabel lblNewLabel_1_1;
 	
 	private Employee employee;
-	private boolean ok;
+	private boolean ok = false;
 	private JPasswordField passwordFl;
 	private JLabel lblNewLabel_10;
 	private Component verticalStrut_1;
@@ -585,7 +585,6 @@ public class AddEmployeeDialog extends JDialog {
 									"Password must be at least 8 characters long", "Error", JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						System.out.println(password);
 						if (!password.matches(".*[a-z].*")) {
 							JOptionPane.showMessageDialog(AddEmployeeDialog.this,
 									"Password must contain at least one lowercase letter", "Error",

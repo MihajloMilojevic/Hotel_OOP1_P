@@ -69,7 +69,7 @@ public class UserProfileDialog extends JDialog {
 	private JLabel lblNewLabel_2_1;
 	
 	private User user;
-	private boolean ok;
+	private boolean ok = false;
 	private JPasswordField passwordFl;
 	private JLabel lblNewLabel_10;
 	private Component verticalStrut_1;

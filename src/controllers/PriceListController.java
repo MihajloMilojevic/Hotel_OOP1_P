@@ -37,5 +37,17 @@ public class PriceListController {
 		});
 		return res;
 	}
+	
+	public static ControllerActionStatus updatePriceList(PriceList priceList) {
+		try {
+			if (priceList == null || !priceList.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			AppState.getInstance().getDatabase().getPriceLists().update(priceList);
+			return ControllerActionStatus.SUCCESS;
+		} catch (Exception e) {
+			return ControllerActionStatus.ERROR;
+		}
+	}
 
 }

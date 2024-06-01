@@ -86,7 +86,7 @@ public class CustomTableModel<T extends Model> extends AbstractTableModel {
 	public Class<?> getColumnClass(int columnIndex) {
 		Object value = model.get(columns.get(columnIndex).getSecond());
 		if (value == null) {
-			System.out.println("Value is null for " + columns.get(columnIndex).getSecond() + " in " + model.getClass().getName() + " model");
+			// System.out.println("Value is null for " + columns.get(columnIndex).getSecond() + " in " + model.getClass().getName() + " model");
 			return Object.class;
 		}
 		return value.getClass();

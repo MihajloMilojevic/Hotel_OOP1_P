@@ -2,9 +2,6 @@ package exceptions;
 
 public class DuplicateIndexException extends Exception {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -4921830406674581772L;
 
 	public DuplicateIndexException() {

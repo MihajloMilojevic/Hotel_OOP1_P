@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.HashMap;
 
+import exceptions.PriceException;
 import utils.CSVDateParser;
 
 public class PriceList extends Model {
@@ -206,21 +207,21 @@ public class PriceList extends Model {
 	
 	/* ******************************  GETTERS AND SETTERS  *************************************** */
 	
-	public double getPrice(RoomType roomType) {
+	public double getPrice(RoomType roomType) throws PriceException {
 		if (!roomTypePrices.containsKey(roomType)) 
-			return 0.0;
+			throw new PriceException("Price not found for: " + roomType.getName());
 		return roomTypePrices.get(roomType);
 	}
 
-	public double getPrice(ReservationAddition reservationAddition) {
+	public double getPrice(ReservationAddition reservationAddition) throws PriceException {
 		if (!reservationAdditionPrices.containsKey(reservationAddition))
-			return 0.0;
+			throw new PriceException("Price not found for: " + reservationAddition.getName());
 		return reservationAdditionPrices.get(reservationAddition);
 	}
 	
-	public double getPrice(RoomAddition roomAddition) {
+	public double getPrice(RoomAddition roomAddition) throws PriceException {
 		if (!roomAdditionPrices.containsKey(roomAddition))
-			return 0.0;
+			throw new PriceException("Price not found for: " + roomAddition.getName());
 		return roomAdditionPrices.get(roomAddition);
 	}
 	

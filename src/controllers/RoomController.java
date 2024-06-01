@@ -7,6 +7,7 @@ import database.SelectCondition;
 import exceptions.DuplicateIndexException;
 import exceptions.NoElementException;
 import models.Model;
+import models.Reservation;
 import models.Room;
 import models.RoomAddition;
 import models.RoomType;
@@ -71,6 +72,14 @@ public class RoomController {
 				return ControllerActionStatus.INCOPLETE_DATA;
 			}
 			AppState.getInstance().getDatabase().getRoomAdditions().insert(roomAddition);
+			/*
+			// Add the new room addition to all price lists with a price of 0
+			
+			AppState.getInstance().getDatabase().getPriceLists().getRows().forEach(priceList -> {
+				priceList.setPrice(roomAddition, 0.0);
+				PriceListController.updatePriceList(priceList);
+			});
+			*/
 			return ControllerActionStatus.SUCCESS;
 		} catch (DuplicateIndexException e) {
             return ControllerActionStatus.DUPLICATE_INDEX;
@@ -107,6 +116,33 @@ public class RoomController {
 					throw new RuntimeException("Error updating room");
 				}
 			});
+			ArrayList<Reservation> reservations = AppState.getInstance().getDatabase().getReservations()
+					.select(new SelectCondition() {
+
+						@Override
+						public boolean check(Model row) {
+							Reservation reservation = (Reservation) row;
+							return reservation.getRoomAdditions().stream().map(RoomAddition::getId).toList()
+									.contains(roomAddition.getId());
+						}
+					});
+			reservations.forEach(reservation -> {
+				ArrayList<RoomAddition> newRoomAdditions = new ArrayList<>();
+                for (RoomAddition ra : reservation.getRoomAdditions()) {
+                    if (ra.getId().equals(roomAddition.getId())) {
+                        newRoomAdditions.add(roomAddition);
+                    } else {
+                        newRoomAdditions.add(ra);
+                    }
+                }
+                reservation.setRoomAdditions(newRoomAdditions);
+                ControllerActionStatus status = ReservationController.updateReservation(reservation);
+                if (status != ControllerActionStatus.SUCCESS) {
+                	System.err.println("Error updating reservation");
+                    throw new RuntimeException("Error updating reservation");
+                }
+            });
+			
 			AppState.getInstance().getDatabase().getRoomAdditions().update(roomAddition);
 			return ControllerActionStatus.SUCCESS;
 		} catch (NoElementException e) {
@@ -133,6 +169,20 @@ public class RoomController {
 				ControllerActionStatus status = updateRoom(room);
 				if (status != ControllerActionStatus.SUCCESS) {
 					throw new RuntimeException("Error updating room");
+				}
+			});
+			AppState.getInstance().getDatabase().getReservations().select(new SelectCondition() {
+
+				@Override
+				public boolean check(Model row) {
+					Reservation reservation = (Reservation) row;
+					return reservation.getRoomAdditions().contains(roomAddition);
+				}
+			}).forEach(reservation -> {
+				reservation.removeRoomAddition(roomAddition);
+				ControllerActionStatus status = ReservationController.updateReservation(reservation);
+				if (status != ControllerActionStatus.SUCCESS) {
+					throw new RuntimeException("Error updating reservation");
 				}
 			});
 			AppState.getInstance().getDatabase().getRoomAdditions().delete(roomAddition);

@@ -12,8 +12,6 @@ import javax.swing.table.TableColumnModel;
 
 import controllers.ControllerActionStatus;
 import controllers.RoomController;
-import exceptions.DuplicateIndexException;
-import exceptions.NoElementException;
 import models.RoomAddition;
 import utils.CustomTableModel;
 import utils.Pair;
@@ -156,7 +154,7 @@ public class RoomAdditionsTab extends Tab<RoomAddition> {
 							JOptionPane.showMessageDialog(parent.getContentPane(), "Room addition already exists",
 									"Error", JOptionPane.ERROR_MESSAGE);
 						default:
-							JOptionPane.showMessageDialog(parent.getContentPane(), "An error occured", "Error",
+							JOptionPane.showMessageDialog(parent.getContentPane(), "An error occured room addition tab edit", "Error",
 									JOptionPane.ERROR_MESSAGE);
 						}
 						dataPanel.getTable().updateUI();

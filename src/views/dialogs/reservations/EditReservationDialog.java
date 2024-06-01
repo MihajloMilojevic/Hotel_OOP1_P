@@ -31,14 +31,13 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import com.toedter.calendar.JDateChooser;
 
 import controllers.ReservationController;
 import controllers.RoomController;
 import controllers.UserController;
+import exceptions.PriceException;
 import models.Guest;
 import models.Reservation;
 import models.ReservationAddition;
@@ -62,7 +61,6 @@ public class EditReservationDialog extends JDialog {
 	public Reservation getReservation() {
 		return reservation;
 	}
-
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JLabel lblNewLabel_4;
@@ -81,7 +79,7 @@ public class EditReservationDialog extends JDialog {
 	private ArrayList<JCheckBox> reservationAdditionsCBs;
 	
 	private Reservation reservation;
-	private boolean ok;
+	private boolean ok = false;
 
 	/**
 	 * Create the dialog.
@@ -93,6 +91,7 @@ public class EditReservationDialog extends JDialog {
 	
 	public EditReservationDialog(Reservation reservation, boolean isGuest) {
 		this.reservation = reservation;
+		
 		setTitle("Edit Reservation");
 		setModal(true);
 		setIconImage(new ImageIcon("./assets/icons/reservations.png").getImage());
@@ -113,12 +112,6 @@ public class EditReservationDialog extends JDialog {
 		FocusAdapter focusAdapter = new FocusAdapter() {
 			@Override
 			public void focusLost(java.awt.event.FocusEvent e) {
-				calculatePrice();
-			}
-		};
-		ChangeListener changeListener = new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
 				calculatePrice();
 			}
 		};
@@ -283,7 +276,7 @@ public class EditReservationDialog extends JDialog {
 					if ( !isGuest ) {
 						guestCb = new JComboBox<Guest>();
 						lblNewLabel_g.setLabelFor(guestCb);
-						typeCb.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+						guestCb.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 						GridBagConstraints gbc_guestCb = new GridBagConstraints();
 						gbc_guestCb.insets = new Insets(0, 0, 5, 0);
 						gbc_guestCb.fill = GridBagConstraints.HORIZONTAL;
@@ -460,7 +453,6 @@ public class EditReservationDialog extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
-						String id = idTf.getText().trim();
 						if (typeCb.getSelectedItem() == null) {
 							JOptionPane.showMessageDialog(null, "Room type is required!", "Error", JOptionPane.ERROR_MESSAGE);
 							return;
@@ -480,8 +472,6 @@ public class EditReservationDialog extends JDialog {
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						reservation.setId(id);
-						System.out.println(statusCb.getSelectedItem());
 						if (!isGuest)
 							reservation.setStatus((ReservationStatus)statusCb.getSelectedItem());
 						reservation.setRoomType((RoomType) typeCb.getSelectedItem());
@@ -501,11 +491,18 @@ public class EditReservationDialog extends JDialog {
 							}
 						}
 						reservation.setReservationAdditions(reservationAdditions);
-						reservation.setPrice(ReservationController.calculateTotalPrice(reservation));
 						if (!isGuest)
 							reservation.setGuest((Guest)guestCb.getSelectedItem());
-						priceTf.setText(String.valueOf(reservation.getPrice()));
-						ok = true;
+						try {
+							
+							reservation.setPrice(ReservationController.calculateTotalPrice(reservation));
+							priceTf.setText(String.valueOf(reservation.getPrice()));
+							ok = true;
+						} catch (PriceException e1) {
+							JOptionPane.showMessageDialog(getContentPane(), e1.getMessage(), "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 						
 						dispose();
 					}
@@ -528,11 +525,6 @@ public class EditReservationDialog extends JDialog {
 			}
 		}
 		
-		typeCb.addItemListener(itemListener);
-		startDateCh.addFocusListener(focusAdapter);
-		endDateCh.addFocusListener(focusAdapter);
-		roomAdditionsCBs.forEach(cb -> cb.addChangeListener(changeListener));
-		reservationAdditionsCBs.forEach(cb -> cb.addChangeListener(changeListener));
 		
 		typeCb.setRenderer(new ListCellRenderer<RoomType>() {
             @Override
@@ -572,7 +564,12 @@ public class EditReservationDialog extends JDialog {
 		}
 		
 		idTf.setText(reservation.getId());
-		typeCb.setSelectedItem(reservation.getRoomType());
+		for (int i = 0; i < typeCb.getItemCount(); i++) {
+			if (typeCb.getItemAt(i).getId().equals(reservation.getRoomType().getId())) {
+				typeCb.setSelectedIndex(i);
+				break;
+			}
+		}
 		if (!isGuest) {
 			statusCb.setSelectedItem(reservation.getStatus());
 			guestCb.setSelectedItem(reservation.getGuest());
@@ -590,15 +587,25 @@ public class EditReservationDialog extends JDialog {
 			}
 		}));
 		priceTf.setText(String.valueOf(reservation.getPrice()));
+		
+		
+		
+		typeCb.addItemListener(itemListener);
+		startDateCh.addFocusListener(focusAdapter);
+		endDateCh.addFocusListener(focusAdapter);
+		roomAdditionsCBs.forEach(cb -> cb.addItemListener(itemListener));
+		reservationAdditionsCBs.forEach(cb -> cb.addItemListener(itemListener));
+		
 	}
 
 	private void calculatePrice() {
-		reservation.setRoomType((RoomType) typeCb.getSelectedItem());
+		Reservation testReservation = new Reservation();
+		testReservation.setRoomType((RoomType) typeCb.getSelectedItem());
 		if (startDateCh.getDate() != null) {
-			reservation.setStartDate(startDateCh.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			testReservation.setStartDate(startDateCh.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 		}
 		if (endDateCh.getDate() != null) {
-			reservation.setEndDate(endDateCh.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			testReservation.setEndDate(endDateCh.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 		}
 		ArrayList<RoomAddition> roomAdditions = new ArrayList<RoomAddition>();
 		for (JCheckBox cb : roomAdditionsCBs) {
@@ -606,15 +613,19 @@ public class EditReservationDialog extends JDialog {
 				roomAdditions.add(RoomController.getRoomAdditionByName(cb.getText()));
 			}
 		}
-		reservation.setRoomAdditions(roomAdditions);
+		testReservation.setRoomAdditions(roomAdditions);
 		ArrayList<ReservationAddition> reservationAdditions = new ArrayList<ReservationAddition>();
 		for (JCheckBox cb : reservationAdditionsCBs) {
 			if (cb.isSelected()) {
 				reservationAdditions.add(ReservationController.getReservationAdditionByName(cb.getText()));
 			}
 		}
-		reservation.setReservationAdditions(reservationAdditions);
-		reservation.setPrice(ReservationController.calculateTotalPrice(reservation));
-		priceTf.setText(String.valueOf(reservation.getPrice()));
+		testReservation.setReservationAdditions(reservationAdditions);
+		try {
+			double price = ReservationController.calculateTotalPrice(testReservation);
+			priceTf.setText(String.valueOf(price));
+        } catch (PriceException e) {
+        	priceTf.setText(e.getMessage().split(":")[1].trim() + " is not available for the selected period");
+		}
 	}
 }

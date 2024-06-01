@@ -512,7 +512,7 @@ public class InitialDatabase {
 			db.getPriceLists().insert(rest);
 			
 			/* ****************************** Reservations *************************************** */
-			Reservation r1 = new Reservation(penthouse, djordje, LocalDate.of(2021, 6, 1), LocalDate.of(2021, 6, 10));
+			Reservation r1 = new Reservation(penthouse, djordje, LocalDate.of(2024, 6, 1), LocalDate.of(2024, 6, 10));
 			r1.addReservationAddition(breakfast);
 			r1.addReservationAddition(lunch);
 			r1.addReservationAddition(dinner);

@@ -408,8 +408,6 @@ public class Database {
 		for (Table<? extends Model> table : tables.values()) {
 			table.load();
 		}
-		System.out.println(getReservations().getRows().size());
-		test();
 		for (Connection<? extends Model, ? extends Model> connection : connections) {
 			connection.load();
 		}

@@ -2,9 +2,6 @@ package exceptions;
 
 public class NoElementException extends Exception {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -193818697909329269L;
 
 	public NoElementException() {

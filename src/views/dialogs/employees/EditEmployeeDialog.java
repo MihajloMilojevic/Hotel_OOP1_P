@@ -80,7 +80,7 @@ public class EditEmployeeDialog extends JDialog {
 	private JLabel lblNewLabel_1_1;
 	
 	private Employee employee;
-	private boolean ok;
+	private boolean ok = false;
 
 	/**
 	 * Create the dialog.

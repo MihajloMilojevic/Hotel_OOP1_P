@@ -69,7 +69,7 @@ public class EditGuestDialog extends JDialog {
 	private JLabel lblNewLabel_2_1;
 	
 	private Guest guest;
-	private boolean ok;
+	private boolean ok = false;
 
 	/**
 	 * Create the dialog.

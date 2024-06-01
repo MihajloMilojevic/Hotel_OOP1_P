@@ -63,7 +63,7 @@ public class AddRoomDialog extends JDialog {
 	private ArrayList<JCheckBox> additionsCbs;
 	
 	private Room room;
-	private boolean ok;
+	private boolean ok = false;
 	private JSpinner numberSb;
 
 	/**
