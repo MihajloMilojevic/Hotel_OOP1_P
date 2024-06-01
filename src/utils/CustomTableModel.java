@@ -6,6 +6,7 @@ import javax.swing.table.AbstractTableModel;
 
 import controllers.ControllerActionStatus;
 import models.Model;
+import views.components.Tab;
 
 public class CustomTableModel<T extends Model> extends AbstractTableModel {
 	
@@ -14,9 +15,13 @@ public class CustomTableModel<T extends Model> extends AbstractTableModel {
 	protected ArrayList<Pair<String, String>> columns;
 	protected T model;
 	protected TableDataManiplations<T> dataManipulations;
+	protected Tab<?> tab;
 	
 	
-	public CustomTableModel(ArrayList<Pair<String, String>> columns, TableDataManiplations<T> dataManipulations, T model) {
+	public CustomTableModel(Tab<?> tab, ArrayList<Pair<String, String>> columns, TableDataManiplations<T> dataManipulations, T model) {
+		if (tab == null) {
+			throw new IllegalArgumentException("Tab cannot be null");
+		}
 		if (columns == null) {
 			throw new IllegalArgumentException("Columns cannot be null");
 		}
@@ -26,6 +31,7 @@ public class CustomTableModel<T extends Model> extends AbstractTableModel {
 		if (model == null) {
 			throw new IllegalArgumentException("Model cannot be null");
 		}
+		this.tab = tab;
 		this.columns = columns;
 		this.dataManipulations = dataManipulations;
 		this.model = model;
@@ -38,19 +44,22 @@ public class CustomTableModel<T extends Model> extends AbstractTableModel {
 	
 	public ControllerActionStatus edit(T item) {
 		ControllerActionStatus status = dataManipulations.edit(item);
-		refresh();	
+		refresh();
+		tab.notifyTabs();
 		return status;
 	}
 
 	public ControllerActionStatus remove(int selectedRow)  {
 		ControllerActionStatus status = dataManipulations.remove(data.get(selectedRow));
 		refresh();
+		tab.notifyTabs();
 		return status;
 	}
 
 	public ControllerActionStatus add(T item) {
 		ControllerActionStatus status = dataManipulations.add(item);
 		refresh();
+		tab.notifyTabs();
 		return status;
 	}
 	

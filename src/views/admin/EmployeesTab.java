@@ -12,20 +12,21 @@ import javax.swing.table.TableColumnModel;
 
 import controllers.ControllerActionStatus;
 import controllers.UserController;
-import models.Guest;
+import models.Admin;
+import models.Employee;
 import utils.CustomTableModel;
 import utils.Pair;
 import views.components.DataPanel;
 import views.components.Tab;
-import views.dialogs.guests.AddGuestDialog;
-import views.dialogs.guests.EditGuestDialog;
+import views.dialogs.employees.AddEmployeeDialog;
+import views.dialogs.employees.EditEmployeeDialog;
 
-public class GuestsTab extends Tab<Guest> {
-	
-	public GuestsTab(JFrame parent) {
+public class EmployeesTab extends Tab<Employee> {
+
+	public EmployeesTab(JFrame parent) {
 		super(parent);
 	}
-	
+
 	@Override
 	protected void addColumns() {
 		columns.add(new Pair<String, String>("ID", "id")); // 0
@@ -36,41 +37,42 @@ public class GuestsTab extends Tab<Guest> {
 		columns.add(new Pair<String, String>("Gender", "gender")); // 5
 		columns.add(new Pair<String, String>("Date of birth", "birthdate")); // 6
 		columns.add(new Pair<String, String>("Address", "address")); // 7
-		columns.add(new Pair<String, String>("Phone", "phone")); // 8 // 11
+		columns.add(new Pair<String, String>("Phone", "phone")); // 8
+		columns.add(new Pair<String, String>("Level of professional education", "levelOfProfessionalEducation")); // 9
+		columns.add(new Pair<String, String>("Years of work experience", "yearsOfWorkExperience")); // 10
+		columns.add(new Pair<String, String>("Salary", "salary")); // 11
 	}
 
 	@Override
 	protected void addModel() {
-		model = new CustomTableModel<Guest>(this, columns,
-				new CustomTableModel.TableDataManiplations<Guest>() {
+		model = new CustomTableModel<Employee>(this, columns, new CustomTableModel.TableDataManiplations<Employee>() {
 
-					@Override
-					public ArrayList<Guest> getData() {
-						return UserController.getGuests();
-					}
+			@Override
+			public ArrayList<Employee> getData() {
+				return UserController.getEmployees();
+			}
 
-					@Override
-					public ControllerActionStatus edit(Guest model) {
-						return UserController.updateUser(model);
-					}
+			@Override
+			public ControllerActionStatus edit(Employee model) {
+				return UserController.updateUser(model);
+			}
 
-					@Override
-					public ControllerActionStatus remove(Guest model) {
-						return UserController.deleteUser(model);
-					}
+			@Override
+			public ControllerActionStatus remove(Employee model) {
+				return UserController.deleteUser(model);
+			}
 
-					@Override
-					public ControllerActionStatus add(Guest model) {
-						return UserController.addUser(model);
-					}
+			@Override
+			public ControllerActionStatus add(Employee model) {
+				return UserController.addUser(model);
+			}
 
-				}, new Guest());
-		
+		}, new Admin());
 	}
 
 	@Override
 	protected void addDataPanel() {
-		dataPanel = new DataPanel<Guest>(model);
+		dataPanel = new DataPanel<Employee>(model);
 	}
 
 	@Override
@@ -85,6 +87,9 @@ public class GuestsTab extends Tab<Guest> {
 		columnModel.getColumn(6).setMinWidth(100);
 		columnModel.getColumn(7).setMinWidth(300);
 		columnModel.getColumn(8).setMinWidth(150);
+		columnModel.getColumn(9).setMinWidth(200);
+		columnModel.getColumn(10).setMinWidth(150);
+		columnModel.getColumn(11).setMinWidth(100);
 	}
 
 	@Override
@@ -92,7 +97,7 @@ public class GuestsTab extends Tab<Guest> {
 		dataPanel.getRefreshBtn().addActionListener(new ActionListener() {
 			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
-				((CustomTableModel<Guest>) dataPanel.getTable().getModel()).refresh();
+				((CustomTableModel<Employee>) dataPanel.getTable().getModel()).refresh();
 				dataPanel.getTable().updateUI();
 			}
 		});
@@ -100,12 +105,11 @@ public class GuestsTab extends Tab<Guest> {
 
 	@Override
 	protected void addAddButtonAction() {
-		dataPanel.getAddBtn().setText("Add Guest");
-		
+		dataPanel.getAddBtn().setText("Hire Employee");
 		dataPanel.getAddBtn().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				AddGuestDialog dialog = new AddGuestDialog();
+				AddEmployeeDialog dialog = new AddEmployeeDialog();
 				dialog.setVisible(true);
 				dialog.addWindowListener(new WindowAdapter() {
 					@SuppressWarnings("unchecked")
@@ -113,19 +117,21 @@ public class GuestsTab extends Tab<Guest> {
 					public void windowClosed(WindowEvent e) {
 						if (!dialog.isOk())
 							return;
-						ControllerActionStatus status = ((CustomTableModel<Guest>) dataPanel.getTable().getModel()).add(dialog.getGuest());
+						ControllerActionStatus status = ((CustomTableModel<Employee>) dataPanel.getTable().getModel())
+								.add(dialog.getEmployee());
 						switch (status) {
 						case SUCCESS:
-							JOptionPane.showMessageDialog(parent.getContentPane(), "Guest added successfully", "Success",
-									JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(parent.getContentPane(), "Employee hired successfully",
+									"Success", JOptionPane.INFORMATION_MESSAGE);
 							break;
 						case DUPLICATE_INDEX:
-							JOptionPane.showMessageDialog(parent.getContentPane(), "User with this username already exists",
-									"Error", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(parent.getContentPane(),
+									"User with this username already exists", "Error", JOptionPane.ERROR_MESSAGE);
 							break;
 						default:
 							JOptionPane.showMessageDialog(parent.getContentPane(), "An error occured", "Error",
 									JOptionPane.ERROR_MESSAGE);
+							break;
 						}
 						dataPanel.getTable().updateUI();
 					}
@@ -133,20 +139,19 @@ public class GuestsTab extends Tab<Guest> {
 
 			}
 		});
-
 	}
 
 	@Override
 	protected void addEditButtonAction() {
-		dataPanel.getEditBtn().setText("Edit Guest");
-		
+		dataPanel.getEditBtn().setText("Edit Employee");
 		dataPanel.getEditBtn().addActionListener(new ActionListener() {
 			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
 
-				CustomTableModel<Guest> customTableModel = (CustomTableModel<Guest>) dataPanel.getTable().getModel();
-				Guest guest = (Guest) customTableModel.get(dataPanel.getTable().getSelectedRow());
-				EditGuestDialog dialog = new EditGuestDialog(guest);
+				CustomTableModel<Employee> customTableModel = (CustomTableModel<Employee>) dataPanel.getTable()
+						.getModel();
+				Employee employee = (Employee) customTableModel.get(dataPanel.getTable().getSelectedRow());
+				EditEmployeeDialog dialog = new EditEmployeeDialog(employee);
 				dialog.setVisible(true);
 				dialog.addWindowListener(new WindowAdapter() {
 					@SuppressWarnings("rawtypes")
@@ -154,23 +159,25 @@ public class GuestsTab extends Tab<Guest> {
 					public void windowClosed(WindowEvent e) {
 						if (!dialog.isOk())
 							return;
-						ControllerActionStatus status = ((CustomTableModel) dataPanel.getTable().getModel()).edit(guest);
+						ControllerActionStatus status = ((CustomTableModel) dataPanel.getTable().getModel())
+								.edit(employee);
 						switch (status) {
 						case SUCCESS:
-							JOptionPane.showMessageDialog(parent.getContentPane(), "Guest updated successfully", "Success",
-									JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(parent.getContentPane(), "Employee updated successfully",
+									"Success", JOptionPane.INFORMATION_MESSAGE);
 							break;
 						case NO_RECORD:
-							JOptionPane.showMessageDialog(parent.getContentPane(), "Guest not found", "Error",
+							JOptionPane.showMessageDialog(parent.getContentPane(), "Employee not found", "Error",
 									JOptionPane.ERROR_MESSAGE);
 							break;
 						case DUPLICATE_INDEX:
-							JOptionPane.showMessageDialog(parent.getContentPane(), "User with this username already exists",
-									"Error", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(parent.getContentPane(),
+									"User with this username already exists", "Error", JOptionPane.ERROR_MESSAGE);
 							break;
 						default:
 							JOptionPane.showMessageDialog(parent.getContentPane(), "An error occured", "Error",
 									JOptionPane.ERROR_MESSAGE);
+							break;
 						}
 						dataPanel.getTable().updateUI();
 					}
@@ -182,31 +189,34 @@ public class GuestsTab extends Tab<Guest> {
 
 	@Override
 	protected void addRemoveButtonAction() {
-		dataPanel.getDeleteBtn().setText("Delete Guest");
-		
+		dataPanel.getDeleteBtn().setText("Fire Employee");
 		dataPanel.getDeleteBtn().addActionListener(new ActionListener() {
 			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
-				CustomTableModel<Guest> customTableModel = (CustomTableModel<Guest>) dataPanel.getTable().getModel();
-				int res = JOptionPane.showConfirmDialog(parent.getContentPane(), "Are you sure you want to delete this user?",
-						"Delete user", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				CustomTableModel<Employee> customTableModel = (CustomTableModel<Employee>) dataPanel.getTable()
+						.getModel();
+				int res = JOptionPane.showConfirmDialog(parent.getContentPane(),
+						"Are you sure you want to delete this user?", "Delete user", JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
 				if (res != JOptionPane.YES_OPTION)
 					return;
 				ControllerActionStatus status = customTableModel.remove(dataPanel.getTable().getSelectedRow());
 				switch (status) {
 				case SUCCESS:
-					JOptionPane.showMessageDialog(parent.getContentPane(), "Guest deleted successfully", "Success",
+					JOptionPane.showMessageDialog(parent.getContentPane(), "Employee fired successfully", "Success",
 							JOptionPane.INFORMATION_MESSAGE);
 					break;
 				case NO_RECORD:
-					JOptionPane.showMessageDialog(parent.getContentPane(), "Guest not found", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(parent.getContentPane(), "Employee not found", "Error",
+							JOptionPane.ERROR_MESSAGE);
 					break;
 				default:
-					JOptionPane.showMessageDialog(parent.getContentPane(), "An error occured", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(parent.getContentPane(), "An error occured", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					break;
 				}
 				dataPanel.getTable().updateUI();
 			}
 		});
 	}
-	
 }
