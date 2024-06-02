@@ -59,6 +59,7 @@ public class MainAdmin extends JFrame {
 		addRoomTypesTab();
 		addReservationAdditionsTab();
 		addReservationsTab();
+		addPriceListsTab();
 		
 		for (Tab<?> tab : tabs) {
 			tab.setTabs((ArrayList<Tab<?>>) tabs.clone());
@@ -115,6 +116,12 @@ public class MainAdmin extends JFrame {
 		ReservationsTab reservationTab = new ReservationsTab(this);
 		tabs.add(reservationTab);
 		tabbedPane.addTab("Reservations", new ImageIcon("./assets/icons/reservations.png"), reservationTab.getDataPanel(), null);
+	}
+	
+	private void addPriceListsTab() {
+		PriceListsTab priceListsTab = new PriceListsTab(this);
+        tabs.add(priceListsTab);
+        tabbedPane.addTab("Price Lists", new ImageIcon("./assets/icons/price_lists.png"), priceListsTab.getDataPanel(), null);
 	}
 
 }

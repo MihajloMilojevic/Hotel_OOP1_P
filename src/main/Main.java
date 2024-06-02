@@ -11,7 +11,7 @@ public class Main {
 	public static void main(String[] args) {
 		try {
 			boolean init = false;
-			// init = true;
+			//init = true;
 			if(init) {
 				InitialDatabase.init();
 				return;
