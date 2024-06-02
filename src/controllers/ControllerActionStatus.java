@@ -7,5 +7,5 @@ public enum ControllerActionStatus {
 	DUPLICATE_INDEX,
 	INCOPLETE_DATA,
 	ERROR,
-	IN_USE
+	IN_USE, NO_ROOM
 }

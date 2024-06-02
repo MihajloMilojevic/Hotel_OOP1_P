@@ -360,42 +360,7 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
-		connections.add(new Connection<PriceList, RoomAddition>(
-				getPriceLists(), getRoomAdditions(), new File(settings.getSetting("database",
-						"priceLists_roomAdditions_connection_file_path", "./data/default.csv")),
-				new ConnectionActions<PriceList, RoomAddition>() {
-					@Override
-					public void load(Table<PriceList> table1, Table<RoomAddition> table2, String path)
-							throws IOException, ParseException, NoElementException {
-						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
-						for (String line : lines) {
-							String[] parts = line.split(";");
-							if (parts.length != 3) {
-								throw new ParseException("Invalid csv record", 0);
-							}
-							PriceList priceList = table1.selectById(parts[0]);
-							RoomAddition reservationAddition = table2.selectById(parts[1]);
-							priceList.getRoomAdditionPrices().put(reservationAddition,
-									Double.parseDouble(parts[2]));
-							table1.update(priceList, false);
-						}
-					}
-
-					@Override
-					public void save(Table<PriceList> table1, Table<RoomAddition> table2, String path)
-							throws IOException, ParseException {
-						List<String> lines = new ArrayList<String>();
-						for (PriceList priceList : table1.getRows()) {
-							for (RoomAddition roomAddition : priceList.getRoomAdditionPrices()
-									.keySet()) {
-								lines.add(priceList.getId() + ";" + roomAddition.getId() + ";" + Double
-										.toString(priceList.getRoomAdditionPrices().get(roomAddition)));
-							}
-						}
-						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
-					}
-				}));
-
+		
 		/* ****************************** INDECIES *************************************** */
 		getUsers().addIndex("username");
 		getRooms().addIndex("number");

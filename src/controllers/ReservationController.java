@@ -12,7 +12,9 @@ import models.Model;
 import models.PriceList;
 import models.Reservation;
 import models.ReservationAddition;
+import models.Room;
 import models.RoomAddition;
+import models.enums.ReservationStatus;
 
 public class ReservationController {
 
@@ -31,15 +33,28 @@ public class ReservationController {
 
 	public static ControllerActionStatus addReservation(Reservation reservation) {
 		try {
+			if (!isThereRoom(reservation)) {
+				return ControllerActionStatus.NO_ROOM;
+			}
+			reservation.setPrice(calculateTotalPrice(reservation));
 			AppState.getInstance().getDatabase().getReservations().insert(reservation);
 			return ControllerActionStatus.SUCCESS;
 		} catch (DuplicateIndexException e) {
 			return ControllerActionStatus.DUPLICATE_INDEX;
+		} catch (PriceException e) {
+			return ControllerActionStatus.ERROR;
+		} catch (Exception e) {
+			return ControllerActionStatus.ERROR;
 		}
 	}
 
 	public static ControllerActionStatus updateReservation(Reservation reservation) {
 		try {
+			if (!isThereRoom(reservation)) {
+				return ControllerActionStatus.NO_ROOM;
+			}
+			reservation.setPrice(calculateTotalPrice(reservation));
+			reservation.setStatus(ReservationStatus.PENDING);
 			AppState.getInstance().getDatabase().getReservations().update(reservation);
 			return ControllerActionStatus.SUCCESS;
 		} catch (NoElementException e) {
@@ -68,6 +83,22 @@ public class ReservationController {
 		} catch (Exception e) {
 			return ControllerActionStatus.ERROR;
 		}
+	}
+	
+	public static boolean isThereRoom(Reservation reservation) {
+		return AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
+			
+			@Override
+			public boolean check(Model row) {
+				Room room = (Room) row;
+				for (RoomAddition ra : reservation.getRoomAdditions()) {
+					if (!room.getRoomAdditions().contains(ra)) {
+						return false;
+					}
+				}
+				return room.getType().equals(reservation.getRoomType());
+			}
+		}).size() > 0;
 	}
 
 	public static ControllerActionStatus updateReservationAddition(ReservationAddition reservationAddition) {
@@ -162,9 +193,6 @@ public class ReservationController {
 			if (priceList != null) {
 				totalPrice += priceList.getPrice(reservation.getRoomType());
 				for (ReservationAddition ra : reservation.getReservationAdditions()) {
-					totalPrice += priceList.getPrice(ra);
-				}
-				for (RoomAddition ra : reservation.getRoomAdditions()) {
 					totalPrice += priceList.getPrice(ra);
 				}
 			}

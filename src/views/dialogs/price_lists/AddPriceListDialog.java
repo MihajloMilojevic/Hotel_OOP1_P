@@ -34,7 +34,6 @@ import controllers.RoomController;
 import models.Model;
 import models.PriceList;
 import models.ReservationAddition;
-import models.RoomAddition;
 import models.RoomType;
 import utils.Pair;
 
@@ -63,7 +62,6 @@ public class AddPriceListDialog extends JDialog {
 	private JDateChooser startDateCh;
 	private JDateChooser endDateCh;
 	private ArrayList<Pair<RoomType, JSpinner>> roomTypes;
-	private ArrayList<Pair<RoomAddition, JSpinner>> roomAdditions;
 	private ArrayList<Pair<ReservationAddition, JSpinner>> reservationAdditions;
 	
 	private PriceList priceList;
@@ -270,58 +268,6 @@ public class AddPriceListDialog extends JDialog {
 					panel.add(verticalStrut, gbc_verticalStrut);
 				}
 				{
-					JLabel lblNewLabel_5_1 = new JLabel("Room additions prices:");
-					lblNewLabel_5_1.setForeground(Color.WHITE);
-					lblNewLabel_5_1.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-					GridBagConstraints gbc_lblNewLabel_5_1 = new GridBagConstraints();
-					gbc_lblNewLabel_5_1.anchor = GridBagConstraints.WEST;
-					gbc_lblNewLabel_5_1.insets = new Insets(0, 0, 5, 5);
-					gbc_lblNewLabel_5_1.gridx = 1;
-					gbc_lblNewLabel_5_1.gridwidth = 2;
-					gbc_lblNewLabel_5_1.gridy = y++;
-					panel.add(lblNewLabel_5_1, gbc_lblNewLabel_5_1);
-				}
-				{
-					Component verticalStrut = Box.createVerticalStrut(10);
-					GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
-					gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
-					gbc_verticalStrut.gridx = 1;
-					gbc_verticalStrut.gridy = y++;
-					panel.add(verticalStrut, gbc_verticalStrut);
-				}
-				{
-					roomAdditions = new ArrayList<Pair<RoomAddition, JSpinner>>();
-					for (RoomAddition ra : RoomController.getRoomAdditions()) {
-						JLabel lblNewLabel_5_1 = new JLabel(ra.getName() + ":");
-						lblNewLabel_5_1.setForeground(Color.WHITE);
-						lblNewLabel_5_1.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-						GridBagConstraints gbc_lblNewLabel_5_1 = new GridBagConstraints();
-						gbc_lblNewLabel_5_1.anchor = GridBagConstraints.WEST;
-						gbc_lblNewLabel_5_1.insets = new Insets(0, 0, 5, 5);
-						gbc_lblNewLabel_5_1.gridx = 1;
-						gbc_lblNewLabel_5_1.gridy = y;
-						panel.add(lblNewLabel_5_1, gbc_lblNewLabel_5_1);
-						JSpinner spinner = new JSpinner();
-						spinner.setModel(new SpinnerNumberModel(Double.valueOf(0), Double.valueOf(0), null, Double.valueOf(50)));
-						spinner.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-						GridBagConstraints gbc_spinner = new GridBagConstraints();
-						gbc_spinner.fill = GridBagConstraints.HORIZONTAL;
-						gbc_spinner.insets = new Insets(0, 0, 5, 0);
-						gbc_spinner.gridx = 2;
-						gbc_spinner.gridy = y++;
-						panel.add(spinner, gbc_spinner);
-						roomAdditions.add(new Pair<RoomAddition, JSpinner>(ra, spinner));
-					}
-				}
-				{
-					Component verticalStrut = Box.createVerticalStrut(5);
-					GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
-					gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
-					gbc_verticalStrut.gridx = 1;
-					gbc_verticalStrut.gridy = y++;
-					panel.add(verticalStrut, gbc_verticalStrut);
-				}
-				{
 					JLabel lblNewLabel_5_1 = new JLabel("Reservation additions prices:");
 					lblNewLabel_5_1.setForeground(Color.WHITE);
 					lblNewLabel_5_1.setFont(new Font("Times New Roman", Font.PLAIN, 14));
@@ -399,9 +345,6 @@ public class AddPriceListDialog extends JDialog {
 						priceList.setEndDate(endDate);
 						for (Pair<RoomType, JSpinner> rt : roomTypes) {
 							priceList.setPrice(rt.getFirst(), (double) rt.getSecond().getValue());
-						}
-						for (Pair<RoomAddition, JSpinner> ra : roomAdditions) {
-							priceList.setPrice(ra.getFirst(), (double) ra.getSecond().getValue());
 						}
 						for (Pair<ReservationAddition, JSpinner> ra : reservationAdditions) {
 							priceList.setPrice(ra.getFirst(), (double) ra.getSecond().getValue());

@@ -3,6 +3,7 @@ package database;
 import java.time.LocalDate;
 
 import app.AppState;
+import controllers.ReservationController;
 import models.Admin;
 import models.Guest;
 import models.Maid;
@@ -147,7 +148,7 @@ public class InitialDatabase {
 			Room room122 = new Room(122, apartment);
 			Room room123 = new Room(123, apartment);
 			Room room124 = new Room(124, apartment);
-
+			
 			Room room201 = new Room(201, single);
 			Room room202 = new Room(202, single);
 			Room room203 = new Room(203, single);
@@ -172,7 +173,7 @@ public class InitialDatabase {
 			Room room222 = new Room(222, apartment);
 			Room room223 = new Room(223, apartment);
 			Room room224 = new Room(224, apartment);
-
+			
 			Room room301 = new Room(301, single);
 			Room room302 = new Room(302, single);
 			Room room303 = new Room(303, single);
@@ -197,6 +198,7 @@ public class InitialDatabase {
 			Room room322 = new Room(322, apartment);
 			Room room323 = new Room(323, apartment);
 			Room room324 = new Room(324, apartment);
+			
 
 			Room room401 = new Room(401, single);
 			Room room402 = new Room(402, single);
@@ -222,7 +224,8 @@ public class InitialDatabase {
 			Room room422 = new Room(422, apartment);
 			Room room423 = new Room(423, apartment);
 			Room room424 = new Room(424, apartment);
-
+			
+			
 			Room room501 = new Room(501, single);
 			Room room502 = new Room(502, single);
 			Room room503 = new Room(503, single);
@@ -247,10 +250,391 @@ public class InitialDatabase {
 			Room room522 = new Room(522, apartment);
 			Room room523 = new Room(523, apartment);
 			Room room524 = new Room(524, apartment);
-			
-			
 
 			Room room601 = new Room(601, penthouse);
+			Room room701 = new Room(701, penthouse);
+			Room room801 = new Room(801, penthouse);
+			
+			room101.addRoomAddition(cityView);
+			room102.addRoomAddition(jacuzzi);
+			room102.addRoomAddition(balcony);
+			room102.addRoomAddition(cityView);
+			room103.addRoomAddition(wifi);
+			room103.addRoomAddition(jacuzzi);
+			room103.addRoomAddition(balcony);
+			room103.addRoomAddition(cityView);
+			room103.addRoomAddition(tv);
+			room104.addRoomAddition(balcony);
+			room104.addRoomAddition(wifi);
+			room105.addRoomAddition(tv);
+			room105.addRoomAddition(balcony);
+			room105.addRoomAddition(jacuzzi);
+			room105.addRoomAddition(cityView);
+			room106.addRoomAddition(cityView);
+			room106.addRoomAddition(balcony);
+			room106.addRoomAddition(tv);
+			room106.addRoomAddition(jacuzzi);
+			room107.addRoomAddition(wifi);
+			room107.addRoomAddition(balcony);
+			room107.addRoomAddition(cityView);
+			room108.addRoomAddition(balcony);
+			room108.addRoomAddition(wifi);
+			room108.addRoomAddition(tv);
+			room109.addRoomAddition(wifi);
+			room109.addRoomAddition(jacuzzi);
+			room110.addRoomAddition(balcony);
+			room110.addRoomAddition(cityView);
+			room110.addRoomAddition(jacuzzi);
+			room110.addRoomAddition(wifi);
+			room110.addRoomAddition(tv);
+			room111.addRoomAddition(balcony);
+			room111.addRoomAddition(wifi);
+			room111.addRoomAddition(jacuzzi);
+			room111.addRoomAddition(cityView);
+			room111.addRoomAddition(tv);
+			room112.addRoomAddition(cityView);
+			room112.addRoomAddition(tv);
+			room112.addRoomAddition(balcony);
+			room113.addRoomAddition(cityView);
+			room113.addRoomAddition(wifi);
+			room113.addRoomAddition(jacuzzi);
+			room114.addRoomAddition(jacuzzi);
+			room114.addRoomAddition(wifi);
+			room114.addRoomAddition(tv);
+			room114.addRoomAddition(cityView);
+			room115.addRoomAddition(tv);
+			room115.addRoomAddition(cityView);
+			room115.addRoomAddition(wifi);
+			room116.addRoomAddition(cityView);
+			room116.addRoomAddition(wifi);
+			room117.addRoomAddition(balcony);
+			room117.addRoomAddition(cityView);
+			room117.addRoomAddition(tv);
+			room118.addRoomAddition(balcony);
+			room118.addRoomAddition(jacuzzi);
+			room119.addRoomAddition(cityView);
+			room120.addRoomAddition(wifi);
+			room120.addRoomAddition(tv);
+			room120.addRoomAddition(cityView);
+			room120.addRoomAddition(balcony);
+			room120.addRoomAddition(jacuzzi);
+			room121.addRoomAddition(tv);
+			room121.addRoomAddition(cityView);
+			room121.addRoomAddition(balcony);
+			room122.addRoomAddition(tv);
+			room122.addRoomAddition(jacuzzi);
+			room123.addRoomAddition(wifi);
+			room123.addRoomAddition(cityView);
+			room123.addRoomAddition(jacuzzi);
+			room124.addRoomAddition(tv);
+			room124.addRoomAddition(wifi);
+			room124.addRoomAddition(balcony);
+			
+			room201.addRoomAddition(tv);
+			room201.addRoomAddition(wifi);
+			room201.addRoomAddition(jacuzzi);
+			room201.addRoomAddition(balcony);
+			room202.addRoomAddition(jacuzzi);
+			room202.addRoomAddition(cityView);
+			room202.addRoomAddition(balcony);
+			room202.addRoomAddition(tv);
+			room202.addRoomAddition(wifi);
+			room203.addRoomAddition(wifi);
+			room204.addRoomAddition(wifi);
+			room205.addRoomAddition(tv);
+			room205.addRoomAddition(balcony);
+			room206.addRoomAddition(cityView);
+			room207.addRoomAddition(tv);
+			room207.addRoomAddition(balcony);
+			room207.addRoomAddition(jacuzzi);
+			room208.addRoomAddition(tv);
+			room208.addRoomAddition(jacuzzi);
+			room208.addRoomAddition(cityView);
+			room208.addRoomAddition(wifi);
+			room208.addRoomAddition(balcony);
+			room209.addRoomAddition(wifi);
+			room209.addRoomAddition(jacuzzi);
+			room209.addRoomAddition(tv);
+			room209.addRoomAddition(balcony);
+			room210.addRoomAddition(wifi);
+			room210.addRoomAddition(cityView);
+			room210.addRoomAddition(balcony);
+			room210.addRoomAddition(tv);
+			room211.addRoomAddition(tv);
+			room211.addRoomAddition(jacuzzi);
+			room211.addRoomAddition(cityView);
+			room211.addRoomAddition(wifi);
+			room211.addRoomAddition(balcony);
+			room212.addRoomAddition(cityView);
+			room212.addRoomAddition(tv);
+			room212.addRoomAddition(wifi);
+			room213.addRoomAddition(wifi);
+			room213.addRoomAddition(tv);
+			room213.addRoomAddition(cityView);
+			room213.addRoomAddition(jacuzzi);
+			room213.addRoomAddition(balcony);
+			room214.addRoomAddition(wifi);
+			room214.addRoomAddition(balcony);
+			room214.addRoomAddition(cityView);
+			room214.addRoomAddition(jacuzzi);
+			room215.addRoomAddition(tv);
+			room215.addRoomAddition(cityView);
+			room216.addRoomAddition(tv);
+			room216.addRoomAddition(wifi);
+			room216.addRoomAddition(balcony);
+			room217.addRoomAddition(wifi);
+			room217.addRoomAddition(cityView);
+			room217.addRoomAddition(jacuzzi);
+			room217.addRoomAddition(balcony);
+			room218.addRoomAddition(tv);
+			room218.addRoomAddition(balcony);
+			room218.addRoomAddition(wifi);
+			room218.addRoomAddition(cityView);
+			room219.addRoomAddition(balcony);
+			room219.addRoomAddition(tv);
+			room219.addRoomAddition(jacuzzi);
+			room219.addRoomAddition(cityView);
+			room220.addRoomAddition(balcony);
+			room220.addRoomAddition(jacuzzi);
+			room221.addRoomAddition(cityView);
+			room222.addRoomAddition(jacuzzi);
+			room222.addRoomAddition(cityView);
+			room222.addRoomAddition(tv);
+			room222.addRoomAddition(balcony);
+			room223.addRoomAddition(balcony);
+			room224.addRoomAddition(jacuzzi);
+			room224.addRoomAddition(tv);
+			
+			room301.addRoomAddition(jacuzzi);
+			room302.addRoomAddition(balcony);
+			room302.addRoomAddition(tv);
+			room302.addRoomAddition(cityView);
+			room303.addRoomAddition(jacuzzi);
+			room303.addRoomAddition(wifi);
+			room303.addRoomAddition(balcony);
+			room303.addRoomAddition(cityView);
+			room303.addRoomAddition(tv);
+			room304.addRoomAddition(wifi);
+			room304.addRoomAddition(jacuzzi);
+			room304.addRoomAddition(balcony);
+			room305.addRoomAddition(tv);
+			room305.addRoomAddition(balcony);
+			room305.addRoomAddition(cityView);
+			room306.addRoomAddition(tv);
+			room306.addRoomAddition(jacuzzi);
+			room306.addRoomAddition(wifi);
+			room306.addRoomAddition(cityView);
+			room306.addRoomAddition(balcony);
+			room307.addRoomAddition(jacuzzi);
+			room307.addRoomAddition(cityView);
+			room307.addRoomAddition(tv);
+			room307.addRoomAddition(wifi);
+			room307.addRoomAddition(balcony);
+			room308.addRoomAddition(tv);
+			room308.addRoomAddition(balcony);
+			room308.addRoomAddition(cityView);
+			room308.addRoomAddition(wifi);
+			room309.addRoomAddition(wifi);
+			room309.addRoomAddition(tv);
+			room309.addRoomAddition(jacuzzi);
+			room310.addRoomAddition(cityView);
+			room310.addRoomAddition(balcony);
+			room310.addRoomAddition(wifi);
+			room310.addRoomAddition(jacuzzi);
+			room310.addRoomAddition(tv);
+			room311.addRoomAddition(wifi);
+			room311.addRoomAddition(balcony);
+			room311.addRoomAddition(jacuzzi);
+			room311.addRoomAddition(cityView);
+			room311.addRoomAddition(tv);
+			room312.addRoomAddition(cityView);
+			room312.addRoomAddition(balcony);
+			room312.addRoomAddition(wifi);
+			room312.addRoomAddition(tv);
+			room313.addRoomAddition(tv);
+			room313.addRoomAddition(jacuzzi);
+			room314.addRoomAddition(jacuzzi);
+			room314.addRoomAddition(tv);
+			room315.addRoomAddition(balcony);
+			room315.addRoomAddition(jacuzzi);
+			room315.addRoomAddition(wifi);
+			room316.addRoomAddition(wifi);
+			room316.addRoomAddition(cityView);
+			room317.addRoomAddition(cityView);
+			room317.addRoomAddition(balcony);
+			room317.addRoomAddition(tv);
+			room318.addRoomAddition(wifi);
+			room318.addRoomAddition(jacuzzi);
+			room319.addRoomAddition(cityView);
+			room319.addRoomAddition(tv);
+			room319.addRoomAddition(balcony);
+			room319.addRoomAddition(jacuzzi);
+			room320.addRoomAddition(jacuzzi);
+			room320.addRoomAddition(balcony);
+			room320.addRoomAddition(wifi);
+			room321.addRoomAddition(tv);
+			room321.addRoomAddition(balcony);
+			room321.addRoomAddition(jacuzzi);
+			room322.addRoomAddition(cityView);
+			room322.addRoomAddition(tv);
+			room323.addRoomAddition(tv);
+			room323.addRoomAddition(cityView);
+			room323.addRoomAddition(wifi);
+			room323.addRoomAddition(jacuzzi);
+			room324.addRoomAddition(wifi);
+			room324.addRoomAddition(tv);
+			room324.addRoomAddition(cityView);
+			
+			room401.addRoomAddition(cityView);
+			room401.addRoomAddition(wifi);
+			room401.addRoomAddition(balcony);
+			room401.addRoomAddition(jacuzzi);
+			room401.addRoomAddition(tv);
+			room402.addRoomAddition(jacuzzi);
+			room402.addRoomAddition(balcony);
+			room402.addRoomAddition(wifi);
+			room402.addRoomAddition(tv);
+			room403.addRoomAddition(wifi);
+			room403.addRoomAddition(balcony);
+			room403.addRoomAddition(cityView);
+			room403.addRoomAddition(jacuzzi);
+			room403.addRoomAddition(tv);
+			room404.addRoomAddition(tv);
+			room405.addRoomAddition(balcony);
+			room405.addRoomAddition(wifi);
+			room405.addRoomAddition(cityView);
+			room405.addRoomAddition(tv);
+			room406.addRoomAddition(tv);
+			room406.addRoomAddition(balcony);
+			room406.addRoomAddition(jacuzzi);
+			room406.addRoomAddition(cityView);
+			room406.addRoomAddition(wifi);
+			room407.addRoomAddition(balcony);
+			room407.addRoomAddition(jacuzzi);
+			room407.addRoomAddition(wifi);
+			room407.addRoomAddition(tv);
+			room407.addRoomAddition(cityView);
+			room408.addRoomAddition(tv);
+			room409.addRoomAddition(balcony);
+			room409.addRoomAddition(wifi);
+			room409.addRoomAddition(cityView);
+			room410.addRoomAddition(wifi);
+			room410.addRoomAddition(cityView);
+			room410.addRoomAddition(jacuzzi);
+			room411.addRoomAddition(jacuzzi);
+			room411.addRoomAddition(tv);
+			room411.addRoomAddition(wifi);
+			room411.addRoomAddition(cityView);
+			room412.addRoomAddition(balcony);
+			room412.addRoomAddition(cityView);
+			room412.addRoomAddition(tv);
+			room413.addRoomAddition(balcony);
+			room413.addRoomAddition(tv);
+			room413.addRoomAddition(wifi);
+			room413.addRoomAddition(jacuzzi);
+			room414.addRoomAddition(jacuzzi);
+			room414.addRoomAddition(cityView);
+			room414.addRoomAddition(balcony);
+			room415.addRoomAddition(cityView);
+			room415.addRoomAddition(tv);
+			room415.addRoomAddition(balcony);
+			room415.addRoomAddition(wifi);
+			room416.addRoomAddition(balcony);
+			room416.addRoomAddition(jacuzzi);
+			room417.addRoomAddition(tv);
+			room418.addRoomAddition(tv);
+			room418.addRoomAddition(jacuzzi);
+			room419.addRoomAddition(balcony);
+			room419.addRoomAddition(tv);
+			room420.addRoomAddition(wifi);
+			room420.addRoomAddition(tv);
+			room420.addRoomAddition(balcony);
+			room420.addRoomAddition(cityView);
+			room421.addRoomAddition(cityView);
+			room421.addRoomAddition(tv);
+			room421.addRoomAddition(jacuzzi);
+			room421.addRoomAddition(balcony);
+			room422.addRoomAddition(wifi);
+			room422.addRoomAddition(balcony);
+			room422.addRoomAddition(tv);
+			room422.addRoomAddition(cityView);
+			room423.addRoomAddition(wifi);
+			room423.addRoomAddition(cityView);
+			room424.addRoomAddition(wifi);
+			room424.addRoomAddition(jacuzzi);
+			room424.addRoomAddition(balcony);
+			room424.addRoomAddition(cityView);
+			room424.addRoomAddition(tv);
+			
+			room501.addRoomAddition(balcony);
+			room501.addRoomAddition(cityView);
+			room501.addRoomAddition(jacuzzi);
+			room501.addRoomAddition(wifi);
+			room501.addRoomAddition(tv);
+			room502.addRoomAddition(tv);
+			room502.addRoomAddition(cityView);
+			room503.addRoomAddition(jacuzzi);
+			room503.addRoomAddition(tv);
+			room504.addRoomAddition(jacuzzi);
+			room504.addRoomAddition(balcony);
+			room504.addRoomAddition(wifi);
+			room505.addRoomAddition(balcony);
+			room506.addRoomAddition(cityView);
+			room506.addRoomAddition(balcony);
+			room506.addRoomAddition(jacuzzi);
+			room507.addRoomAddition(cityView);
+			room507.addRoomAddition(wifi);
+			room507.addRoomAddition(tv);
+			room508.addRoomAddition(tv);
+			room508.addRoomAddition(cityView);
+			room509.addRoomAddition(cityView);
+			room509.addRoomAddition(wifi);
+			room510.addRoomAddition(tv);
+			room510.addRoomAddition(jacuzzi);
+			room510.addRoomAddition(wifi);
+			room511.addRoomAddition(tv);
+			room511.addRoomAddition(jacuzzi);
+			room511.addRoomAddition(cityView);
+			room512.addRoomAddition(tv);
+			room512.addRoomAddition(wifi);
+			room512.addRoomAddition(jacuzzi);
+			room512.addRoomAddition(cityView);
+			room512.addRoomAddition(balcony);
+			room513.addRoomAddition(wifi);
+			room513.addRoomAddition(balcony);
+			room513.addRoomAddition(cityView);
+			room513.addRoomAddition(jacuzzi);
+			room514.addRoomAddition(jacuzzi);
+			room514.addRoomAddition(cityView);
+			room514.addRoomAddition(balcony);
+			room514.addRoomAddition(wifi);
+			room514.addRoomAddition(tv);
+			room515.addRoomAddition(balcony);
+			room515.addRoomAddition(cityView);
+			room515.addRoomAddition(tv);
+			room515.addRoomAddition(wifi);
+			room516.addRoomAddition(jacuzzi);
+			room517.addRoomAddition(wifi);
+			room517.addRoomAddition(jacuzzi);
+			room518.addRoomAddition(balcony);
+			room518.addRoomAddition(cityView);
+			room519.addRoomAddition(balcony);
+			room519.addRoomAddition(cityView);
+			room520.addRoomAddition(tv);
+			room520.addRoomAddition(wifi);
+			room520.addRoomAddition(cityView);
+			room521.addRoomAddition(wifi);
+			room522.addRoomAddition(balcony);
+			room522.addRoomAddition(jacuzzi);
+			room523.addRoomAddition(balcony);
+			room523.addRoomAddition(wifi);
+			room523.addRoomAddition(tv);
+			room524.addRoomAddition(jacuzzi);
+			room524.addRoomAddition(wifi);
+			room524.addRoomAddition(cityView);
+			room524.addRoomAddition(tv);
+
+			
 			room601.addRoomAddition(balcony);
 			room601.addRoomAddition(cityView);
 			room601.addRoomAddition(jacuzzi);
@@ -258,7 +642,6 @@ public class InitialDatabase {
 			room601.addRoomAddition(wifi);
 			room601.addRoomAddition(climate);
 
-			Room room701 = new Room(701, penthouse);
 			room701.addRoomAddition(balcony);
 			room701.addRoomAddition(cityView);
 			room701.addRoomAddition(jacuzzi);
@@ -266,7 +649,6 @@ public class InitialDatabase {
 			room701.addRoomAddition(wifi);
 			room701.addRoomAddition(climate);
 
-			Room room801 = new Room(801, penthouse);
 			room801.addRoomAddition(balcony);
 			room801.addRoomAddition(cityView);
 			room801.addRoomAddition(jacuzzi);
@@ -298,7 +680,7 @@ public class InitialDatabase {
 			db.getRooms().insert(room122);
 			db.getRooms().insert(room123);
 			db.getRooms().insert(room124);
-
+			
 			db.getRooms().insert(room201);
 			db.getRooms().insert(room202);
 			db.getRooms().insert(room203);
@@ -348,7 +730,7 @@ public class InitialDatabase {
 			db.getRooms().insert(room322);
 			db.getRooms().insert(room323);
 			db.getRooms().insert(room324);
-
+			
 			db.getRooms().insert(room401);
 			db.getRooms().insert(room402);
 			db.getRooms().insert(room403);
@@ -373,7 +755,7 @@ public class InitialDatabase {
 			db.getRooms().insert(room422);
 			db.getRooms().insert(room423);
 			db.getRooms().insert(room424);
-
+			
 			db.getRooms().insert(room501);
 			db.getRooms().insert(room502);
 			db.getRooms().insert(room503);
@@ -425,12 +807,6 @@ public class InitialDatabase {
 			may.setPrice(parking, 300);
 			may.setPrice(roomService, 300);
 			may.setPrice(extraBed, 500);
-			may.setPrice(balcony, 150);
-			may.setPrice(cityView, 200);
-			may.setPrice(jacuzzi, 300);
-			may.setPrice(tv, 100);
-			may.setPrice(wifi, 100);
-			may.setPrice(climate, 200);
 			db.getPriceLists().insert(may);
 			
 			PriceList june = new PriceList(LocalDate.of(2024, 6, 1),  LocalDate.of(2024, 6, 30));
@@ -451,12 +827,6 @@ public class InitialDatabase {
 			june.setPrice(parking, 400);
 			june.setPrice(roomService, 400);
 			june.setPrice(extraBed, 600);
-			june.setPrice(balcony, 200);
-			june.setPrice(cityView, 250);
-			june.setPrice(jacuzzi, 350);
-			june.setPrice(tv, 150);
-			june.setPrice(wifi, 150);
-			june.setPrice(climate, 250);
 			db.getPriceLists().insert(june);
 			
 			PriceList july = new PriceList(LocalDate.of(2024, 7, 1),  LocalDate.of(2024, 7, 31));
@@ -477,12 +847,6 @@ public class InitialDatabase {
 			july.setPrice(parking, 500);
 			july.setPrice(roomService, 500);
 			july.setPrice(extraBed, 700);
-			july.setPrice(balcony, 250);
-			july.setPrice(cityView, 300);
-			july.setPrice(jacuzzi, 400);
-			july.setPrice(tv, 200);
-			july.setPrice(wifi, 200);
-			july.setPrice(climate, 300);
 			db.getPriceLists().insert(july);
 			
 			PriceList rest = new PriceList(LocalDate.of(2024, 8, 1),  null);
@@ -503,25 +867,52 @@ public class InitialDatabase {
 			rest.setPrice(parking, 300);
 			rest.setPrice(roomService, 300);
 			rest.setPrice(extraBed, 500);
-			rest.setPrice(balcony, 150);
-			rest.setPrice(cityView, 200);
-			rest.setPrice(jacuzzi, 300);
-			rest.setPrice(tv, 100);
-			rest.setPrice(wifi, 100);
-			rest.setPrice(climate, 200);
 			db.getPriceLists().insert(rest);
 			
 			/* ****************************** Reservations *************************************** */
-			Reservation r1 = new Reservation(penthouse, djordje, LocalDate.of(2024, 6, 1), LocalDate.of(2024, 6, 10));
+			Reservation r1 = new Reservation(penthouse, djordje, LocalDate.of(2024, 6, 11), LocalDate.of(2024, 6, 14));
+			
 			r1.addReservationAddition(breakfast);
 			r1.addReservationAddition(lunch);
 			r1.addReservationAddition(dinner);
+			
 			r1.addRoomAddition(climate);
 			r1.addRoomAddition(tv);
 			r1.addRoomAddition(wifi);
 			
+			r1.setPrice(ReservationController.calculateTotalPrice(r1));
+			
 			db.getReservations().insert(r1);
 			
+			Reservation r2 = new Reservation(doubleTwoBeds, sofija, LocalDate.of(2024, 6, 12), LocalDate.of(2024, 6, 17));
+			
+			r2.addReservationAddition(allInclusive);
+			r2.addReservationAddition(spa);
+			
+			r2.addRoomAddition(climate);
+			r2.addRoomAddition(tv);
+			r2.addRoomAddition(wifi);
+			r2.addRoomAddition(jacuzzi);
+			
+			r2.setPrice(ReservationController.calculateTotalPrice(r2));
+			
+			db.getReservations().insert(r2);
+			
+			Reservation r3 = new Reservation(single, sara2, LocalDate.of(2024, 6, 14), LocalDate.of(2024, 6, 29));
+			
+			r3.addReservationAddition(extraBed);
+			r3.addReservationAddition(roomService);
+			r3.addReservationAddition(pool);
+			
+			r3.addRoomAddition(climate);
+			r3.addRoomAddition(tv);
+			r3.addRoomAddition(wifi);
+            r3.addRoomAddition(balcony);
+            
+            r3.setPrice(ReservationController.calculateTotalPrice(r3));
+            
+            db.getReservations().insert(r3);
+            
 			db.save();
 			
 		} catch (Exception e) {

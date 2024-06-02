@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 
@@ -425,6 +426,18 @@ public class AddReservationDialog extends JDialog {
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
+						LocalDate startDate = startDateCh.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+						LocalDate endDate = endDateCh.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+						if (startDate.isAfter(endDate)) {
+							JOptionPane.showMessageDialog(null, "Start date must be before end date!", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						if (startDate.isBefore(LocalDate.now())) {
+							JOptionPane.showMessageDialog(null, "Start date must be after today!", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 						if (guest == null && guestCb.getSelectedItem() == null) {
 							JOptionPane.showMessageDialog(null, "Guest is required!", "Error",
 									JOptionPane.ERROR_MESSAGE);
@@ -432,8 +445,8 @@ public class AddReservationDialog extends JDialog {
 						}
 						reservation.setId(id);
 						reservation.setRoomType((RoomType) typeCb.getSelectedItem());
-						reservation.setStartDate(startDateCh.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-						reservation.setEndDate(endDateCh.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+						reservation.setStartDate(startDate);
+						reservation.setEndDate(endDate);
 						ArrayList<RoomAddition> roomAdditions = new ArrayList<RoomAddition>();
 						for (JCheckBox cb : roomAdditionsCBs) {
 							if (cb.isSelected()) {
@@ -449,15 +462,12 @@ public class AddReservationDialog extends JDialog {
 						}
 						reservation.setReservationAdditions(reservationAdditions);
 						reservation.setGuest((Guest)guestCb.getSelectedItem());
-						try {
-							reservation.setPrice(ReservationController.calculateTotalPrice(reservation));
-							priceTf.setText(String.valueOf(reservation.getPrice()));
-							ok = true;
-						} catch (PriceException e1) {
-							JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+						if (!ReservationController.isThereRoom(reservation)) {
+							JOptionPane.showMessageDialog(null, "There is no available room for selected criteria!",
+									"Error", JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						
+						ok = true;
 						dispose();
 					}
 				});

@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 
@@ -43,7 +44,6 @@ import models.Reservation;
 import models.ReservationAddition;
 import models.RoomAddition;
 import models.RoomType;
-import models.enums.ReservationStatus;
 
 
 public class EditReservationDialog extends JDialog {
@@ -66,10 +66,8 @@ public class EditReservationDialog extends JDialog {
 	private JLabel lblNewLabel_4;
 	private JLabel lblNewLabel_5;
 	private JLabel lblNewLabel_g;
-	private JLabel lblNewLabel_s;
 	private JLabel lblNewLabel_2_1;
 	private JTextField idTf;
-	private JComboBox<ReservationStatus> statusCb;
 	private JComboBox<RoomType> typeCb;
 	private JComboBox<Guest> guestCb;
 	private JTextField priceTf;
@@ -182,42 +180,6 @@ public class EditReservationDialog extends JDialog {
 					gbc_idTf.gridx = 2;
 					gbc_idTf.gridy = y++;
 					panel.add(idTf, gbc_idTf);
-				}
-				{
-					if (!isGuest) {
-						Component verticalStrut = Box.createVerticalStrut(5);
-						GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
-						gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
-						gbc_verticalStrut.gridx = 1;
-						gbc_verticalStrut.gridy = y++;
-						panel.add(verticalStrut, gbc_verticalStrut);
-					}
-				}
-				{
-					if ( !isGuest ) {
-						lblNewLabel_s = new JLabel("Status:");
-						lblNewLabel_s.setForeground(Color.WHITE);
-						lblNewLabel_s.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-						GridBagConstraints gbc_lblNewLabel_s = new GridBagConstraints();
-						gbc_lblNewLabel_s.anchor = GridBagConstraints.WEST;
-						gbc_lblNewLabel_s.insets = new Insets(0, 0, 5, 5);
-						gbc_lblNewLabel_s.gridx = 1;
-						gbc_lblNewLabel_s.gridy = y;
-						panel.add(lblNewLabel_s, gbc_lblNewLabel_s);
-					}
-				}
-				{
-					if ( !isGuest ) {
-						statusCb = new JComboBox<ReservationStatus>();
-						lblNewLabel_s.setLabelFor(statusCb);
-						statusCb.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-						GridBagConstraints gbc_statusCb = new GridBagConstraints();
-						gbc_statusCb.insets = new Insets(0, 0, 5, 0);
-						gbc_statusCb.fill = GridBagConstraints.HORIZONTAL;
-						gbc_statusCb.gridx = 2;
-						gbc_statusCb.gridy = y++;
-						panel.add(statusCb, gbc_statusCb);
-					}
 				}
 				{
 					Component verticalStrut = Box.createVerticalStrut(5);
@@ -467,16 +429,26 @@ public class EditReservationDialog extends JDialog {
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
+						LocalDate startDate = startDateCh.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+						LocalDate endDate = endDateCh.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+						if (startDate.isAfter(endDate)) {
+							JOptionPane.showMessageDialog(null, "Start date must be before end date!", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						if (startDate.isBefore(LocalDate.now())) {
+							JOptionPane.showMessageDialog(null, "Start date must be after today!", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 						if (!isGuest && guestCb.getSelectedItem() == null) {
 							JOptionPane.showMessageDialog(null, "Guest is required!", "Error",
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						if (!isGuest)
-							reservation.setStatus((ReservationStatus)statusCb.getSelectedItem());
 						reservation.setRoomType((RoomType) typeCb.getSelectedItem());
-						reservation.setStartDate(startDateCh.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-						reservation.setEndDate(endDateCh.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+						reservation.setStartDate(startDate);
+						reservation.setEndDate(endDate);
 						ArrayList<RoomAddition> roomAdditions = new ArrayList<RoomAddition>();
 						for (JCheckBox cb : roomAdditionsCBs) {
 							if (cb.isSelected()) {
@@ -493,16 +465,12 @@ public class EditReservationDialog extends JDialog {
 						reservation.setReservationAdditions(reservationAdditions);
 						if (!isGuest)
 							reservation.setGuest((Guest)guestCb.getSelectedItem());
-						try {
-							
-							reservation.setPrice(ReservationController.calculateTotalPrice(reservation));
-							priceTf.setText(String.valueOf(reservation.getPrice()));
-							ok = true;
-						} catch (PriceException e1) {
-							JOptionPane.showMessageDialog(getContentPane(), e1.getMessage(), "Error",
-									JOptionPane.ERROR_MESSAGE);
+						if (!ReservationController.isThereRoom(reservation)) {
+							JOptionPane.showMessageDialog(null, "There is no available room for selected criteria!",
+									"Error", JOptionPane.ERROR_MESSAGE);
 							return;
 						}
+						ok = true;
 						
 						dispose();
 					}
@@ -557,11 +525,6 @@ public class EditReservationDialog extends JDialog {
 			});
 		}
 		RoomController.getRoomTypes().forEach(typeCb::addItem);
-		if (!isGuest) {
-			for (ReservationStatus s: ReservationStatus.values()) {
-				statusCb.addItem(s);
-			}
-		}
 		
 		idTf.setText(reservation.getId());
 		for (int i = 0; i < typeCb.getItemCount(); i++) {
@@ -571,7 +534,6 @@ public class EditReservationDialog extends JDialog {
 			}
 		}
 		if (!isGuest) {
-			statusCb.setSelectedItem(reservation.getStatus());
 			guestCb.setSelectedItem(reservation.getGuest());
 		}
 		startDateCh.setDate(java.util.Date.from(reservation.getStartDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
