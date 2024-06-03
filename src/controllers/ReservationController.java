@@ -18,17 +18,20 @@ import models.enums.ReservationStatus;
 
 public class ReservationController {
 
-	public static ArrayList<Reservation> getReservations() {
-		ArrayList<Reservation> rooms = AppState.getInstance().getDatabase().getReservations()
-				.select(new SelectCondition() {
-
-					@Override
-					public boolean check(Model row) {
-						return !row.isDeleted();
-					}
-				});
+	public static ArrayList<Reservation> getReservations(SelectCondition condition) {
+		ArrayList<Reservation> rooms = AppState.getInstance().getDatabase().getReservations().select(condition);
 		rooms.sort((r1, r2) -> r1.getStartDate().compareTo(r2.getStartDate()));
 		return rooms;
+	}
+
+	public static ArrayList<Reservation> getReservations() {
+		return getReservations(new SelectCondition() {
+
+			@Override
+			public boolean check(Model row) {
+				return !row.isDeleted();
+			}
+		});
 	}
 
 	public static ControllerActionStatus addReservation(Reservation reservation) {
@@ -49,12 +52,20 @@ public class ReservationController {
 	}
 
 	public static ControllerActionStatus updateReservation(Reservation reservation) {
+		if (!isThereRoom(reservation)) {
+			return ControllerActionStatus.NO_ROOM;
+		}
 		try {
-			if (!isThereRoom(reservation)) {
-				return ControllerActionStatus.NO_ROOM;
-			}
 			reservation.setPrice(calculateTotalPrice(reservation));
-			reservation.setStatus(ReservationStatus.PENDING);
+		} catch (PriceException e) {
+			return ControllerActionStatus.ERROR;
+		}
+		reservation.setStatus(ReservationStatus.PENDING);
+		return saveChanges(reservation);
+	}
+	
+	private static ControllerActionStatus saveChanges(Reservation reservation) {
+		try {
 			AppState.getInstance().getDatabase().getReservations().update(reservation);
 			return ControllerActionStatus.SUCCESS;
 		} catch (NoElementException e) {
@@ -84,10 +95,10 @@ public class ReservationController {
 			return ControllerActionStatus.ERROR;
 		}
 	}
-	
+
 	public static boolean isThereRoom(Reservation reservation) {
 		return AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
-			
+
 			@Override
 			public boolean check(Model row) {
 				Room room = (Room) row;
@@ -188,8 +199,7 @@ public class ReservationController {
 			PriceList priceList = priceLists.stream()
 					.filter(p -> ((p.getEndDate() == null && p.getStartDate().isBefore(testDate))
 							|| (p.getStartDate().isBefore(testDate) && p.getEndDate().isAfter(testDate))))
-					.findFirst()
-					.orElse(null);
+					.findFirst().orElse(null);
 			if (priceList != null) {
 				totalPrice += priceList.getPrice(reservation.getRoomType());
 				for (ReservationAddition ra : reservation.getReservationAdditions()) {
@@ -199,5 +209,54 @@ public class ReservationController {
 			currentDate = currentDate.plusDays(1);
 		}
 		return totalPrice;
+	}
+
+	public static void rejectExpiredReservations() {
+		AppState.getInstance().getDatabase().getReservations().select(new SelectCondition() {
+
+			@Override
+			public boolean check(Model row) {
+				Reservation reservation = (Reservation) row;
+				return reservation.getEndDate().isBefore(LocalDate.now())
+						&& reservation.getStatus() == ReservationStatus.PENDING;
+			}
+		}).forEach(r -> {
+			r.setStatus(ReservationStatus.REJECTED);
+			r.setPrice(0);
+			saveChanges(r);
+		});
+	}
+
+	public static ControllerActionStatus approveReservation(Reservation reservation) {
+		if (reservation == null) {
+			return ControllerActionStatus.INCOPLETE_DATA;
+		}
+		if (reservation.getStatus() != ReservationStatus.PENDING) {
+			return ControllerActionStatus.INCORECT_STATUS;
+		}
+		// check if room is available
+		/*
+		if (findAvailableRooms(reservation).size() == 0) {
+			return ControllerActionStatus.NO_ROOM;
+		}
+		*/
+		reservation.setStatus(ReservationStatus.APPROVED);
+		return saveChanges(reservation);
+	}
+	/*
+	private static ArrayList<Room> findAvailableRooms(Reservation reservation) {
+		return new ArrayList<>();
+	}
+	*/
+	public static ControllerActionStatus rejectReservation(Reservation reservation) {
+		if (reservation == null) {
+			return ControllerActionStatus.INCOPLETE_DATA;
+		}
+		if (reservation.getStatus() != ReservationStatus.PENDING) {
+			return ControllerActionStatus.INCORECT_STATUS;
+		}
+		reservation.setStatus(ReservationStatus.REJECTED);
+		reservation.setPrice(0);
+		return saveChanges(reservation);
 	}
 }

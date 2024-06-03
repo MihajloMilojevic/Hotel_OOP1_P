@@ -17,11 +17,11 @@ public class CustomTableModel<T extends Model> extends AbstractTableModel {
 	protected TableDataManiplations<T> dataManipulations;
 	protected Tab<?> tab;
 	
+	public CustomTableModel(ArrayList<Pair<String, String>> columns, TableDataManiplations<T> dataManipulations, T model) {
+		this(null, columns, dataManipulations, model);
+	}
 	
 	public CustomTableModel(Tab<?> tab, ArrayList<Pair<String, String>> columns, TableDataManiplations<T> dataManipulations, T model) {
-		if (tab == null) {
-			throw new IllegalArgumentException("Tab cannot be null");
-		}
 		if (columns == null) {
 			throw new IllegalArgumentException("Columns cannot be null");
 		}
@@ -45,21 +45,24 @@ public class CustomTableModel<T extends Model> extends AbstractTableModel {
 	public ControllerActionStatus edit(T item) {
 		ControllerActionStatus status = dataManipulations.edit(item);
 		refresh();
-		tab.notifyTabs();
+		if (tab != null)
+			tab.notifyTabs();
 		return status;
 	}
 
 	public ControllerActionStatus remove(int selectedRow)  {
 		ControllerActionStatus status = dataManipulations.remove(data.get(selectedRow));
 		refresh();
-		tab.notifyTabs();
+		if (tab != null)
+			tab.notifyTabs();
 		return status;
 	}
 
 	public ControllerActionStatus add(T item) {
 		ControllerActionStatus status = dataManipulations.add(item);
 		refresh();
-		tab.notifyTabs();
+		if (tab != null)
+			tab.notifyTabs();
 		return status;
 	}
 	

@@ -217,6 +217,7 @@ public class Reservation extends Model {
 						getPrice(), 
 						reservationAdditionsClone, 
 						roomAdditionsClone);
+		r.setStatus(getStatus());
 		if (this.isDeleted()) r.delete();
 		return r;
 	}

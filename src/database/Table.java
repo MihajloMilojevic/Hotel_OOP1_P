@@ -15,7 +15,6 @@ import exceptions.DuplicateIndexException;
 import exceptions.NoElementException;
 import models.Model;
 import utils.FileChecker;
-import utils.Pair;
 
 public class Table<T extends Model> {
 	private String settingName;
@@ -159,65 +158,6 @@ public class Table<T extends Model> {
 		update(row, true);
 	}
 
-	public void update(SelectCondition condition, ArrayList<Pair<String, Object>> updates, boolean checkIfUnique) throws DuplicateIndexException {
-		if(checkIfUnique) {
-			for (T row : this.rows.values()) {
-				if (condition.check(row)) {
-					try {
-						@SuppressWarnings("unchecked")
-						T copy = (T) row.clone();
-						for (Pair<String, Object> update : updates) {
-							copy.set(update.getFirst(), update.getSecond());
-						}
-						if(!isUnique(copy)) throw new DuplicateIndexException("Duplicate key");
-					} catch (CloneNotSupportedException e) {
-						System.err.println(e.getMessage());
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		for (T row : this.rows.values()) {
-			if (condition.check(row)) {
-				for (Pair<String, Object> update : updates) {
-					row.set(update.getFirst(), update.getSecond());
-				}
-			}
-		}
-		regenerateIndecies();
-	}
-
-	public void update(SelectCondition condition, ArrayList<Pair<String, Object>> updates) throws DuplicateIndexException {
-		update(condition, updates, true);
-	}
-	
-	public void updateByIndex(String indexName, String indexValue, ArrayList<Pair<String, Object>> updates, boolean checkIfUnique) throws DuplicateIndexException {
-		if (!this.indecies.containsKey(indexName)) return;
-		T row = this.indecies.get(indexName).get(indexValue);
-		if(row == null) return;
-		if (checkIfUnique) {
-			try {
-				@SuppressWarnings("unchecked")
-				T copy = (T) row.clone();
-				for (Pair<String, Object> update : updates) {
-					copy.set(update.getFirst(), update.getSecond());
-				}
-				if (!isUnique(copy))
-					throw new DuplicateIndexException("Duplicate key");
-			} catch (CloneNotSupportedException e) {
-				System.err.println(e.getMessage());
-				e.printStackTrace();
-			}
-		}
-		for (Pair<String, Object> update : updates) {
-			row.set(update.getFirst(), update.getSecond());
-		}
-		regenerateIndecies();
-	}
-
-	public void updateByIndex(String indexName, String indexValue, ArrayList<Pair<String, Object>> updates) throws DuplicateIndexException {
-		updateByIndex(indexName, indexValue, updates, true);
-	}
 	
 	public void clear() {
 		this.rows.clear();
@@ -225,7 +165,7 @@ public class Table<T extends Model> {
 	}
 	
 	private void regenerateIndecies() {
-		String[] keys = this.indecies.keySet().toArray(new String[0]);
+		String[] keys = this.indecies.keySet().toArray(String[]::new);
 		this.indecies.clear();
 		for (String indexName : keys) {
 			this.addIndex(indexName);

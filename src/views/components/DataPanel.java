@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,6 +30,8 @@ public class DataPanel<T extends Model> extends JPanel {
 	private JButton addBtn;
 	private JButton editBtn;
 	private JButton deleteBtn;
+	
+	private ArrayList<JButton> addedSelectiveButtons;
 	
 	
 	/**
@@ -91,17 +94,30 @@ public class DataPanel<T extends Model> extends JPanel {
 			public void valueChanged(ListSelectionEvent e) {
 				editBtn.setEnabled(table.getSelectedRow() != -1);
 				deleteBtn.setEnabled(table.getSelectedRow() != -1);
+				for (JButton button : addedSelectiveButtons) {
+					button.setEnabled(table.getSelectedRow() != -1);
+				}
 			}
 		});
 		
 		scrollPane.setViewportView(table);
+		
+		addedSelectiveButtons = new ArrayList<JButton>();
 	}
 
 	public JButton addButton(String text, String iconPath, ActionListener actionListener) {
+		return addButton(text, iconPath, actionListener, false);
+	}
+	
+	public JButton addButton(String text, String iconPath, ActionListener actionListener, boolean folowsSelections) {
 		JButton button = new JButton(text);
 		button.setIcon(new ImageIcon(iconPath));
 		button.addActionListener(actionListener);
 		panel.add(button);
+		if (folowsSelections) {
+			addedSelectiveButtons.add(button);
+			button.setEnabled(false);
+		}
 		return button;
 	}
 	

@@ -1,4 +1,4 @@
-package views.admin;
+package views.receptionist;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,13 +19,12 @@ import controllers.UserController;
 import models.User;
 import views.Login;
 import views.dialogs.profile.UserProfileDialog;
-import views.dialogs.settings.SettingsDialog;
 
-public class AdminMenu extends JMenuBar {
+public class ReceptionistMenu extends JMenuBar {
 
 	private static final long serialVersionUID = 8197696832664778633L;
 
-	public AdminMenu(JFrame parent) {
+	public ReceptionistMenu(JFrame parent) {
 
 		JMenu menu;
 		JMenuItem item;
@@ -87,21 +86,6 @@ public class AdminMenu extends JMenuBar {
 				UserController.logout();
 				parent.dispose();
 				new Login().setVisible(true);
-			}
-		});
-		menu.add(item);
-
-		menu = new JMenu("Settings");
-		menu.setMnemonic(KeyEvent.VK_S);
-		add(menu);
-
-		item = new JMenuItem("Edit");
-		item.setMnemonic(KeyEvent.VK_E);
-		item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
-		item.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new SettingsDialog().setVisible(true);
 			}
 		});
 		menu.add(item);

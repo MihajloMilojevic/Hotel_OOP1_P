@@ -471,9 +471,4 @@ public class Database {
 		return instance;
 	}
 
-	public void test() {
-		for (Reservation r : getReservations().getRows()) {
-			System.out.println(r);
-		}
-	}
 }
