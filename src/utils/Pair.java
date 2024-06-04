@@ -9,6 +9,11 @@ public class Pair<K, V> {
 		this.first = first;
         this.second = second;
 	}
+	
+	@Override
+	public String toString() {
+		return "(" + first + ", " + second + ")";
+	}
 
 	/**
 	 * @return first element of the pair

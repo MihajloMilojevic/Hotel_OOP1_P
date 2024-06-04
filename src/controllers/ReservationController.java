@@ -2,6 +2,7 @@ package controllers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import app.AppState;
 import database.SelectCondition;
@@ -15,6 +16,7 @@ import models.ReservationAddition;
 import models.Room;
 import models.RoomAddition;
 import models.enums.ReservationStatus;
+import utils.Pair;
 
 public class ReservationController {
 
@@ -63,7 +65,7 @@ public class ReservationController {
 		reservation.setStatus(ReservationStatus.PENDING);
 		return saveChanges(reservation);
 	}
-	
+
 	private static ControllerActionStatus saveChanges(Reservation reservation) {
 		try {
 			AppState.getInstance().getDatabase().getReservations().update(reservation);
@@ -235,19 +237,14 @@ public class ReservationController {
 			return ControllerActionStatus.INCORECT_STATUS;
 		}
 		// check if room is available
-		/*
+
 		if (findAvailableRooms(reservation).size() == 0) {
 			return ControllerActionStatus.NO_ROOM;
 		}
-		*/
 		reservation.setStatus(ReservationStatus.APPROVED);
 		return saveChanges(reservation);
 	}
-	/*
-	private static ArrayList<Room> findAvailableRooms(Reservation reservation) {
-		return new ArrayList<>();
-	}
-	*/
+
 	public static ControllerActionStatus rejectReservation(Reservation reservation) {
 		if (reservation == null) {
 			return ControllerActionStatus.INCOPLETE_DATA;
@@ -258,5 +255,54 @@ public class ReservationController {
 		reservation.setStatus(ReservationStatus.REJECTED);
 		reservation.setPrice(0);
 		return saveChanges(reservation);
+	}
+
+	private static ArrayList<Room> findAvailableRooms(Reservation reservation) {
+		// get a list of all approved reservations that overlap with the current
+		// reservation
+		ArrayList<Reservation> reservations = AppState.getInstance().getDatabase().getReservations()
+				.select(new SelectCondition() {
+
+					@Override
+					public boolean check(Model row) {
+						Reservation r = (Reservation) row;
+						return r.getStatus() == ReservationStatus.APPROVED && !r.isDeleted()
+								&& r.getStartDate().isBefore(reservation.getEndDate())
+								&& r.getEndDate().isAfter(reservation.getStartDate());
+					}
+				});
+		// get a set of all rooms
+		HashSet<Room> allRooms = new HashSet<Room>(
+				AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
+
+					@Override
+					public boolean check(Model row) {
+						return !row.isDeleted();
+					}
+				}));
+		ArrayList<Pair<Reservation, ArrayList<Room>>> possibleRooms = new ArrayList<Pair<Reservation, ArrayList<Room>>>();
+		// for each reservation, get a list of rooms that setisfy the reservation
+		// requirements
+		for (Reservation r : reservations) {
+			ArrayList<Room> availableRooms = new ArrayList<Room>();
+			for (Room room : allRooms) {
+				if (room.getType().equals(r.getRoomType())
+						&& room.getRoomAdditions().containsAll(r.getRoomAdditions())) {
+					availableRooms.add(room);
+				}
+			}
+			possibleRooms.add(new Pair<Reservation, ArrayList<Room>>(r, availableRooms));
+		}
+		possibleRooms.sort((p1, p2) -> p1.getSecond().size() - p2.getSecond().size());
+		for (Pair<Reservation, ArrayList<Room>> p : possibleRooms) {
+			for (Room room : p.getSecond()) {
+				if (allRooms.contains(room)) {
+					allRooms.remove(room);
+					break;
+				}
+			}
+		}
+		return new ArrayList<Room>(allRooms.stream().filter(room -> room.getType().equals(reservation.getRoomType())
+				&& room.getRoomAdditions().containsAll(reservation.getRoomAdditions())).toList());
 	}
 }
