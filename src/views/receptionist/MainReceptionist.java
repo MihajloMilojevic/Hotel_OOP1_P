@@ -26,9 +26,11 @@ import controllers.UserController;
 import models.Guest;
 import models.Reservation;
 import utils.CustomTableModel;
+import utils.Filters;
 import utils.Pair;
 import utils.WindowUtils;
 import views.components.DataPanel;
+import views.components.FiltersDialog;
 import views.dialogs.guests.AddGuestDialog;
 import views.dialogs.reservations.AddReservationDialog;
 import views.dialogs.reservations.EditReservationDialog;
@@ -56,7 +58,7 @@ public class MainReceptionist extends JFrame {
 		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
-		ReceptionistFilters.reset();
+		Filters.reset();
 
 		addMenu();
 
@@ -95,6 +97,20 @@ public class MainReceptionist extends JFrame {
 		filtersBtn.setIcon(new ImageIcon("./assets/icons/filters.png"));
 		filtersBtn.setMnemonic('F');
 		filtersBtn.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		filtersBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				FiltersDialog dialog = new FiltersDialog();
+				dialog.setVisible(true);
+				dialog.addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosed(WindowEvent windowEvent) {
+						model.refresh();
+						dataPanel.getTable().updateUI();
+					}
+				});
+			}
+		});
 		toolBar.add(filtersBtn);
 
 		Component horizontalStrut_1 = Box.createHorizontalStrut(25);
@@ -167,7 +183,7 @@ public class MainReceptionist extends JFrame {
 
 			@Override
 			public ArrayList<Reservation> getData() {
-				return ReservationController.getReservations(ReceptionistFilters.getCondition());
+				return ReservationController.getReservations(Filters.getCondition());
 			}
 
 			@Override
@@ -247,6 +263,7 @@ public class MainReceptionist extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				model.refresh();
+				dataPanel.getTable().updateUI();
 			}
 		});
 		dataPanel.getAddBtn().setText("Add Reservation");
@@ -328,7 +345,7 @@ public class MainReceptionist extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int res = JOptionPane.showConfirmDialog(contentPane,
-						"Are you sure you want to approve this reservation?", "Approve", JOptionPane.YES_NO_OPTION,
+						"Are you sure you want to approve this reservation?", "Approve Reservation", JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE);
 				if (res != JOptionPane.YES_OPTION)
 					return;
@@ -364,7 +381,7 @@ public class MainReceptionist extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int res = JOptionPane.showConfirmDialog(contentPane,
-						"Are you sure you want to reject this reservation?", "Cancel", JOptionPane.YES_NO_OPTION,
+						"Are you sure you want to reject this reservation?", "Reject Reservation", JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE);
 				if (res != JOptionPane.YES_OPTION)
 					return;

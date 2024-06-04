@@ -1,4 +1,4 @@
-package views.receptionist;
+package utils;
 
 import java.util.ArrayList;
 
@@ -12,7 +12,7 @@ import models.RoomAddition;
 import models.RoomType;
 import models.enums.ReservationStatus;
 
-public class ReceptionistFilters {
+public class Filters {
 
 	private static ArrayList<ReservationStatus> statuses;
 	private static ArrayList<RoomType> roomTypes;
@@ -53,22 +53,29 @@ public class ReceptionistFilters {
 				if (row.isDeleted()) return false;
 				
 				Reservation reservation = (Reservation) row;
+				System.out.println("Checking reservation: " + reservation);
 				if (statuses.size() > 0 && !statuses.contains(reservation.getStatus())) {
+					System.out.println("Status not matching");
 					return false;
 				}
 				if (roomTypes.size() > 0 && !roomTypes.contains(reservation.getRoomType())) {
+					System.out.println("Room type not matching");
 					return false;
 				}
 				if (reservationAdditions.size() > 0
 						&& !reservationAdditions.containsAll(reservation.getReservationAdditions())) {
+					System.out.println("Reservation additions not matching");
 					return false;
 				}
 				if (roomAdditions.size() > 0 && !roomAdditions.containsAll(reservation.getRoomAdditions())) {
+					System.out.println("Room additions not matching");
 					return false;
 				}
 				if (priceEnabled && (reservation.getPrice() < minPrice || reservation.getPrice() > maxPrice)) {
+					System.out.println("Price not matching");
 					return false;
 				}
+				System.out.println("Reservation passed all filters");
 				return true;
 			}
 		};
@@ -85,7 +92,7 @@ public class ReceptionistFilters {
 	 * @param statuses the statuses to set
 	 */
 	public static void setStatuses(ArrayList<ReservationStatus> statuses) {
-		ReceptionistFilters.statuses = statuses;
+		Filters.statuses = statuses;
 	}
 
 	/**
@@ -99,7 +106,7 @@ public class ReceptionistFilters {
 	 * @param roomTypes the roomTypes to set
 	 */
 	public static void setRoomTypes(ArrayList<RoomType> roomTypes) {
-		ReceptionistFilters.roomTypes = roomTypes;
+		Filters.roomTypes = roomTypes;
 	}
 
 	/**
@@ -113,7 +120,7 @@ public class ReceptionistFilters {
 	 * @param reservationAdditions the reservationAdditions to set
 	 */
 	public static void setReservationAdditions(ArrayList<ReservationAddition> reservationAdditions) {
-		ReceptionistFilters.reservationAdditions = reservationAdditions;
+		Filters.reservationAdditions = reservationAdditions;
 	}
 
 	/**
@@ -127,7 +134,7 @@ public class ReceptionistFilters {
 	 * @param roomAdditions the roomAdditions to set
 	 */
 	public static void setRoomAdditions(ArrayList<RoomAddition> roomAdditions) {
-		ReceptionistFilters.roomAdditions = roomAdditions;
+		Filters.roomAdditions = roomAdditions;
 	}
 
 	/**
@@ -141,7 +148,7 @@ public class ReceptionistFilters {
 	 * @param minPrice the minPrice to set
 	 */
 	public static void setMinPrice(int minPrice) {
-		ReceptionistFilters.minPrice = minPrice;
+		Filters.minPrice = minPrice;
 	}
 
 	/**
@@ -155,7 +162,7 @@ public class ReceptionistFilters {
 	 * @param maxPrice the maxPrice to set
 	 */
 	public static void setMaxPrice(int maxPrice) {
-		ReceptionistFilters.maxPrice = maxPrice;
+		Filters.maxPrice = maxPrice;
 	}
 
 	/**
@@ -169,7 +176,7 @@ public class ReceptionistFilters {
 	 * @param priceEnabled the priceEnabled to set
 	 */
 	public static void setPriceEnabled(boolean priceEnabled) {
-		ReceptionistFilters.priceEnabled = priceEnabled;
+		Filters.priceEnabled = priceEnabled;
 	}
 
 }
