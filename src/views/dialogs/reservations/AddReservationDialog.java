@@ -461,7 +461,10 @@ public class AddReservationDialog extends JDialog {
 							}
 						}
 						reservation.setReservationAdditions(reservationAdditions);
-						reservation.setGuest((Guest)guestCb.getSelectedItem());
+						if (guest == null)
+							reservation.setGuest((Guest)guestCb.getSelectedItem());
+						else
+							reservation.setGuest(guest);
 						if (!ReservationController.isThereRoom(reservation)) {
 							JOptionPane.showMessageDialog(null, "There is no available room for selected criteria!",
 									"Error", JOptionPane.ERROR_MESSAGE);
@@ -557,6 +560,7 @@ public class AddReservationDialog extends JDialog {
 		try {
 			testReservation.setPrice(ReservationController.calculateTotalPrice(testReservation));
 			priceTf.setText(String.valueOf(testReservation.getPrice()));
+			System.out.println(testReservation.getPrice());
         } catch (PriceException e) {
         	priceTf.setText(e.getMessage().split(":")[1].trim() + " is not available for the selected period");
 		}

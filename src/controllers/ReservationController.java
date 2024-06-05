@@ -15,6 +15,7 @@ import models.Reservation;
 import models.ReservationAddition;
 import models.Room;
 import models.RoomAddition;
+import models.User;
 import models.enums.ReservationStatus;
 import utils.Pair;
 
@@ -32,6 +33,16 @@ public class ReservationController {
 			@Override
 			public boolean check(Model row) {
 				return !row.isDeleted();
+			}
+		});
+	}
+	
+	public static ArrayList<Reservation> getGuestReservation(User guest, SelectCondition condition) {
+		return getReservations(new SelectCondition() {
+			@Override
+			public boolean check(Model row) {
+				Reservation r = (Reservation) row;
+				return r.getGuest().equals(guest) && condition.check(r);
 			}
 		});
 	}
@@ -56,6 +67,26 @@ public class ReservationController {
 	public static ControllerActionStatus updateReservation(Reservation reservation) {
 		if (!isThereRoom(reservation)) {
 			return ControllerActionStatus.NO_ROOM;
+		}
+		if (reservation.getStatus() != ReservationStatus.PENDING && reservation.getStatus() != ReservationStatus.APPROVED) {
+			return ControllerActionStatus.INCORECT_STATUS;
+		}
+		try {
+			reservation.setPrice(calculateTotalPrice(reservation));
+		} catch (PriceException e) {
+			return ControllerActionStatus.ERROR;
+		}
+		reservation.setStatus(ReservationStatus.PENDING);
+		return saveChanges(reservation);
+	}
+	
+
+	public static ControllerActionStatus updateGuestReservation(Reservation reservation) {
+		if (!isThereRoom(reservation)) {
+			return ControllerActionStatus.NO_ROOM;
+		}
+		if (reservation.getStatus() != ReservationStatus.PENDING) {
+			return ControllerActionStatus.INCORECT_STATUS;
 		}
 		try {
 			reservation.setPrice(calculateTotalPrice(reservation));
@@ -190,6 +221,7 @@ public class ReservationController {
 	public static float calculateTotalPrice(Reservation reservation) throws PriceException {
 		if (reservation == null || reservation.getStartDate() == null || reservation.getEndDate() == null
 				|| reservation.getRoomType() == null) {
+			System.out.println("CALCULATE TOTAL PRICE: INCOPLETE DATA");
 			return 0;
 		}
 		ArrayList<PriceList> priceLists = PriceListController.getPricesForPeriod(reservation.getStartDate(),
@@ -219,7 +251,7 @@ public class ReservationController {
 			@Override
 			public boolean check(Model row) {
 				Reservation reservation = (Reservation) row;
-				return reservation.getEndDate().isBefore(LocalDate.now())
+				return reservation.getStartDate().isBefore(LocalDate.now())
 						&& reservation.getStatus() == ReservationStatus.PENDING;
 			}
 		}).forEach(r -> {
@@ -256,6 +288,17 @@ public class ReservationController {
 		reservation.setPrice(0);
 		return saveChanges(reservation);
 	}
+	
+	public static ControllerActionStatus cancelReservation(Reservation reservation) {
+		if (reservation == null) {
+			return ControllerActionStatus.INCOPLETE_DATA;
+		}
+		if (reservation.getStatus() == ReservationStatus.REJECTED || reservation.getStatus() == ReservationStatus.CANCELLED) {
+			return ControllerActionStatus.INCORECT_STATUS;
+		}
+		reservation.setStatus(ReservationStatus.CANCELLED);
+		return saveChanges(reservation);
+	}
 
 	private static ArrayList<Room> findAvailableRooms(Reservation reservation) {
 		// get a list of all approved reservations that overlap with the current
@@ -281,7 +324,7 @@ public class ReservationController {
 					}
 				}));
 		ArrayList<Pair<Reservation, ArrayList<Room>>> possibleRooms = new ArrayList<Pair<Reservation, ArrayList<Room>>>();
-		// for each reservation, get a list of rooms that setisfy the reservation
+		// for each reservation, get a list of rooms that satisfy the reservation
 		// requirements
 		for (Reservation r : reservations) {
 			ArrayList<Room> availableRooms = new ArrayList<Room>();
@@ -291,6 +334,7 @@ public class ReservationController {
 					availableRooms.add(room);
 				}
 			}
+			availableRooms.sort((r1, r2) -> r1.getRoomAdditions().size() - r2.getRoomAdditions().size());
 			possibleRooms.add(new Pair<Reservation, ArrayList<Room>>(r, availableRooms));
 		}
 		possibleRooms.sort((p1, p2) -> p1.getSecond().size() - p2.getSecond().size());

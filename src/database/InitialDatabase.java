@@ -913,13 +913,14 @@ public class InitialDatabase {
             
             db.getReservations().insert(r3);
             /*
+            // Scenario to test checking availability of rooms
             RoomType testType = new RoomType("Test type", "Test Type");
             db.getRoomTypes().insert(testType);
             Room testRoom = new Room(1000, testType);
             testRoom.addRoomAddition(wifi);
+            testRoom.addRoomAddition(tv);
             db.getRooms().insert(testRoom);
             Room testRoom2 = new Room(1001, testType);
-            testRoom2.addRoomAddition(wifi);
             testRoom2.addRoomAddition(tv);
             db.getRooms().insert(testRoom2);
             Room testRoom3 = new Room(1002, testType);
@@ -927,19 +928,16 @@ public class InitialDatabase {
             testRoom3.addRoomAddition(tv);
             testRoom3.addRoomAddition(balcony);
             db.getRooms().insert(testRoom3);
-            Reservation testReservation = new Reservation(testType, djordje, LocalDate.of(2024, 6, 11), LocalDate.of(2024, 6, 14));
-            testReservation.addRoomAddition(climate);
-            testReservation.addRoomAddition(tv);
-            db.getReservations().insert(testReservation);
             Reservation testReservation2 = new Reservation(testType, djordje, LocalDate.of(2024, 6, 11), LocalDate.of(2024, 6, 20));
             testReservation2.addRoomAddition(wifi);
             testReservation2.addRoomAddition(tv);
             db.getReservations().insert(testReservation2);
             Reservation testReservation3 = new Reservation(testType, djordje, LocalDate.of(2024, 6, 5), LocalDate.of(2024, 6, 17));
-            testReservation3.addRoomAddition(wifi);
+            testReservation3.addRoomAddition(tv);
             db.getReservations().insert(testReservation3);
             Reservation testReservation4 = new Reservation(testType, djordje, LocalDate.of(2024, 6, 5), LocalDate.of(2024, 6, 14));
             testReservation4.addRoomAddition(tv);
+            testReservation4.addRoomAddition(wifi);
             testReservation4.addRoomAddition(balcony);
             db.getReservations().insert(testReservation4);
             may.setPrice(testType, 1000);

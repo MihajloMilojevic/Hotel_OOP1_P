@@ -28,6 +28,7 @@ import controllers.UserController;
 import models.User;
 import utils.WindowUtils;
 import views.admin.MainAdmin;
+import views.guests.MainGuest;
 import views.receptionist.MainReceptionist;
 
 public class Login extends JFrame {
