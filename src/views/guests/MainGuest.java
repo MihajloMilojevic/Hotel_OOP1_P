@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.TableColumnModel;
@@ -40,16 +41,21 @@ public class MainGuest extends JFrame {
 	private JButton filtersBtn;
 	private DataPanel<Reservation> dataPanel;
 	private CustomTableModel<Reservation> model;
+	private JPanel panel;
+	private JLabel lblNewLabel;
+	private JLabel totalLb;
+	private double total = 0;
 
 	// @SuppressWarnings("unchecked")
 	public MainGuest() {
+		setExtendedState(Frame.ICONIFIED);
 		setIconImage(WindowUtils.getIconImage());
 		setTitle("MHotelify | Guests");
 		setForeground(new Color(255, 255, 255));
 		setBackground(new Color(73, 73, 73));
 		setBounds(200, 100, 754, 586);
 		setLocationRelativeTo(null);
-		setExtendedState(Frame.MAXIMIZED_BOTH);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
 		Filters.reset();
@@ -77,7 +83,9 @@ public class MainGuest extends JFrame {
 
 		addButtons();
 		addReservations();
-
+		
+		dislpayTotal();
+		
 		addWindowListener(WindowUtils.getWindowClosing());
 	}
 
@@ -124,7 +132,8 @@ public class MainGuest extends JFrame {
 
 			@Override
 			public ArrayList<Reservation> getData() {
-				return ReservationController.getGuestReservation(AppState.getInstance().getUser(), Filters.getCondition());
+				dislpayTotal();
+				return ReservationController.getGuestReservation(AppState.getInstance().getUser(), Filters.getCondition());				
 			}
 
 			@Override
@@ -318,5 +327,30 @@ public class MainGuest extends JFrame {
 		}, true);
 
 		contentPane.add(dataPanel, BorderLayout.CENTER);
+		
+		panel = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
+		panel.setBackground(new Color(73, 73, 73));
+		contentPane.add(panel, BorderLayout.SOUTH);
+		
+		lblNewLabel = new JLabel("Total price: ");
+		lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+		lblNewLabel.setForeground(new Color(255, 255, 255));
+		panel.add(lblNewLabel);
+		
+		totalLb = new JLabel("0.00");
+		totalLb.setForeground(Color.WHITE);
+		totalLb.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		panel.add(totalLb);
+	}
+
+	private void dislpayTotal() {
+		total = 0;
+		for (Reservation r : ReservationController.getGuestReservation(AppState.getInstance().getUser(), Filters.getCondition())) {
+			total += r.getPrice();
+		}
+		if (totalLb != null)
+			totalLb.setText(String.format("%.2f", total));
 	}
 }
