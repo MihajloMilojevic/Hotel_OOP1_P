@@ -870,7 +870,7 @@ public class InitialDatabase {
 			db.getPriceLists().insert(rest);
 			
 			/* ****************************** Reservations *************************************** */
-			Reservation r1 = new Reservation(penthouse, djordje, LocalDate.of(2024, 6, 11), LocalDate.of(2024, 6, 14));
+			Reservation r1 = new Reservation(penthouse, djordje, LocalDate.of(2024, 6, 11), LocalDate.of(2024, 6, 14), 4);
 			
 			r1.addReservationAddition(breakfast);
 			r1.addReservationAddition(lunch);
@@ -884,7 +884,7 @@ public class InitialDatabase {
 			
 			db.getReservations().insert(r1);
 			
-			Reservation r2 = new Reservation(doubleTwoBeds, sofija, LocalDate.of(2024, 6, 12), LocalDate.of(2024, 6, 17));
+			Reservation r2 = new Reservation(doubleTwoBeds, sofija, LocalDate.of(2024, 6, 12), LocalDate.of(2024, 6, 17), 2);
 			
 			r2.addReservationAddition(allInclusive);
 			r2.addReservationAddition(spa);
@@ -898,7 +898,7 @@ public class InitialDatabase {
 			
 			db.getReservations().insert(r2);
 			
-			Reservation r3 = new Reservation(single, sara2, LocalDate.of(2024, 6, 14), LocalDate.of(2024, 6, 29));
+			Reservation r3 = new Reservation(single, sara2, LocalDate.of(2024, 6, 14), LocalDate.of(2024, 6, 29), 2);
 			
 			r3.addReservationAddition(extraBed);
 			r3.addReservationAddition(roomService);
@@ -910,6 +910,7 @@ public class InitialDatabase {
             r3.addRoomAddition(balcony);
             
             r3.setPrice(ReservationController.calculateTotalPrice(r3));
+            r3.setRoom(room801);
             
             db.getReservations().insert(r3);
             /*

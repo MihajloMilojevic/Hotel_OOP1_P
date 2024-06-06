@@ -39,6 +39,8 @@ public class ReservationsTab extends Tab<Reservation> {
 		columns.add(new Pair<String, String>("Room Additions", "roomAdditions")); // 6
 		columns.add(new Pair<String, String>("Reservation Additions", "reservationAdditions")); // 7
 		columns.add(new Pair<String, String>("Price", "price")); // 8
+		columns.add(new Pair<String, String>("Number of Guests", "numberOfGuests")); // 9
+		columns.add(new Pair<String, String>("Room", "room")); // 10
 	}
 
 	@Override
@@ -89,6 +91,11 @@ public class ReservationsTab extends Tab<Reservation> {
 					Guest g = ((Guest) data.get(rowIndex).getGuest());
 					return g.getName() + " " + g.getSurname();
 				}
+				if (columns.get(columnIndex).getSecond().equals("room")) {
+					if (((Reservation) data.get(rowIndex)).getRoom() == null)
+						return "";
+					return ((Reservation) data.get(rowIndex)).getRoom().getNumber();
+				}
 				return super.getValueAt(rowIndex, columnIndex);
 			}
 
@@ -129,6 +136,8 @@ public class ReservationsTab extends Tab<Reservation> {
 		columnModel.getColumn(6).setMinWidth(350);
 		columnModel.getColumn(7).setMinWidth(350);
 		columnModel.getColumn(8).setMinWidth(150);
+		columnModel.getColumn(9).setMinWidth(150);
+		columnModel.getColumn(10).setMinWidth(150);
 	}
 
 	@Override
@@ -161,6 +170,10 @@ public class ReservationsTab extends Tab<Reservation> {
 						case SUCCESS:
 							JOptionPane.showMessageDialog(parent.getContentPane(), "Reservation added successfully",
 									"Success", JOptionPane.INFORMATION_MESSAGE);
+							break;
+						case NO_ROOM:
+							JOptionPane.showMessageDialog(parent.getContentPane(), "There is not an available room for this reservation",
+									"Error", JOptionPane.ERROR_MESSAGE);
 							break;
 						case DUPLICATE_INDEX:
 							JOptionPane.showMessageDialog(parent.getContentPane(), "Reservation already exists",
@@ -208,9 +221,17 @@ public class ReservationsTab extends Tab<Reservation> {
 							JOptionPane.showMessageDialog(parent.getContentPane(), "Reservation edited successfully",
 									"Success", JOptionPane.INFORMATION_MESSAGE);
 							break;
+						case NO_ROOM:
+							JOptionPane.showMessageDialog(parent.getContentPane(), "There is not an available room for this reservation",
+									"Error", JOptionPane.ERROR_MESSAGE);
+							break;
 						case DUPLICATE_INDEX:
 							JOptionPane.showMessageDialog(parent.getContentPane(), "Reservation already exists",
 									"Error", JOptionPane.ERROR_MESSAGE);
+							break;
+						case OLD:
+							JOptionPane.showMessageDialog(parent.getContentPane(), "You cannot edit reservations from the past", "Error",
+									JOptionPane.ERROR_MESSAGE);
 							break;
 						case NO_RECORD:
 							JOptionPane.showMessageDialog(parent.getContentPane(), "Reservation not found", "Error",

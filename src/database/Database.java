@@ -34,8 +34,10 @@ public class Database {
 		tables = new HashMap<String, Table<? extends Model>>();
 		connections = new ArrayList<Connection<? extends Model, ? extends Model>>();
 
-		/* ****************************** TABLES *************************************** */
-		
+		/*
+		 * ****************************** TABLES ***************************************
+		 */
+
 		tables.put("users", new Table<User>("users_file_path", new CustomTableParser() {
 
 			@Override
@@ -43,18 +45,18 @@ public class Database {
 				String[] parts = csvString.split(";");
 				UserRole role = UserRole.valueOf(parts[2]);
 				switch (role) {
-					case ADMIN:
-						return new Admin().fromCSV(csvString);
-					case RECEPTIONIST:
-						return new Receptionist().fromCSV(csvString);
-					case MAID:
-						return new Maid().fromCSV(csvString);
-					case GUEST:
-						return new Guest().fromCSV(csvString);
-					default:
-						throw new ParseException("Invalid role", 0);
+				case ADMIN:
+					return new Admin().fromCSV(csvString);
+				case RECEPTIONIST:
+					return new Receptionist().fromCSV(csvString);
+				case MAID:
+					return new Maid().fromCSV(csvString);
+				case GUEST:
+					return new Guest().fromCSV(csvString);
+				default:
+					throw new ParseException("Invalid role", 0);
 				}
-					
+
 			}
 
 			@Override
@@ -62,16 +64,19 @@ public class Database {
 				return model.toString();
 			}
 
-			
 		}));
 		tables.put("roomTypes", new Table<RoomType>("room_types_file_path", new RoomType()));
 		tables.put("roomAdditions", new Table<RoomAddition>("room_additions_file_path", new RoomAddition()));
-		tables.put("reservationAdditions", new Table<ReservationAddition>("reservation_additions_file_path", new ReservationAddition()));
+		tables.put("reservationAdditions",
+				new Table<ReservationAddition>("reservation_additions_file_path", new ReservationAddition()));
 		tables.put("rooms", new Table<Room>("rooms_file_path", new Room()));
 		tables.put("reservations", new Table<Reservation>("reservations_file_path", new Reservation()));
 		tables.put("priceLists", new Table<PriceList>("price_lists_file_path", new PriceList()));
 
-		/* ****************************** CONNECTIONS *************************************** */
+		/*
+		 * ****************************** CONNECTIONS
+		 * ***************************************
+		 */
 
 		connections.add(new Connection<Room, RoomType>(getRooms(), getRoomTypes(),
 				new File(settings.getSetting("database", "rooms_roomTypes_connection_file_path", "./data/default.csv")),
@@ -149,7 +154,7 @@ public class Database {
 								throw new ParseException("Invalid csv record", 0);
 							}
 							Room room = table1.selectById(parts[0]);
-							Maid maid = (Maid)table2.selectById(parts[1]);
+							Maid maid = (Maid) table2.selectById(parts[1]);
 							room.setMaid(maid);
 							table1.update(room, false);
 						}
@@ -211,7 +216,7 @@ public class Database {
 								throw new ParseException("Invalid csv record", 0);
 							}
 							Reservation reservation = table1.selectById(parts[0]);
-							Guest guest = (Guest)table2.selectById(parts[1]);
+							Guest guest = (Guest) table2.selectById(parts[1]);
 							reservation.setGuest(guest);
 							table1.update(reservation, false);
 						}
@@ -360,8 +365,45 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
-		
-		/* ****************************** INDECIES *************************************** */
+		connections.add(new Connection<Reservation, Room>(
+				getReservations(), getRooms(), new File(settings.getSetting("databse",
+						"reservations_rooms_connection_file_path", "./data/default.csv")),
+				new ConnectionActions<Reservation, Room>() {
+
+					@Override
+					public void load(Table<Reservation> table1, Table<Room> table2, String path)
+							throws IOException, ParseException, NoElementException {
+						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
+						for (String line : lines) {
+							
+							String[] parts = line.split(";");
+							if (parts.length != 2) {
+								throw new ParseException("Invalid csv record", 0);
+							}
+							Reservation reservation = table1.selectById(parts[0]);
+							Room room = table2.selectById(parts[1]);
+							reservation.setRoom(room);
+							table1.update(reservation, false);
+						}
+					}
+
+					@Override
+					public void save(Table<Reservation> table1, Table<Room> table2, String path)
+							throws IOException, ParseException {
+						List<String> lines = new ArrayList<String>();
+						for (Reservation reservation : table1.getRows()) {
+							if (reservation.getRoom() == null)
+								continue;
+							lines.add(reservation.getId() + ";" + reservation.getRoom().getId());
+						}
+						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
+					}
+				}));
+
+		/*
+		 * ****************************** INDECIES
+		 * ***************************************
+		 */
 		getUsers().addIndex("username");
 		getRooms().addIndex("number");
 		getRoomTypes().addIndex("name");
@@ -402,8 +444,6 @@ public class Database {
 		}
 		return instance;
 	}
-
-	
 
 	/**
 	 * @return the users

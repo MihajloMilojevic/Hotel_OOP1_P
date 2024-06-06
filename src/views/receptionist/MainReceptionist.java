@@ -285,6 +285,11 @@ public class MainReceptionist extends JFrame {
 							JOptionPane.showMessageDialog(contentPane, "Reservation added successfully", "Success",
 									JOptionPane.INFORMATION_MESSAGE);
 							break;
+						case NO_ROOM:
+							JOptionPane.showMessageDialog(contentPane,
+									"There is not an available room for this reservation", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							break;
 						case DUPLICATE_INDEX:
 							JOptionPane.showMessageDialog(contentPane, "Reservation already exists", "Error",
 									JOptionPane.ERROR_MESSAGE);
@@ -295,7 +300,7 @@ public class MainReceptionist extends JFrame {
 							break;
 						}
 						dataPanel.getTable().updateUI();
-					}					
+					}
 				});
 			}
 		});
@@ -319,6 +324,15 @@ public class MainReceptionist extends JFrame {
 						case SUCCESS:
 							JOptionPane.showMessageDialog(contentPane, "Reservation updated successfully", "Success",
 									JOptionPane.INFORMATION_MESSAGE);
+							break;
+						case NO_ROOM:
+							JOptionPane.showMessageDialog(contentPane,
+									"There is not an available room for this reservation", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							break;
+						case OLD:
+							JOptionPane.showMessageDialog(contentPane, "You cannot edit reservations from the past",
+									"Error", JOptionPane.ERROR_MESSAGE);
 							break;
 						case NO_RECORD:
 							JOptionPane.showMessageDialog(contentPane, "Reservation not found", "Error",
@@ -345,8 +359,8 @@ public class MainReceptionist extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int res = JOptionPane.showConfirmDialog(contentPane,
-						"Are you sure you want to approve this reservation?", "Approve Reservation", JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE);
+						"Are you sure you want to approve this reservation?", "Approve Reservation",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if (res != JOptionPane.YES_OPTION)
 					return;
 				Reservation reservation = model.get(dataPanel.getTable().getSelectedRow());
@@ -381,8 +395,8 @@ public class MainReceptionist extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int res = JOptionPane.showConfirmDialog(contentPane,
-						"Are you sure you want to reject this reservation?", "Reject Reservation", JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE);
+						"Are you sure you want to reject this reservation?", "Reject Reservation",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if (res != JOptionPane.YES_OPTION)
 					return;
 				Reservation reservation = model.get(dataPanel.getTable().getSelectedRow());

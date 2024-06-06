@@ -49,7 +49,10 @@ public class ReservationController {
 
 	public static ControllerActionStatus addReservation(Reservation reservation) {
 		try {
-			if (!isThereRoom(reservation)) {
+			if (reservation == null || !reservation.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			if (findAvailableRooms(reservation).size() == 0) {
 				return ControllerActionStatus.NO_ROOM;
 			}
 			reservation.setPrice(calculateTotalPrice(reservation));
@@ -65,7 +68,17 @@ public class ReservationController {
 	}
 
 	public static ControllerActionStatus updateReservation(Reservation reservation) {
-		if (!isThereRoom(reservation)) {
+		if (reservation == null || !reservation.isValid()) {
+			return ControllerActionStatus.INCOPLETE_DATA;
+		}
+		Reservation dbReservation = AppState.getInstance().getDatabase().getReservations().selectById(reservation.getId());
+		if (dbReservation == null) {
+			return ControllerActionStatus.NO_RECORD;
+		}
+		if (dbReservation.getStartDate().isBefore(LocalDate.now())) {
+			return ControllerActionStatus.OLD;
+		}
+		if (findAvailableRooms(reservation).size() == 0) {
 			return ControllerActionStatus.NO_ROOM;
 		}
 		if (reservation.getStatus() != ReservationStatus.PENDING && reservation.getStatus() != ReservationStatus.APPROVED) {
@@ -82,7 +95,14 @@ public class ReservationController {
 	
 
 	public static ControllerActionStatus updateGuestReservation(Reservation reservation) {
-		if (!isThereRoom(reservation)) {
+		if (reservation == null || !reservation.isValid()) {
+			return ControllerActionStatus.INCOPLETE_DATA;
+		}
+		Reservation dbReservation = AppState.getInstance().getDatabase().getReservations().selectById(reservation.getId());
+		if (dbReservation == null) {
+			return ControllerActionStatus.NO_RECORD;
+		}
+		if (findAvailableRooms(reservation).size() == 0) {
 			return ControllerActionStatus.NO_ROOM;
 		}
 		if (reservation.getStatus() != ReservationStatus.PENDING) {
@@ -99,6 +119,9 @@ public class ReservationController {
 
 	private static ControllerActionStatus saveChanges(Reservation reservation) {
 		try {
+			if (reservation == null || !reservation.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
 			AppState.getInstance().getDatabase().getReservations().update(reservation);
 			return ControllerActionStatus.SUCCESS;
 		} catch (NoElementException e) {
@@ -111,6 +134,9 @@ public class ReservationController {
 
 	public static ControllerActionStatus deleteReservation(Reservation reservation) {
 		try {
+			if (reservation == null || !reservation.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
 			AppState.getInstance().getDatabase().getReservations().delete(reservation);
 			return ControllerActionStatus.SUCCESS;
 		} catch (Exception e) {
@@ -163,6 +189,9 @@ public class ReservationController {
 
 	public static ControllerActionStatus updateReservationAddition(ReservationAddition reservationAddition) {
 		try {
+			if (reservationAddition == null || !reservationAddition.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
 			ArrayList<Reservation> reservation = AppState.getInstance().getDatabase().getReservations()
 					.select(new SelectCondition() {
 
@@ -199,6 +228,9 @@ public class ReservationController {
 
 	public static ControllerActionStatus deleteReservationAddition(ReservationAddition reservationAddition) {
 		try {
+			if (reservationAddition == null || !reservationAddition.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
 			AppState.getInstance().getDatabase().getReservations().select(new SelectCondition() {
 
 				@Override

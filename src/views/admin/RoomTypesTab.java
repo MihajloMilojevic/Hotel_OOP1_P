@@ -32,6 +32,7 @@ public class RoomTypesTab extends Tab<RoomType> {
 	protected void addColumns() {
 		columns.add(new Pair<String, String>("ID", "id")); // 0
 		columns.add(new Pair<String, String>("Name", "name")); // 1
+		columns.add(new Pair<String, String>("Max Capacity", "maxCapacity")); // 2
 	}
 	
 	@Override
@@ -75,6 +76,7 @@ public class RoomTypesTab extends Tab<RoomType> {
 		TableColumnModel columnModel = dataPanel.getTable().getColumnModel();
 		columnModel.getColumn(0).setMinWidth(150);
 		columnModel.getColumn(1).setMinWidth(500);
+		columnModel.getColumn(2).setMinWidth(150);
 	}
 
 	@Override
@@ -130,7 +132,7 @@ public class RoomTypesTab extends Tab<RoomType> {
 				CustomTableModel<RoomType> customTableModel = (CustomTableModel<RoomType>) dataPanel.getTable()
 						.getModel();
 				RoomType roomType = (RoomType) customTableModel.get(dataPanel.getTable().getSelectedRow());
-				EditRoomTypeDialog dialog = new EditRoomTypeDialog(roomType.getName());
+				EditRoomTypeDialog dialog = new EditRoomTypeDialog(roomType);
 				dialog.setVisible(true);
 				dialog.addWindowListener(new WindowAdapter() {
 					@SuppressWarnings("rawtypes")
@@ -138,7 +140,6 @@ public class RoomTypesTab extends Tab<RoomType> {
 					public void windowClosed(WindowEvent e) {
 						if (!dialog.isOk())
 							return;
-						roomType.setName(dialog.getValue());
 						ControllerActionStatus status = ((CustomTableModel) dataPanel.getTable().getModel())
 								.edit(roomType);
 						switch (status) {

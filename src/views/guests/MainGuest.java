@@ -127,6 +127,7 @@ public class MainGuest extends JFrame {
 		columns.add(new Pair<String, String>("Room Additions", "roomAdditions")); // 5
 		columns.add(new Pair<String, String>("Reservation Additions", "reservationAdditions")); // 6
 		columns.add(new Pair<String, String>("Price", "price")); // 7
+		columns.add(new Pair<String, String>("Number of Guests", "numberOfGuests")); // 8
 
 		model = new CustomTableModel<Reservation>(columns, new CustomTableModel.TableDataManiplations<Reservation>() {
 
@@ -207,6 +208,7 @@ public class MainGuest extends JFrame {
 		columnModel.getColumn(5).setMinWidth(350);
 		columnModel.getColumn(6).setMinWidth(350);
 		columnModel.getColumn(7).setMinWidth(150);
+		columnModel.getColumn(8).setMinWidth(150);
 
 		dataPanel.getRefreshBtn().addActionListener(new ActionListener() {
 			@Override
@@ -233,6 +235,10 @@ public class MainGuest extends JFrame {
 						case SUCCESS:
 							JOptionPane.showMessageDialog(contentPane, "Reservation added successfully", "Success",
 									JOptionPane.INFORMATION_MESSAGE);
+							break;
+						case NO_ROOM:
+							JOptionPane.showMessageDialog(contentPane, "There is not an available room for this reservation",
+									"Error", JOptionPane.ERROR_MESSAGE);
 							break;
 						case DUPLICATE_INDEX:
 							JOptionPane.showMessageDialog(contentPane, "Reservation already exists", "Error",
@@ -269,6 +275,10 @@ public class MainGuest extends JFrame {
 							JOptionPane.showMessageDialog(contentPane, "Reservation updated successfully", "Success",
 									JOptionPane.INFORMATION_MESSAGE);
 							break;
+						case NO_ROOM:
+							JOptionPane.showMessageDialog(contentPane, "There is not an available room for this reservation",
+									"Error", JOptionPane.ERROR_MESSAGE);
+							break;
 						case NO_RECORD:
 							JOptionPane.showMessageDialog(contentPane, "Reservation not found", "Error",
 									JOptionPane.ERROR_MESSAGE);
@@ -279,6 +289,10 @@ public class MainGuest extends JFrame {
 							break;
 						case DUPLICATE_INDEX:
 							JOptionPane.showMessageDialog(contentPane, "Reservation already exists", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							break;
+						case OLD:
+							JOptionPane.showMessageDialog(contentPane, "You cannot edit reservations from the past", "Error",
 									JOptionPane.ERROR_MESSAGE);
 							break;
 						default:

@@ -16,17 +16,21 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
+import models.RoomType;
 
 public class EditRoomTypeDialog extends JDialog {
 
 	/**
-	 * @return the value
+	 * @return the room type
 	 */
-	public String getValue() {
-		return value;
+	public RoomType getRoomType() {
+		return roomType;
 	}
 
 	/**
@@ -37,17 +41,17 @@ public class EditRoomTypeDialog extends JDialog {
 	}
 
 	private static final long serialVersionUID = 1L;
-	private String value;
 	private boolean ok = false;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField valueTf;
+	private JSpinner capacitySp;
 	private JLabel titleLb;
-
+	private RoomType roomType;
 	/**
 	 * Create the dialog.
 	 */
-	public EditRoomTypeDialog(String value) {
-		this.value = value;
+	public EditRoomTypeDialog(RoomType roomType) {
+		this.roomType = roomType;
 		setTitle("Edit Room Type");
 		setResizable(false);
 		setModal(true);
@@ -56,7 +60,7 @@ public class EditRoomTypeDialog extends JDialog {
 		setForeground(new Color(255, 255, 255));
 		getContentPane().setBackground(new Color(73, 73, 73));
 		setBackground(new Color(73, 73, 73));
-		setBounds(100, 100, 450, 180);
+		setBounds(100, 100, 450, 200);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setForeground(new Color(255, 255, 255));
@@ -64,10 +68,10 @@ public class EditRoomTypeDialog extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
-		gbl_contentPanel.columnWidths = new int[]{0, 0, 0};
-		gbl_contentPanel.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
-		gbl_contentPanel.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPanel.columnWidths = new int[] { 0, 0, 0 };
+		gbl_contentPanel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0 };
+		gbl_contentPanel.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+		gbl_contentPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		contentPanel.setLayout(gbl_contentPanel);
 		{
 			titleLb = new JLabel("Edit Room Type");
@@ -112,6 +116,38 @@ public class EditRoomTypeDialog extends JDialog {
 			contentPanel.add(valueTf, gbc_valueTf);
 		}
 		{
+			Component verticalStrut = Box.createVerticalStrut(5);
+			GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
+			gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
+			gbc_verticalStrut.gridx = 0;
+			gbc_verticalStrut.gridy = 5;
+			contentPanel.add(verticalStrut, gbc_verticalStrut);
+		}
+		{
+			JLabel lblCategoryName = new JLabel("Max Capacity: ");
+			lblCategoryName.setHorizontalAlignment(SwingConstants.LEFT);
+			lblCategoryName.setForeground(Color.WHITE);
+			lblCategoryName.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+			GridBagConstraints gbc_lblCategoryName = new GridBagConstraints();
+			gbc_lblCategoryName.insets = new Insets(0, 0, 0, 5);
+			gbc_lblCategoryName.anchor = GridBagConstraints.EAST;
+			gbc_lblCategoryName.gridx = 0;
+			gbc_lblCategoryName.gridy = 6;
+			contentPanel.add(lblCategoryName, gbc_lblCategoryName);
+		}
+		{
+			capacitySp = new JSpinner();
+			capacitySp
+					.setModel(new SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+			capacitySp.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+			GridBagConstraints gbc_spinner = new GridBagConstraints();
+			gbc_spinner.fill = GridBagConstraints.HORIZONTAL;
+			gbc_spinner.insets = new Insets(0, 0, 5, 0);
+			gbc_spinner.gridx = 1;
+			gbc_spinner.gridy = 6;
+			contentPanel.add(capacitySp, gbc_spinner);
+		}
+		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setForeground(new Color(255, 255, 255));
 			buttonPane.setBackground(new Color(73, 73, 73));
@@ -123,11 +159,18 @@ public class EditRoomTypeDialog extends JDialog {
 				okButton.setActionCommand("OK");
 				okButton.addActionListener(e -> {
 					if (valueTf.getText().trim().isBlank()) {
-						JOptionPane.showMessageDialog(this, "Room type's name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(this, "Room type's name cannot be empty.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					if ((int) capacitySp.getValue() <= 0) {
+						JOptionPane.showMessageDialog(this, "Room type's capacity must be greater than 0.", "Error",
+								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
 					ok = true;
-					this.value = valueTf.getText().trim();
+					roomType.setName(valueTf.getText().trim());
+					roomType.setMaxCapacity((int) capacitySp.getValue());
 					dispose();
 				});
 				buttonPane.add(okButton);
@@ -143,7 +186,8 @@ public class EditRoomTypeDialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
-		valueTf.setText(value);
+		valueTf.setText(roomType.getName());
+		capacitySp.setValue(roomType.getMaxCapacity());
 	}
-	
+
 }
