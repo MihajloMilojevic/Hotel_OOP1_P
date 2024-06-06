@@ -5,6 +5,7 @@ package models;
 
 import java.time.LocalDate;
 
+import models.enums.EducationLevel;
 import models.enums.Gender;
 import models.enums.UserRole;
 
@@ -36,7 +37,7 @@ public class Receptionist extends Employee {
 	 * @param salary
 	 */
 	public Receptionist(String name, String surname, String gender, LocalDate birthdate, String phone,
-			String address, String username, String password, String levelOfProfessionalEducation,
+			String address, String username, String password, EducationLevel levelOfProfessionalEducation,
 			int yearsOfWorkExperience, double salary) {
 		super(ROLE, name, surname, gender, birthdate, phone, address, username, password, levelOfProfessionalEducation,
 				yearsOfWorkExperience, salary);
@@ -57,7 +58,7 @@ public class Receptionist extends Employee {
 	 * @param salary
 	 */
 	public Receptionist(String id, String name, String surname, String gender, LocalDate birthdate, String phone,
-			String address, String username, String password, String levelOfProfessionalEducation,
+			String address, String username, String password, EducationLevel levelOfProfessionalEducation,
 			int yearsOfWorkExperience, double salary) {
 		super(ROLE, id, name, surname, gender, birthdate, phone, address, username, password, levelOfProfessionalEducation,
 				yearsOfWorkExperience, salary);
@@ -78,7 +79,7 @@ public class Receptionist extends Employee {
 	 * @param salary
 	 */
 	public Receptionist(String name, String surname, Gender gender, LocalDate birthdate, String phone,
-			String address, String username, String password, String levelOfProfessionalEducation,
+			String address, String username, String password, EducationLevel levelOfProfessionalEducation,
 			int yearsOfWorkExperience, double salary) {
 		super(ROLE, name, surname, gender, birthdate, phone, address, username, password, levelOfProfessionalEducation,
 				yearsOfWorkExperience, salary);
@@ -99,7 +100,7 @@ public class Receptionist extends Employee {
 	 * @param salary
 	 */
 	public Receptionist(String id, String name, String surname, Gender gender, LocalDate birthdate, String phone,
-			String address, String username, String password, String levelOfProfessionalEducation,
+			String address, String username, String password, EducationLevel levelOfProfessionalEducation,
 			int yearsOfWorkExperience, double salary) {
 		super(ROLE, id, name, surname, gender, birthdate, phone, address, username, password, levelOfProfessionalEducation,
 				yearsOfWorkExperience, salary);

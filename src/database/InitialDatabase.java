@@ -14,6 +14,7 @@ import models.ReservationAddition;
 import models.Room;
 import models.RoomAddition;
 import models.RoomType;
+import models.enums.EducationLevel;
 import models.enums.Gender;
 
 public class InitialDatabase {
@@ -28,21 +29,21 @@ public class InitialDatabase {
 			 */
 
 			Admin mihajlo = new Admin("Mihajlo", "Milojević", Gender.MALE, LocalDate.of(2004, 5, 21), "+381649781191",
-					"Braće Dronjak 6, Novi Sad", "admin", "admin", "Phd", 2, 500_000);
+					"Braće Dronjak 6, Novi Sad", "admin", "admin", EducationLevel.DOCTORATE_DEGREE, 2, 210_000);
 			db.getUsers().insert(mihajlo);
 
 			Receptionist petar = new Receptionist("Petar", "Popović", Gender.MALE, LocalDate.of(2004, 6, 6),
-					"+381628361185", "Bulevar despota Stefana 7, Novi Sad", "petar", "Petar123", "Bachelor", 1,
-					100_000);
+					"+381628361185", "Bulevar despota Stefana 7, Novi Sad", "petar", "Petar123", EducationLevel.BACHELORS_DEGREE, 1,
+					105_000);
 			Receptionist sara1 = new Receptionist("Sara", "Stojkov", Gender.FEMALE, LocalDate.of(2004, 9, 17),
-					"+381612599941", "Maksima Gorkog 12, Novi Sad", "sara", "Sara987", "Master", 3, 130_000);
+					"+381612599941", "Maksima Gorkog 12, Novi Sad", "sara", "Sara987", EducationLevel.MASTERS_DEGREE, 3, 135_000);
 			db.getUsers().insert(petar);
 			db.getUsers().insert(sara1);
 
 			Maid luka = new Maid("Luka", "Prlinčević", Gender.MALE, LocalDate.of(2004, 8, 26), "+381640862775",
-					"Bulevar despota Stefana 7, Novi Sad", "luka", "Luka123", "Highschool", 0, 70_000);
+					"Bulevar despota Stefana 7, Novi Sad", "luka", "Luka123", EducationLevel.PRIMARY_SCHOOL, 0, 60_000);
 			Maid nikola = new Maid("Nikola", "Rogonjić", Gender.MALE, LocalDate.of(2004, 9, 10), "+381644606859",
-					"Samaila 5, Kraljevo", "nikola", "Nikola123", "Highschool", 0, 75_000);
+					"Samaila 5, Kraljevo", "nikola", "Nikola123", EducationLevel.SECONDARY_SCHOOL, 0, 75_000);
 			db.getUsers().insert(luka);
 			db.getUsers().insert(nikola);
 

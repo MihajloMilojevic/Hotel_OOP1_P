@@ -24,6 +24,9 @@ public class Reservation extends Model {
 	private ArrayList<RoomAddition> roomAdditions;
 	private int numberOfGuests;
 	private Room room;
+	private LocalDate checkInDate;
+	private LocalDate checkOutDate;
+	private LocalDate createdAtDate;
 
 	/*
 	 * ****************************** CONSTRUCTORS
@@ -42,6 +45,9 @@ public class Reservation extends Model {
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.numberOfGuests = 0;
 		this.room = null;
+		this.checkInDate = null;
+		this.checkOutDate = null;
+		this.createdAtDate = LocalDate.now();
 	}
 
 	public Reservation(String id) {
@@ -56,6 +62,9 @@ public class Reservation extends Model {
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.numberOfGuests = 0;
 		this.room = null;
+		this.checkInDate = null;
+		this.checkOutDate = null;
+		this.createdAtDate = LocalDate.now();
 	}
 
 	public Reservation(RoomType roomType, Guest guest, LocalDate startDate, LocalDate endDate, double price,
@@ -72,6 +81,9 @@ public class Reservation extends Model {
 		this.roomAdditions = roomAdditions;
 		this.numberOfGuests = numberOfGuests;
 		this.room = null;
+		this.checkInDate = null;
+		this.checkOutDate = null;
+		this.createdAtDate = LocalDate.now();
 	}
 
 	public Reservation(String id, RoomType roomType, Guest guest, LocalDate startDate, LocalDate endDate, double price,
@@ -88,6 +100,9 @@ public class Reservation extends Model {
 		this.roomAdditions = roomAdditions;
 		this.numberOfGuests = numberOfGuests;
 		this.room = null;
+		this.checkInDate = null;
+		this.checkOutDate = null;
+		this.createdAtDate = LocalDate.now();
 	}
 
 	public Reservation(RoomType roomType, Guest guest, LocalDate startDate, LocalDate endDate, double price,
@@ -103,6 +118,9 @@ public class Reservation extends Model {
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.numberOfGuests = numberOfGuests;
 		this.room = null;
+		this.checkInDate = null;
+		this.checkOutDate = null;
+		this.createdAtDate = LocalDate.now();
 	}
 
 	public Reservation(String id, RoomType roomType, Guest guest, LocalDate startDate, LocalDate endDate, double price,
@@ -118,6 +136,9 @@ public class Reservation extends Model {
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.numberOfGuests = numberOfGuests;
 		this.room = null;
+		this.checkInDate = null;
+		this.checkOutDate = null;
+		this.createdAtDate = LocalDate.now();
 	}
 
 	public Reservation(RoomType roomType, Guest guest, LocalDate startDate, LocalDate endDate, int numberOfGuests) {
@@ -132,6 +153,9 @@ public class Reservation extends Model {
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.numberOfGuests = numberOfGuests;
 		this.room = null;
+		this.checkInDate = null;
+		this.checkOutDate = null;
+		this.createdAtDate = LocalDate.now();
 	}
 
 	public Reservation(String id, RoomType roomType, Guest guest, LocalDate startDate, LocalDate endDate,
@@ -147,6 +171,9 @@ public class Reservation extends Model {
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.numberOfGuests = numberOfGuests;
 		this.room = null;
+		this.checkInDate = null;
+		this.checkOutDate = null;
+		this.createdAtDate = LocalDate.now();
 	}
 
 	/*
@@ -169,6 +196,12 @@ public class Reservation extends Model {
 		if (this.numberOfGuests <= 0)
 			return false;
 		if (this.room != null && !this.room.isValid())
+			return false;
+		if (this.checkInDate != null && this.checkOutDate != null && this.checkInDate.isAfter(this.checkOutDate))
+			return false;
+		if (this.createdAtDate == null)
+			return false;
+		if (this.createdAtDate.isAfter(LocalDate.now()))
 			return false;
 		boolean containsExtraBed = false;
 		for (ReservationAddition reservationAddition : this.reservationAdditions) {
@@ -211,6 +244,12 @@ public class Reservation extends Model {
 			return (Object) getNumberOfGuests();
 		case "room":
 			return (Object) getRoom();
+		case "checkInDate":
+			return (Object) getCheckInDate();
+		case "checkOutDate":
+			return (Object) getCheckOutDate();
+		case "createdAtDate":
+			return (Object) getCreatedAtDate();
 		default:
 			return super.get(key);
 		}
@@ -250,6 +289,15 @@ public class Reservation extends Model {
 		case "room":
 			setRoom((Room) value);
 			break;
+		case "checkInDate":
+			setCheckInDate((LocalDate) value);
+			break;
+		case "checkOutDate":
+			setCheckOutDate((LocalDate) value);
+			break;
+		case "createdAtDate":
+			setCreatedAtDate((LocalDate) value);
+			break;
 		default:
 			super.set(key, value);
 		}
@@ -272,6 +320,9 @@ public class Reservation extends Model {
 				reservationAdditionsClone, roomAdditionsClone);
 		r.setStatus(getStatus());
 		r.setRoom(getRoom() != null ? (Room) getRoom().clone() : null);
+		r.setCreatedAtDate(getCreatedAtDate() != null ? LocalDate.from(getCreatedAtDate()) : null);
+		r.setCheckInDate(getCheckInDate() != null ? LocalDate.from(getCheckInDate()) : null);
+		r.setCheckOutDate(getCheckOutDate() != null ? LocalDate.from(getCheckOutDate()) : null);
 		if (this.isDeleted())
 			r.delete();
 		return r;
@@ -282,7 +333,8 @@ public class Reservation extends Model {
 		return String.join(";",
 				new String[] { super.toString(), getStatus().toString(), CSVDateParser.formatDate(getStartDate()),
 						CSVDateParser.formatDate(getEndDate()), String.valueOf(getPrice()),
-						String.valueOf(getNumberOfGuests()) });
+						String.valueOf(getNumberOfGuests()), CSVDateParser.formatDate(getCheckInDate()),
+						CSVDateParser.formatDate(getCheckOutDate()), CSVDateParser.formatDate(getCreatedAtDate()) });
 	}
 
 	@Override
@@ -297,7 +349,9 @@ public class Reservation extends Model {
 		return status == other.status && roomType.equals(other.roomType) && guest.equals(other.guest)
 				&& startDate.equals(other.startDate) && endDate.equals(other.endDate) && price == other.price
 				&& numberOfGuests == other.numberOfGuests && reservationAdditions.equals(other.reservationAdditions)
-				&& (room == null ? other.room == null : room.equals(other.room));
+				&& (room == null ? other.room == null : room.equals(other.room))
+				&& (checkInDate == null ? other.checkInDate == null : checkInDate.equals(other.checkInDate))
+				&& (checkOutDate == null ? other.checkOutDate == null : checkOutDate.equals(other.checkOutDate));
 	}
 
 	@Override
@@ -316,6 +370,8 @@ public class Reservation extends Model {
 		setNumberOfGuests(reservation.getNumberOfGuests());
 		setRoomAdditions(reservation.getRoomAdditions());
 		setRoom(reservation.getRoom());
+		setCheckInDate(reservation.getCheckInDate());
+		setCheckOutDate(reservation.getCheckOutDate());
 		setReservationAdditions(reservation.getReservationAdditions());
 	}
 
@@ -323,7 +379,7 @@ public class Reservation extends Model {
 	public Model fromCSV(String csv) throws ParseException {
 		super.fromCSV(csv);
 		String[] values = csv.split(";");
-		if (values.length < 7)
+		if (values.length < 10)
 			throw new ParseException("Invalid Reservation csv string", 1);
 		String.valueOf(getPrice());
 		this.status = ReservationStatus.valueOf(values[2]);
@@ -331,6 +387,9 @@ public class Reservation extends Model {
 		this.endDate = CSVDateParser.parseString(values[4]);
 		this.price = Double.parseDouble(values[5]);
 		this.numberOfGuests = Integer.parseInt(values[6]);
+		this.checkInDate = CSVDateParser.parseString(values[7]);
+		this.checkOutDate = CSVDateParser.parseString(values[8]);
+		this.createdAtDate = CSVDateParser.parseString(values[9]);
 		return this;
 	}
 
@@ -493,6 +552,48 @@ public class Reservation extends Model {
 	 */
 	public void setRoom(Room room) {
 		this.room = room;
+	}
+
+	/**
+	 * @return the checkInDate
+	 */
+	public LocalDate getCheckInDate() {
+		return checkInDate;
+	}
+
+	/**
+	 * @param checkInDate the checkInDate to set
+	 */
+	public void setCheckInDate(LocalDate checkInDate) {
+		this.checkInDate = checkInDate;
+	}
+
+	/**
+	 * @return the checkOutDate
+	 */
+	public LocalDate getCheckOutDate() {
+		return checkOutDate;
+	}
+
+	/**
+	 * @param checkOutDate the checkOutDate to set
+	 */
+	public void setCheckOutDate(LocalDate checkOutDate) {
+		this.checkOutDate = checkOutDate;
+	}
+
+	/**
+	 * @return the createdAtDate
+	 */
+	public LocalDate getCreatedAtDate() {
+		return createdAtDate;
+	}
+
+	/**
+	 * @param createdAtDate the createdAtDate to set
+	 */
+	public void setCreatedAtDate(LocalDate createdAtDate) {
+		this.createdAtDate = createdAtDate;
 	}
 
 }

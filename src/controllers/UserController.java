@@ -54,6 +54,10 @@ public class UserController {
 			if (!user.isValid()) {
 				return ControllerActionStatus.INCOPLETE_DATA;
 			}
+			if (user instanceof Employee) {
+				Employee employee = (Employee) user;
+				employee.setSalary(calculateSalary(employee));
+			}
 			AppState.getInstance().getDatabase().getUsers().update(user);
 			return ControllerActionStatus.SUCCESS;
 		} catch (NoElementException e) {
@@ -70,6 +74,10 @@ public class UserController {
 			}
 			if (!user.isValid()) {
 				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			if (user instanceof Employee) {
+				Employee employee = (Employee) user;
+				employee.setSalary(calculateSalary(employee));
 			}
 			AppState.getInstance().getDatabase().getUsers().insert(user);
 			return ControllerActionStatus.SUCCESS;
@@ -107,5 +115,33 @@ public class UserController {
 		ArrayList<Guest> guests = new ArrayList<Guest>();
 		guests.addAll(dbList);
 		return guests;
+	}
+
+	private static double calculateSalary(Employee employee) {
+		double baseSalary = 1500;
+		switch (employee.getLevelOfProfessionalEducation()) {
+		case PRIMARY_SCHOOL:
+			baseSalary += 500;
+			break;
+		case SECONDARY_SCHOOL:
+			baseSalary += 1000;
+			break;
+		case ASSOCIATE_DEGREE:
+			baseSalary += 1500;
+			break;
+		case BACHELORS_DEGREE:
+			baseSalary += 2000;
+			break;
+		case MASTERS_DEGREE:
+			baseSalary += 2500;
+			break;
+		case DOCTORATE_DEGREE:
+			baseSalary += 3500;
+			break;
+		default:
+			break;
+		}
+		double experienceBonus = (employee.getYearsOfWorkExperience() / 2) * 500;
+		return (baseSalary + experienceBonus) * 30;
 	}
 }
