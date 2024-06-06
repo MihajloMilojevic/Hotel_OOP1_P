@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import app.AppState;
 import controllers.ReservationController;
 import models.Admin;
+import models.CleaningLog;
 import models.Guest;
 import models.Maid;
 import models.PriceList;
@@ -914,6 +915,11 @@ public class InitialDatabase {
             r3.setRoom(room801);
             
             db.getReservations().insert(r3);
+            
+            CleaningLog cl1 = new CleaningLog(LocalDate.of(2024, 5, 31), nikola);
+            db.getCleaningLogs().insert(cl1);
+            room101.addCleaningLog(cl1);
+            
             /*
             // Scenario to test checking availability of rooms
             RoomType testType = new RoomType("Test type", "Test Type");

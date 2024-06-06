@@ -14,6 +14,7 @@ public class Room extends Model {
 	private RoomStatus status;
 	private ArrayList<RoomAddition> roomAdditions;
 	private Maid maid;
+	private ArrayList<CleaningLog> cleaningLogs;
 	
 	/* ******************************  CONSTRUCTORS  *************************************** */	
 	
@@ -24,6 +25,7 @@ public class Room extends Model {
 		this.status = RoomStatus.FREE;
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.maid = null;
+		this.cleaningLogs = new ArrayList<CleaningLog>();
 	}
 	
 	public Room(String id) {
@@ -33,6 +35,7 @@ public class Room extends Model {
 		this.status = RoomStatus.FREE;
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.maid = null;
+		this.cleaningLogs = new ArrayList<CleaningLog>();
 	}
 
 	public Room(int number, RoomType type, RoomStatus status, ArrayList<RoomAddition> roomAdditions) {
@@ -42,6 +45,7 @@ public class Room extends Model {
 		this.status = status;
 		this.roomAdditions = roomAdditions;
 		this.maid = null;
+		this.cleaningLogs = new ArrayList<CleaningLog>();
 	}
 	
 	public Room(String id, int number, RoomType type, RoomStatus status, ArrayList<RoomAddition> roomAdditions) {
@@ -51,6 +55,7 @@ public class Room extends Model {
 		this.status = status;
 		this.roomAdditions = roomAdditions;
 		this.maid = null;
+		this.cleaningLogs = new ArrayList<CleaningLog>();
 	}
 
 	public Room(int number, RoomType type, RoomStatus status) {
@@ -60,6 +65,7 @@ public class Room extends Model {
 		this.status = status;
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.maid = null;
+		this.cleaningLogs = new ArrayList<CleaningLog>();
 	}
 
 	public Room(int number, RoomType type) {
@@ -69,6 +75,7 @@ public class Room extends Model {
 		this.status = RoomStatus.FREE;
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.maid = null;
+		this.cleaningLogs = new ArrayList<CleaningLog>();
 	}
 	
 	public Room(String id, int number, RoomType type) {
@@ -78,6 +85,7 @@ public class Room extends Model {
 		this.status = RoomStatus.FREE;
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.maid = null;
+		this.cleaningLogs = new ArrayList<CleaningLog>();
 	}
 	
 	public Room(String id, int number, RoomType type, RoomStatus status) {
@@ -87,6 +95,7 @@ public class Room extends Model {
 		this.status = status;
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.maid = null;
+		this.cleaningLogs = new ArrayList<CleaningLog>();
 	}
 	public Room(int number, RoomType type, String status, ArrayList<RoomAddition> roomAdditions) {
 		super();
@@ -95,6 +104,7 @@ public class Room extends Model {
 		this.status = RoomStatus.valueOf(status);
 		this.roomAdditions = roomAdditions;
 		this.maid = null;
+		this.cleaningLogs = new ArrayList<CleaningLog>();
 	}
 	public Room(String id, int number, RoomType type, String status, ArrayList<RoomAddition> roomAdditions) {
 		super(id);
@@ -103,6 +113,7 @@ public class Room extends Model {
 		this.status = RoomStatus.valueOf(status);
 		this.roomAdditions = roomAdditions;
 		this.maid = null;
+		this.cleaningLogs = new ArrayList<CleaningLog>();
 	}
 
 	public Room(int number, RoomType type, String status) {
@@ -111,6 +122,7 @@ public class Room extends Model {
 		this.status = RoomStatus.valueOf(status);
 		this.roomAdditions = new ArrayList<RoomAddition>();
 		this.maid = null;
+		this.cleaningLogs = new ArrayList<CleaningLog>();
 	}
 	
 	/* ******************************  METHODS  *************************************** */
@@ -121,6 +133,10 @@ public class Room extends Model {
 
 	public void removeRoomAddition(RoomAddition roomAddition) {
 		this.roomAdditions.remove(roomAddition);
+	}
+	
+	public void addCleaningLog(CleaningLog cleaningLog) {
+		this.cleaningLogs.add(cleaningLog);
 	}
 	
 	@Override
@@ -304,6 +320,20 @@ public class Room extends Model {
 	 */
 	public void setMaid(Maid maid) {
 		this.maid = maid;
+	}
+
+	/**
+	 * @return the cleaningLogs
+	 */
+	public ArrayList<CleaningLog> getCleaningLogs() {
+		return cleaningLogs;
+	}
+
+	/**
+	 * @param cleaningLogs the cleaningLogs to set
+	 */
+	public void setCleaningLogs(ArrayList<CleaningLog> cleaningLogs) {
+		this.cleaningLogs = cleaningLogs;
 	}
 
 }

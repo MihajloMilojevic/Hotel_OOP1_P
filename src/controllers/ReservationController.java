@@ -14,7 +14,6 @@ import models.PriceList;
 import models.Reservation;
 import models.ReservationAddition;
 import models.Room;
-import models.RoomAddition;
 import models.User;
 import models.enums.ReservationStatus;
 import utils.Pair;
@@ -52,7 +51,7 @@ public class ReservationController {
 			if (reservation == null || !reservation.isValid()) {
 				return ControllerActionStatus.INCOPLETE_DATA;
 			}
-			if (findAvailableRooms(reservation).size() == 0) {
+			if (!isThereRoom(reservation))  {
 				return ControllerActionStatus.NO_ROOM;
 			}
 			reservation.setPrice(calculateTotalPrice(reservation));
@@ -78,7 +77,7 @@ public class ReservationController {
 		if (dbReservation.getStartDate().isBefore(LocalDate.now())) {
 			return ControllerActionStatus.OLD;
 		}
-		if (findAvailableRooms(reservation).size() == 0) {
+		if (!isThereRoom(reservation))  {
 			return ControllerActionStatus.NO_ROOM;
 		}
 		if (reservation.getStatus() != ReservationStatus.PENDING && reservation.getStatus() != ReservationStatus.APPROVED) {
@@ -102,7 +101,7 @@ public class ReservationController {
 		if (dbReservation == null) {
 			return ControllerActionStatus.NO_RECORD;
 		}
-		if (findAvailableRooms(reservation).size() == 0) {
+		if (!isThereRoom(reservation))  {
 			return ControllerActionStatus.NO_ROOM;
 		}
 		if (reservation.getStatus() != ReservationStatus.PENDING) {
@@ -172,19 +171,7 @@ public class ReservationController {
 	}
 
 	public static boolean isThereRoom(Reservation reservation) {
-		return AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
-
-			@Override
-			public boolean check(Model row) {
-				Room room = (Room) row;
-				for (RoomAddition ra : reservation.getRoomAdditions()) {
-					if (!room.getRoomAdditions().contains(ra)) {
-						return false;
-					}
-				}
-				return room.getType().equals(reservation.getRoomType());
-			}
-		}).size() > 0;
+		return findAvailableRooms(reservation).size() > 0;
 	}
 
 	public static ControllerActionStatus updateReservationAddition(ReservationAddition reservationAddition) {
@@ -318,7 +305,7 @@ public class ReservationController {
 		}
 		// check if room is available
 
-		if (findAvailableRooms(reservation).size() == 0) {
+		if (!isThereRoom(reservation))  {
 			return ControllerActionStatus.NO_ROOM;
 		}
 		reservation.setStatus(ReservationStatus.APPROVED);
