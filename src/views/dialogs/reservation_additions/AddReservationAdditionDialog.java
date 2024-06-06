@@ -16,7 +16,9 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -27,6 +29,14 @@ public class AddReservationAdditionDialog extends JDialog {
 	 */
 	public String getValue() {
 		return value;
+	}
+	
+	
+	/**
+	 * @return the price
+	 */
+	public double getPrice() {
+		return initialPrice;
 	}
 
 	/**
@@ -42,12 +52,15 @@ public class AddReservationAdditionDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField valueTf;
 	private JLabel titleLb;
+	private JSpinner priceSp;
+	private double initialPrice;
 
 	/**
 	 * Create the dialog.
 	 */
 	public AddReservationAdditionDialog() {
 		this.value = "";
+		this.initialPrice = 0;
 		setTitle("Add Reservation Addition");
 		setResizable(false);
 		setModal(true);
@@ -56,7 +69,7 @@ public class AddReservationAdditionDialog extends JDialog {
 		setForeground(new Color(255, 255, 255));
 		getContentPane().setBackground(new Color(73, 73, 73));
 		setBackground(new Color(73, 73, 73));
-		setBounds(100, 100, 450, 180);
+		setBounds(100, 100, 450, 200);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setForeground(new Color(255, 255, 255));
@@ -112,6 +125,37 @@ public class AddReservationAdditionDialog extends JDialog {
 			contentPanel.add(valueTf, gbc_valueTf);
 		}
 		{
+			Component verticalStrut = Box.createVerticalStrut(5);
+			GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
+			gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
+			gbc_verticalStrut.gridx = 0;
+			gbc_verticalStrut.gridy = 5;
+			contentPanel.add(verticalStrut, gbc_verticalStrut);
+		}
+		{
+			JLabel lblCategoryName = new JLabel("Initial Price: ");
+			lblCategoryName.setHorizontalAlignment(SwingConstants.LEFT);
+			lblCategoryName.setForeground(Color.WHITE);
+			lblCategoryName.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+			GridBagConstraints gbc_lblCategoryName = new GridBagConstraints();
+			gbc_lblCategoryName.insets = new Insets(0, 0, 0, 5);
+			gbc_lblCategoryName.anchor = GridBagConstraints.EAST;
+			gbc_lblCategoryName.gridx = 0;
+			gbc_lblCategoryName.gridy = 6;
+			contentPanel.add(lblCategoryName, gbc_lblCategoryName);
+		}
+		{
+			priceSp = new JSpinner();
+			priceSp.setModel(new SpinnerNumberModel(Double.valueOf(0), Double.valueOf(0), null, Double.valueOf(50)));
+			priceSp.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+			GridBagConstraints gbc_spinner = new GridBagConstraints();
+			gbc_spinner.fill = GridBagConstraints.HORIZONTAL;
+			gbc_spinner.insets = new Insets(0, 0, 5, 0);
+			gbc_spinner.gridx = 1;
+			gbc_spinner.gridy = 6;
+			contentPanel.add(priceSp, gbc_spinner);
+		}
+		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setForeground(new Color(255, 255, 255));
 			buttonPane.setBackground(new Color(73, 73, 73));
@@ -126,8 +170,14 @@ public class AddReservationAdditionDialog extends JDialog {
 						JOptionPane.showMessageDialog(this, "Reservation addition's name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
+					if ((double) priceSp.getValue() <= 0) {
+						JOptionPane.showMessageDialog(this, "Reservation addition's price cannot be negative.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					ok = true;
 					this.value = valueTf.getText().trim();
+					this.initialPrice = (double) priceSp.getValue();
 					dispose();
 				});
 				buttonPane.add(okButton);

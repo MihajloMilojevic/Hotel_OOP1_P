@@ -118,8 +118,24 @@ public class ReservationController {
 		}
 	}
 
-	public static ControllerActionStatus addReservationAddition(ReservationAddition reservationAddition) {
+	public static ControllerActionStatus addReservationAddition(ReservationAddition reservationAddition, double initialPrice) {
 		try {
+			if (reservationAddition == null || !reservationAddition.isValid()) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			AppState.getInstance().getDatabase().getPriceLists().select(new SelectCondition() {
+
+				@Override
+				public boolean check(Model row) {
+					PriceList priceList = (PriceList) row;
+					return !row.isDeleted()
+							&& (priceList.getEndDate() != null && priceList.getEndDate().isAfter(LocalDate.now())
+									|| priceList.getEndDate() == null);
+				}
+			}).forEach(priceList -> {
+				priceList.setPrice(reservationAddition, initialPrice);
+				PriceListController.updatePriceList(priceList);
+			});
 			AppState.getInstance().getDatabase().getReservationAdditions().insert(reservationAddition);
 			return ControllerActionStatus.SUCCESS;
 		} catch (DuplicateIndexException e) {

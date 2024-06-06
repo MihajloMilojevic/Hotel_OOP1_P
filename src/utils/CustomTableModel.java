@@ -112,4 +112,5 @@ public class CustomTableModel<T extends Model> extends AbstractTableModel {
 		public ControllerActionStatus remove(T model);
 		public ControllerActionStatus add(T model);
 	}
+
 }

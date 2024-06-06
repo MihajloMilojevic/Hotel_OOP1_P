@@ -14,6 +14,7 @@ import controllers.ControllerActionStatus;
 import controllers.ReservationController;
 import models.ReservationAddition;
 import utils.CustomTableModel;
+import utils.CustomTableModelWithInitialPrice;
 import utils.Pair;
 import views.components.DataPanel;
 import views.components.Tab;
@@ -34,8 +35,8 @@ public class ReservationAdditionsTab extends Tab<ReservationAddition> {
 
 	@Override
 	protected void addModel() {
-		model = new CustomTableModel<ReservationAddition>(this, columns,
-				new CustomTableModel.TableDataManiplations<ReservationAddition>() {
+		model = new CustomTableModelWithInitialPrice<ReservationAddition>(this, columns,
+				new CustomTableModelWithInitialPrice.TableDataManiplationsWithPrice<ReservationAddition>() {
 
 					@Override
 					public ArrayList<ReservationAddition> getData() {
@@ -54,7 +55,12 @@ public class ReservationAdditionsTab extends Tab<ReservationAddition> {
 
 					@Override
 					public ControllerActionStatus add(ReservationAddition model) {
-						return ReservationController.addReservationAddition(model);
+						throw new UnsupportedOperationException();
+					}
+
+					@Override
+					public ControllerActionStatus add(ReservationAddition model, double price) {
+						return ReservationController.addReservationAddition(model, price);
 					}
 
 				}, new ReservationAddition());
@@ -97,8 +103,8 @@ public class ReservationAdditionsTab extends Tab<ReservationAddition> {
 					public void windowClosed(WindowEvent e) {
 						if (!dialog.isOk())
 							return;
-						ControllerActionStatus status = ((CustomTableModel<ReservationAddition>) dataPanel.getTable()
-								.getModel()).add(new ReservationAddition(dialog.getValue()));
+						ControllerActionStatus status = ((CustomTableModelWithInitialPrice<ReservationAddition>) dataPanel
+                                .getTable().getModel()).add(new ReservationAddition(dialog.getValue()), dialog.getPrice());
 						switch (status) {
 						case SUCCESS:
 							JOptionPane.showMessageDialog(parent, "Reservation Addition added successfully");

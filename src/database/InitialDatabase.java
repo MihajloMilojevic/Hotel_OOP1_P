@@ -61,13 +61,13 @@ public class InitialDatabase {
 			 * ***************************************
 			 */
 
-			RoomType single = new RoomType("Single");
-			RoomType doubleSingleBed = new RoomType("Double Single Bed");
-			RoomType doubleTwoBeds = new RoomType("Double Two Beds");
-			RoomType tripleThreeBeds = new RoomType("Triple Three Beds");
-			RoomType tripleTwoBeds = new RoomType("Triple Two Beds");
-			RoomType apartment = new RoomType("Apartment");
-			RoomType penthouse = new RoomType("Penthouse");
+			RoomType single = new RoomType("Single", 1);
+			RoomType doubleSingleBed = new RoomType("Double Single Bed", 2);
+			RoomType doubleTwoBeds = new RoomType("Double Two Beds", 2);
+			RoomType tripleThreeBeds = new RoomType("Triple Three Beds", 3);
+			RoomType tripleTwoBeds = new RoomType("Triple Two Beds", 3);
+			RoomType apartment = new RoomType("Apartment", 6);
+			RoomType penthouse = new RoomType("Penthouse", 10);
 			db.getRoomTypes().insert(single);
 			db.getRoomTypes().insert(doubleSingleBed);
 			db.getRoomTypes().insert(doubleTwoBeds);

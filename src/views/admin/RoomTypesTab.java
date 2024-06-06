@@ -15,6 +15,7 @@ import controllers.RoomController;
 import models.RoomAddition;
 import models.RoomType;
 import utils.CustomTableModel;
+import utils.CustomTableModelWithInitialPrice;
 import utils.Pair;
 import views.components.DataPanel;
 import views.components.Tab;
@@ -32,10 +33,10 @@ public class RoomTypesTab extends Tab<RoomType> {
 		columns.add(new Pair<String, String>("ID", "id")); // 0
 		columns.add(new Pair<String, String>("Name", "name")); // 1
 	}
-
+	
 	@Override
 	protected void addModel() {
-		model = new CustomTableModel<RoomType>(this, columns, new CustomTableModel.TableDataManiplations<RoomType>() {
+		model = new CustomTableModelWithInitialPrice<RoomType>(this, columns, new CustomTableModelWithInitialPrice.TableDataManiplationsWithPrice<RoomType>() {
 
 			@Override
 			public ArrayList<RoomType> getData() {
@@ -54,7 +55,11 @@ public class RoomTypesTab extends Tab<RoomType> {
 
 			@Override
 			public ControllerActionStatus add(RoomType model) {
-				return RoomController.addRoomType(model);
+				throw new UnsupportedOperationException();
+			}
+			
+			public ControllerActionStatus add(RoomType model, double price) {
+				return RoomController.addRoomType(model, price);
 			}
 
 		}, new RoomType());
@@ -92,13 +97,11 @@ public class RoomTypesTab extends Tab<RoomType> {
 				AddRoomTypesDialog dialog = new AddRoomTypesDialog();
 				dialog.setVisible(true);
 				dialog.addWindowListener(new WindowAdapter() {
-					@SuppressWarnings("unchecked")
 					@Override
 					public void windowClosed(WindowEvent e) {
 						if (!dialog.isOk())
 							return;
-						ControllerActionStatus status = ((CustomTableModel<RoomType>) dataPanel.getTable().getModel())
-								.add(new RoomType(dialog.getValue()));
+						ControllerActionStatus status = ((CustomTableModelWithInitialPrice<RoomType>)model).add(dialog.getRoomType(), dialog.getInitialPrice());
 						switch (status) {
 						case SUCCESS:
 							JOptionPane.showMessageDialog(null, "Room Type added successfully");
