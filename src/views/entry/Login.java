@@ -1,4 +1,4 @@
-package views;
+package views.entry;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -29,6 +29,7 @@ import models.User;
 import utils.WindowUtils;
 import views.admin.MainAdmin;
 import views.guests.MainGuest;
+import views.maid.MainMaid;
 import views.receptionist.MainReceptionist;
 
 public class Login extends JFrame {

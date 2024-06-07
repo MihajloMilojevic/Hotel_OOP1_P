@@ -5,7 +5,7 @@ import javax.swing.JOptionPane;
 import app.AppState;
 import controllers.ReservationController;
 import database.InitialDatabase;
-import views.Login;
+import views.entry.Login;
 
 public class Main {
 

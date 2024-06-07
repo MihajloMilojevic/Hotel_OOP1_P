@@ -17,9 +17,9 @@ import app.AppState;
 import controllers.ControllerActionStatus;
 import controllers.UserController;
 import models.User;
-import views.Login;
 import views.dialogs.profile.UserProfileDialog;
 import views.dialogs.settings.SettingsDialog;
+import views.entry.Login;
 
 public class AdminMenu extends JMenuBar {
 

@@ -7,12 +7,15 @@ import app.AppState;
 import database.SelectCondition;
 import exceptions.DuplicateIndexException;
 import exceptions.NoElementException;
+import models.CleaningLog;
+import models.Maid;
 import models.Model;
 import models.PriceList;
 import models.Reservation;
 import models.Room;
 import models.RoomAddition;
 import models.RoomType;
+import models.enums.RoomStatus;
 
 public class RoomController {
 
@@ -22,6 +25,19 @@ public class RoomController {
 			@Override
 			public boolean check(Model row) {
 				return !row.isDeleted();
+			}
+		});
+		rooms.sort((r1, r2) -> r1.getNumber() - r2.getNumber());
+		return rooms;
+	}
+	
+	public static ArrayList<Room> getRoomsForMaid(Maid maid) {
+		ArrayList<Room> rooms = AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
+
+			@Override
+			public boolean check(Model row) {
+				Room room = (Room) row;
+				return !room.isDeleted() && room.getMaid() != null && room.getMaid().equals(maid);
 			}
 		});
 		rooms.sort((r1, r2) -> r1.getNumber() - r2.getNumber());
@@ -303,5 +319,20 @@ public class RoomController {
 
 	public static RoomAddition getRoomAdditionByName(String name) {
 		return AppState.getInstance().getDatabase().getRoomAdditions().selectByIndex("name", name);
+	}
+
+	public static ControllerActionStatus markRoomAsCleaned(Room room) {
+		try {
+            if (room == null) {
+                return ControllerActionStatus.INCOPLETE_DATA;
+            }
+            Maid maid = room.getMaid();
+            room.addCleaningLog(new CleaningLog(LocalDate.now(), maid));
+            room.setStatus(RoomStatus.FREE);
+            room.setMaid(null);
+            return updateRoom(room);
+        } catch (Exception e) {
+            return ControllerActionStatus.ERROR;
+        }
 	}
 }

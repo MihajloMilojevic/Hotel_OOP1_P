@@ -1,4 +1,4 @@
-package views.guests;
+package views.maid;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,11 +20,11 @@ import models.User;
 import views.dialogs.profile.UserProfileDialog;
 import views.entry.Login;
 
-public class GuestMenu extends JMenuBar {
+public class MaidMenu extends JMenuBar {
 
 	private static final long serialVersionUID = 8197696832664778633L;
 
-	public GuestMenu(JFrame parent) {
+	public MaidMenu(JFrame parent) {
 
 		JMenu menu;
 		JMenuItem item;
