@@ -138,6 +138,20 @@ public class MainReceptionist extends JFrame {
 		checkOutBtn = new JButton("Check OUT");
 		checkOutBtn.setIcon(new ImageIcon("./assets/icons/check_out.png"));
 		checkOutBtn.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		checkOutBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CheckOUTDialog dialog = new CheckOUTDialog();
+				dialog.setVisible(true);
+				dialog.addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosed(WindowEvent windowEvent) {
+						model.refresh();
+						dataPanel.getTable().updateUI();
+					}
+				});
+			}
+		});
 		toolBar.add(checkOutBtn);
 
 		Component horizontalStrut = Box.createHorizontalStrut(25);

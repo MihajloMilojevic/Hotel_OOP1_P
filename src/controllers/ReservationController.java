@@ -2,6 +2,7 @@ package controllers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import app.AppState;
@@ -9,6 +10,7 @@ import database.SelectCondition;
 import exceptions.DuplicateIndexException;
 import exceptions.NoElementException;
 import exceptions.PriceException;
+import models.Maid;
 import models.Model;
 import models.PriceList;
 import models.Reservation;
@@ -35,6 +37,20 @@ public class ReservationController {
 				Reservation r = (Reservation) row;
 				return r.getStatus() == ReservationStatus.APPROVED && !r.isDeleted()
 						&& r.getCheckInDate() == null && r.getCheckOutDate() == null
+						&& (r.getStartDate().equals(LocalDate.now()) || r.getStartDate().isAfter(LocalDate.now()));
+			}
+		});
+	}
+	
+
+	public static ArrayList<Reservation> getCheckOutReservations() {
+		return getReservations(new SelectCondition() {
+
+			@Override
+			public boolean check(Model row) {
+				Reservation r = (Reservation) row;
+				return r.getStatus() == ReservationStatus.APPROVED && !r.isDeleted()
+						&& r.getCheckInDate() != null && r.getCheckOutDate() == null
 						&& (r.getStartDate().equals(LocalDate.now()) || r.getStartDate().isAfter(LocalDate.now()));
 			}
 		});
@@ -419,7 +435,29 @@ public class ReservationController {
 			if (reservation.getStatus() != ReservationStatus.APPROVED) {
 				return ControllerActionStatus.INCORECT_STATUS;
 			}
-			/*
+			selectedRoom.setStatus(RoomStatus.OCCUPIED);
+			RoomController.updateRoom(selectedRoom);
+			reservation.setRoom(selectedRoom);
+			reservation.setCheckInDate(LocalDate.now());
+			AppState.getInstance().getDatabase().getReservations().update(reservation);
+			return ControllerActionStatus.SUCCESS;
+		} catch (NoElementException e) {
+			e.printStackTrace();
+			return ControllerActionStatus.NO_RECORD;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ControllerActionStatus.ERROR;
+		}
+	}
+	public static ControllerActionStatus checkOut(Reservation reservation) {
+		try {
+			if (reservation == null) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			if (reservation.getStatus() != ReservationStatus.APPROVED) {
+				return ControllerActionStatus.INCORECT_STATUS;
+			}
+			Room room = reservation.getRoom();
 			HashMap<Maid, Integer> maidsLoad = new HashMap<Maid, Integer>();
 			ArrayList<User> maids = AppState.getInstance().getDatabase().getUsers().select(new SelectCondition() {
 
@@ -449,12 +487,10 @@ public class ReservationController {
 					selectedMaid = maid;
 				}
 			}
-			selectedRoom.setMaid(selectedMaid);
-			*/
-			selectedRoom.setStatus(RoomStatus.OCCUPIED);
-			RoomController.updateRoom(selectedRoom);
-			reservation.setRoom(selectedRoom);
-			reservation.setCheckInDate(LocalDate.now());
+			room.setMaid(selectedMaid);
+			room.setStatus(RoomStatus.CLEANING);
+			RoomController.updateRoom(room);
+			reservation.setCheckOutDate(LocalDate.now());
 			AppState.getInstance().getDatabase().getReservations().update(reservation);
 			return ControllerActionStatus.SUCCESS;
 		} catch (NoElementException e) {
@@ -464,6 +500,7 @@ public class ReservationController {
 			e.printStackTrace();
 			return ControllerActionStatus.ERROR;
 		}
+		
 	}
 
 }

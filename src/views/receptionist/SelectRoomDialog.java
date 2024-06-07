@@ -22,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import models.Room;
+import utils.WindowUtils;
 
 public class SelectRoomDialog extends JDialog {
 
@@ -46,6 +47,7 @@ public class SelectRoomDialog extends JDialog {
 		setTitle("Room selection dialog");
 		setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		setModal(true);
+		setIconImage(WindowUtils.getIconImage());
 		setBounds(100, 100, 450, 300);
 		setLocationRelativeTo(null);
 		int y = 0;
