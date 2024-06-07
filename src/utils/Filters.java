@@ -53,7 +53,6 @@ public class Filters {
 				if (row.isDeleted()) return false;
 				
 				Reservation reservation = (Reservation) row;
-				System.out.println("Checking reservation: " + reservation);
 				if (statuses.size() > 0 && !statuses.contains(reservation.getStatus())) {
 					System.out.println("Status not matching");
 					return false;

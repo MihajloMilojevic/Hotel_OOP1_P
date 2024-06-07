@@ -28,8 +28,10 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -75,6 +77,7 @@ public class AddReservationDialog extends JDialog {
 	private JTextField priceTf;
 	private JDateChooser startDateCh;
 	private JDateChooser endDateCh;
+	private JSpinner numberOfGuestsSp;
 	private ArrayList<JCheckBox> roomAdditionsCBs;
 	private ArrayList<JCheckBox> reservationAdditionsCBs;
 	
@@ -206,6 +209,37 @@ public class AddReservationDialog extends JDialog {
 					gbc_typeCb.gridx = 2;
 					gbc_typeCb.gridy = y++;
 					panel.add(typeCb, gbc_typeCb);
+				}
+				{
+					Component verticalStrut = Box.createVerticalStrut(5);
+					GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
+					gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
+					gbc_verticalStrut.gridx = 1;
+					gbc_verticalStrut.gridy = y++;
+					panel.add(verticalStrut, gbc_verticalStrut);
+				}
+				{
+					lblNewLabel_4 = new JLabel("Number of Guests:");
+					lblNewLabel_4.setForeground(Color.WHITE);
+					lblNewLabel_4.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+					GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
+					gbc_lblNewLabel_4.anchor = GridBagConstraints.WEST;
+					gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
+					gbc_lblNewLabel_4.gridx = 1;
+					gbc_lblNewLabel_4.gridy = y;
+					panel.add(lblNewLabel_4, gbc_lblNewLabel_4);
+				}
+				{
+					numberOfGuestsSp = new JSpinner();
+					lblNewLabel_4.setLabelFor(typeCb);
+					numberOfGuestsSp.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+					numberOfGuestsSp.setModel(new SpinnerNumberModel(1, 1, null, 1));
+					GridBagConstraints gbc_typeCb = new GridBagConstraints();
+					gbc_typeCb.insets = new Insets(0, 0, 5, 0);
+					gbc_typeCb.fill = GridBagConstraints.HORIZONTAL;
+					gbc_typeCb.gridx = 2;
+					gbc_typeCb.gridy = y++;
+					panel.add(numberOfGuestsSp, gbc_typeCb);
 				}
 				{
 					if (guest == null) {
@@ -443,10 +477,16 @@ public class AddReservationDialog extends JDialog {
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
+						if ((int) numberOfGuestsSp.getValue() < 1) {
+							JOptionPane.showMessageDialog(null, "Number of guests must be at least 1!", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 						reservation.setId(id);
 						reservation.setRoomType((RoomType) typeCb.getSelectedItem());
 						reservation.setStartDate(startDate);
 						reservation.setEndDate(endDate);
+						reservation.setNumberOfGuests((int) numberOfGuestsSp.getValue());
 						ArrayList<RoomAddition> roomAdditions = new ArrayList<RoomAddition>();
 						for (JCheckBox cb : roomAdditionsCBs) {
 							if (cb.isSelected()) {
@@ -560,7 +600,6 @@ public class AddReservationDialog extends JDialog {
 		try {
 			testReservation.setPrice(ReservationController.calculateTotalPrice(testReservation));
 			priceTf.setText(String.valueOf(testReservation.getPrice()));
-			System.out.println(testReservation.getPrice());
         } catch (PriceException e) {
         	priceTf.setText(e.getMessage().split(":")[1].trim() + " is not available for the selected period");
 		}

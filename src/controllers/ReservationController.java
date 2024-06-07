@@ -16,6 +16,7 @@ import models.ReservationAddition;
 import models.Room;
 import models.User;
 import models.enums.ReservationStatus;
+import models.enums.RoomStatus;
 import utils.Pair;
 
 public class ReservationController {
@@ -24,6 +25,19 @@ public class ReservationController {
 		ArrayList<Reservation> rooms = AppState.getInstance().getDatabase().getReservations().select(condition);
 		rooms.sort((r1, r2) -> r1.getStartDate().compareTo(r2.getStartDate()));
 		return rooms;
+	}
+
+	public static ArrayList<Reservation> getCheckInReservations() {
+		return getReservations(new SelectCondition() {
+
+			@Override
+			public boolean check(Model row) {
+				Reservation r = (Reservation) row;
+				return r.getStatus() == ReservationStatus.APPROVED && !r.isDeleted()
+						&& r.getCheckInDate() == null && r.getCheckOutDate() == null
+						&& (r.getStartDate().equals(LocalDate.now()) || r.getStartDate().isAfter(LocalDate.now()));
+			}
+		});
 	}
 
 	public static ArrayList<Reservation> getReservations() {
@@ -35,7 +49,7 @@ public class ReservationController {
 			}
 		});
 	}
-	
+
 	public static ArrayList<Reservation> getGuestReservation(User guest, SelectCondition condition) {
 		return getReservations(new SelectCondition() {
 			@Override
@@ -46,12 +60,21 @@ public class ReservationController {
 		});
 	}
 
+	public static ArrayList<Room> getAvailableRooms(Reservation reservation) {
+		ArrayList<Room> availableRooms = findAvailableRooms(reservation);
+		ArrayList<Room> res = new ArrayList<Room>(availableRooms.stream()
+				.filter(room -> room.getStatus() == RoomStatus.FREE || room.getStatus() == RoomStatus.CLEANING)
+				.toList());
+		res.sort((r1, r2) -> r1.getNumber() - r2.getNumber());
+		return res;
+	}
+
 	public static ControllerActionStatus addReservation(Reservation reservation) {
 		try {
 			if (reservation == null || !reservation.isValid()) {
 				return ControllerActionStatus.INCOPLETE_DATA;
 			}
-			if (!isThereRoom(reservation))  {
+			if (!isThereRoom(reservation)) {
 				return ControllerActionStatus.NO_ROOM;
 			}
 			reservation.setPrice(calculateTotalPrice(reservation));
@@ -70,17 +93,19 @@ public class ReservationController {
 		if (reservation == null || !reservation.isValid()) {
 			return ControllerActionStatus.INCOPLETE_DATA;
 		}
-		Reservation dbReservation = AppState.getInstance().getDatabase().getReservations().selectById(reservation.getId());
+		Reservation dbReservation = AppState.getInstance().getDatabase().getReservations()
+				.selectById(reservation.getId());
 		if (dbReservation == null) {
 			return ControllerActionStatus.NO_RECORD;
 		}
 		if (dbReservation.getStartDate().isBefore(LocalDate.now())) {
 			return ControllerActionStatus.OLD;
 		}
-		if (!isThereRoom(reservation))  {
+		if (!isThereRoom(reservation)) {
 			return ControllerActionStatus.NO_ROOM;
 		}
-		if (reservation.getStatus() != ReservationStatus.PENDING && reservation.getStatus() != ReservationStatus.APPROVED) {
+		if (reservation.getStatus() != ReservationStatus.PENDING
+				&& reservation.getStatus() != ReservationStatus.APPROVED) {
 			return ControllerActionStatus.INCORECT_STATUS;
 		}
 		try {
@@ -91,17 +116,17 @@ public class ReservationController {
 		reservation.setStatus(ReservationStatus.PENDING);
 		return saveChanges(reservation);
 	}
-	
 
 	public static ControllerActionStatus updateGuestReservation(Reservation reservation) {
 		if (reservation == null || !reservation.isValid()) {
 			return ControllerActionStatus.INCOPLETE_DATA;
 		}
-		Reservation dbReservation = AppState.getInstance().getDatabase().getReservations().selectById(reservation.getId());
+		Reservation dbReservation = AppState.getInstance().getDatabase().getReservations()
+				.selectById(reservation.getId());
 		if (dbReservation == null) {
 			return ControllerActionStatus.NO_RECORD;
 		}
-		if (!isThereRoom(reservation))  {
+		if (!isThereRoom(reservation)) {
 			return ControllerActionStatus.NO_ROOM;
 		}
 		if (reservation.getStatus() != ReservationStatus.PENDING) {
@@ -143,7 +168,8 @@ public class ReservationController {
 		}
 	}
 
-	public static ControllerActionStatus addReservationAddition(ReservationAddition reservationAddition, double initialPrice) {
+	public static ControllerActionStatus addReservationAddition(ReservationAddition reservationAddition,
+			double initialPrice) {
 		try {
 			if (reservationAddition == null || !reservationAddition.isValid()) {
 				return ControllerActionStatus.INCOPLETE_DATA;
@@ -256,7 +282,6 @@ public class ReservationController {
 	public static float calculateTotalPrice(Reservation reservation) throws PriceException {
 		if (reservation == null || reservation.getStartDate() == null || reservation.getEndDate() == null
 				|| reservation.getRoomType() == null) {
-			System.out.println("CALCULATE TOTAL PRICE: INCOPLETE DATA");
 			return 0;
 		}
 		ArrayList<PriceList> priceLists = PriceListController.getPricesForPeriod(reservation.getStartDate(),
@@ -305,7 +330,7 @@ public class ReservationController {
 		}
 		// check if room is available
 
-		if (!isThereRoom(reservation))  {
+		if (!isThereRoom(reservation)) {
 			return ControllerActionStatus.NO_ROOM;
 		}
 		reservation.setStatus(ReservationStatus.APPROVED);
@@ -323,12 +348,13 @@ public class ReservationController {
 		reservation.setPrice(0);
 		return saveChanges(reservation);
 	}
-	
+
 	public static ControllerActionStatus cancelReservation(Reservation reservation) {
 		if (reservation == null) {
 			return ControllerActionStatus.INCOPLETE_DATA;
 		}
-		if (reservation.getStatus() == ReservationStatus.REJECTED || reservation.getStatus() == ReservationStatus.CANCELLED) {
+		if (reservation.getStatus() == ReservationStatus.REJECTED
+				|| reservation.getStatus() == ReservationStatus.CANCELLED) {
 			return ControllerActionStatus.INCORECT_STATUS;
 		}
 		reservation.setStatus(ReservationStatus.CANCELLED);
@@ -344,7 +370,7 @@ public class ReservationController {
 					@Override
 					public boolean check(Model row) {
 						Reservation r = (Reservation) row;
-						return r.getStatus() == ReservationStatus.APPROVED && !r.isDeleted()
+						return !r.equals(reservation) && r.getStatus() == ReservationStatus.APPROVED && !r.isDeleted()
 								&& r.getStartDate().isBefore(reservation.getEndDate())
 								&& r.getEndDate().isAfter(reservation.getStartDate());
 					}
@@ -384,4 +410,60 @@ public class ReservationController {
 		return new ArrayList<Room>(allRooms.stream().filter(room -> room.getType().equals(reservation.getRoomType())
 				&& room.getRoomAdditions().containsAll(reservation.getRoomAdditions())).toList());
 	}
+
+	public static ControllerActionStatus checkIn(Reservation reservation, Room selectedRoom) {
+		try {
+			if (reservation == null || selectedRoom == null) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			if (reservation.getStatus() != ReservationStatus.APPROVED) {
+				return ControllerActionStatus.INCORECT_STATUS;
+			}
+			/*
+			HashMap<Maid, Integer> maidsLoad = new HashMap<Maid, Integer>();
+			ArrayList<User> maids = AppState.getInstance().getDatabase().getUsers().select(new SelectCondition() {
+
+				@Override
+				public boolean check(Model row) {
+					return !row.isDeleted() && row instanceof Maid;
+				}
+			});
+			for (User maid : maids) {
+				maidsLoad.put((Maid) maid, 0);
+			}
+			AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
+
+				@Override
+				public boolean check(Model row) {
+					Room r = (Room) row;
+					return r.getMaid() != null && !r.isDeleted();
+				}
+			}).forEach(r -> {
+				if (r.getMaid() == null) return;
+				maidsLoad.put(r.getMaid(), maidsLoad.get(r.getMaid()) + 1);
+			});
+			Maid selectedMaid = (Maid) maids.get(0);
+			for (User user : maids) {
+				Maid maid = (Maid) user;
+				if (selectedMaid == null || maidsLoad.get(maid) < maidsLoad.get(selectedMaid)) {
+					selectedMaid = maid;
+				}
+			}
+			selectedRoom.setMaid(selectedMaid);
+			*/
+			selectedRoom.setStatus(RoomStatus.OCCUPIED);
+			RoomController.updateRoom(selectedRoom);
+			reservation.setRoom(selectedRoom);
+			reservation.setCheckInDate(LocalDate.now());
+			AppState.getInstance().getDatabase().getReservations().update(reservation);
+			return ControllerActionStatus.SUCCESS;
+		} catch (NoElementException e) {
+			e.printStackTrace();
+			return ControllerActionStatus.NO_RECORD;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ControllerActionStatus.ERROR;
+		}
+	}
+
 }

@@ -119,6 +119,20 @@ public class MainReceptionist extends JFrame {
 		checkInBtn = new JButton("Check IN");
 		checkInBtn.setIcon(new ImageIcon("./assets/icons/check_in.png"));
 		checkInBtn.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		checkInBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CheckINDialog dialog = new CheckINDialog();
+				dialog.setVisible(true);
+				dialog.addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosed(WindowEvent windowEvent) {
+						model.refresh();
+						dataPanel.getTable().updateUI();
+					}
+				});
+			}
+		});
 		toolBar.add(checkInBtn);
 
 		checkOutBtn = new JButton("Check OUT");

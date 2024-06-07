@@ -80,7 +80,7 @@ public class Database {
 		 */
 
 		connections.add(new Connection<Room, RoomType>(getRooms(), getRoomTypes(),
-				new File(settings.getSetting("database", "rooms_roomTypes_connection_file_path", "./data/default.csv")),
+				new File(settings.getSetting("database", "rooms_roomTypes_connection_file_path", "./data/default1.csv")),
 				new ConnectionActions<Room, RoomType>() {
 					@Override
 					public void load(Table<Room> table1, Table<RoomType> table2, String path)
@@ -110,10 +110,10 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
-		
+
 		connections.add(new Connection<Room, RoomAddition>(
 				getRooms(), getRoomAdditions(), new File(settings.getSetting("database",
-						"rooms_roomAdditions_connection_file_path", "./data/default.csv")),
+						"rooms_roomAdditions_connection_file_path", "./data/default2.csv")),
 				new ConnectionActions<Room, RoomAddition>() {
 					@Override
 					public void load(Table<Room> table1, Table<RoomAddition> table2, String path)
@@ -143,9 +143,9 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
-		
+
 		connections.add(new Connection<Room, User>(getRooms(), getUsers(),
-				new File(settings.getSetting("database", "rooms_maids_connection_file_path", "./data/default.csv")),
+				new File(settings.getSetting("database", "rooms_maids_connection_file_path", "./data/ROOM_MAID_ERROR.csv")),
 				new ConnectionActions<Room, User>() {
 					@Override
 					public void load(Table<Room> table1, Table<User> table2, String path)
@@ -175,10 +175,10 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
-		
+
 		connections.add(new Connection<Reservation, RoomType>(
 				getReservations(), getRoomTypes(), new File(settings.getSetting("database",
-						"reservations_roomTypes_connection_file_path", "./data/default.csv")),
+						"reservations_roomTypes_connection_file_path", "./data/default3.csv")),
 				new ConnectionActions<Reservation, RoomType>() {
 					@Override
 					public void load(Table<Reservation> table1, Table<RoomType> table2, String path)
@@ -206,10 +206,10 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
-		
+
 		connections.add(new Connection<Reservation, User>(
 				getReservations(), getUsers(), new File(settings.getSetting("database",
-						"reservations_guests_connection_file_path", "./data/default.csv")),
+						"reservations_guests_connection_file_path", "./data/default4.csv")),
 				new ConnectionActions<Reservation, User>() {
 					@Override
 					public void load(Table<Reservation> table1, Table<User> table2, String path)
@@ -237,10 +237,10 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
-		
+
 		connections.add(new Connection<Reservation, ReservationAddition>(
 				getReservations(), getReservationAdditions(), new File(settings.getSetting("database",
-						"reservations_reservationAdditions_connection_file_path", "./data/default.csv")),
+						"reservations_reservationAdditions_connection_file_path", "./data/default5.csv")),
 				new ConnectionActions<Reservation, ReservationAddition>() {
 					@Override
 					public void load(Table<Reservation> table1, Table<ReservationAddition> table2, String path)
@@ -270,10 +270,10 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
-		
+
 		connections.add(new Connection<Reservation, RoomAddition>(
 				getReservations(), getRoomAdditions(), new File(settings.getSetting("database",
-						"reservations_roomAdditions_connection_file_path", "./data/default.csv")),
+						"reservations_roomAdditions_connection_file_path", "./data/default6.csv")),
 				new ConnectionActions<Reservation, RoomAddition>() {
 					@Override
 					public void load(Table<Reservation> table1, Table<RoomAddition> table2, String path)
@@ -303,10 +303,10 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
-		
+
 		connections.add(new Connection<PriceList, RoomType>(
 				getPriceLists(), getRoomTypes(), new File(settings.getSetting("database",
-						"priceLists_roomTypes_connection_file_path", "./data/default.csv")),
+						"priceLists_roomTypes_connection_file_path", "./data/default7.csv")),
 				new ConnectionActions<PriceList, RoomType>() {
 					@Override
 					public void load(Table<PriceList> table1, Table<RoomType> table2, String path)
@@ -340,7 +340,7 @@ public class Database {
 
 		connections.add(new Connection<PriceList, ReservationAddition>(
 				getPriceLists(), getReservationAdditions(), new File(settings.getSetting("database",
-						"priceLists_reservationAdditions_connection_file_path", "./data/default.csv")),
+						"priceLists_reservationAdditions_connection_file_path", "./data/default8.csv")),
 				new ConnectionActions<PriceList, ReservationAddition>() {
 					@Override
 					public void load(Table<PriceList> table1, Table<ReservationAddition> table2, String path)
@@ -373,10 +373,10 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
-		
+
 		connections.add(new Connection<Reservation, Room>(
-				getReservations(), getRooms(), new File(settings.getSetting("databse",
-						"reservations_rooms_connection_file_path", "./data/default.csv")),
+				getReservations(), getRooms(), new File(settings.getSetting("database",
+						"reservations_rooms_connection_file_path", "./data/default9.csv")),
 				new ConnectionActions<Reservation, Room>() {
 
 					@Override
@@ -384,7 +384,7 @@ public class Database {
 							throws IOException, ParseException, NoElementException {
 						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
 						for (String line : lines) {
-							
+
 							String[] parts = line.split(";");
 							if (parts.length != 2) {
 								throw new ParseException("Invalid csv record", 0);
@@ -411,7 +411,7 @@ public class Database {
 
 		connections.add(new Connection<CleaningLog, User>(
 				getCleaningLogs(), getUsers(), new File(settings.getSetting("database",
-						"cleaningLogs_maids_connection_file_path", "./data/default.csv")),
+						"cleaningLogs_maids_connection_file_path", "./data/logs_maids_ERRROR.csv")),
 				new ConnectionActions<CleaningLog, User>() {
 					@Override
 					public void load(Table<CleaningLog> table1, Table<User> table2, String path)
@@ -441,39 +441,40 @@ public class Database {
 						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
 					}
 				}));
-		
-		connections.add(new Connection<Room, CleaningLog>(getRooms(), getCleaningLogs(), new File(settings.getSetting("database",
-                "rooms_cleaningLogs_connection_file_path", "./data/default.csv")),
-            new ConnectionActions<Room, CleaningLog>() {
-                @Override
-                public void load(Table<Room> table1, Table<CleaningLog> table2, String path)
-                        throws IOException, ParseException, NoElementException {
-                    List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
-                    for (String line : lines) {
-                        String[] parts = line.split(";");
-                        if (parts.length != 2) {
-                            throw new ParseException("Invalid csv record", 0);
-                        }
-                        Room room = table1.selectById(parts[0]);
-                        CleaningLog cleaningLog = table2.selectById(parts[1]);
-                        room.addCleaningLog(cleaningLog);
-                        table1.update(room, false);
-                    }
-                }
 
-                @Override
-                public void save(Table<Room> table1, Table<CleaningLog> table2, String path)
-                        throws IOException, ParseException {
-                    List<String> lines = new ArrayList<String>();
-                    for (Room room : table1.getRows()) {
-                        for (CleaningLog cleaningLog : room.getCleaningLogs()) {
-                            lines.add(room.getId() + ";" + cleaningLog.getId());
-                        }
-                    }
-                    Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
-                }
-            }));
-		
+		connections.add(new Connection<Room, CleaningLog>(
+				getRooms(), getCleaningLogs(), new File(settings.getSetting("database",
+						"rooms_cleaningLogs_connection_file_path", "./data/room_log_ERRORRRRR.csv")),
+				new ConnectionActions<Room, CleaningLog>() {
+					@Override
+					public void load(Table<Room> table1, Table<CleaningLog> table2, String path)
+							throws IOException, ParseException, NoElementException {
+						List<String> lines = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
+						for (String line : lines) {
+							String[] parts = line.split(";");
+							if (parts.length != 2) {
+								throw new ParseException("Invalid csv record", 0);
+							}
+							Room room = table1.selectById(parts[0]);
+							CleaningLog cleaningLog = table2.selectById(parts[1]);
+							room.addCleaningLog(cleaningLog);
+							table1.update(room, false);
+						}
+					}
+
+					@Override
+					public void save(Table<Room> table1, Table<CleaningLog> table2, String path)
+							throws IOException, ParseException {
+						List<String> lines = new ArrayList<String>();
+						for (Room room : table1.getRows()) {
+							for (CleaningLog cleaningLog : room.getCleaningLogs()) {
+								lines.add(room.getId() + ";" + cleaningLog.getId());
+							}
+						}
+						Files.write(Path.of(path), lines, StandardCharsets.UTF_8);
+					}
+				}));
+
 		/*
 		 * ****************************** INDECIES
 		 * ***************************************
@@ -574,7 +575,7 @@ public class Database {
 	public Table<PriceList> getPriceLists() {
 		return (Table<PriceList>) tables.get("priceLists");
 	}
-	
+
 	/**
 	 * @return the cleaningLogs
 	 */

@@ -879,7 +879,6 @@ public class InitialDatabase {
 			r1.addReservationAddition(dinner);
 			
 			r1.addRoomAddition(climate);
-			r1.addRoomAddition(tv);
 			r1.addRoomAddition(wifi);
 			
 			r1.setPrice(ReservationController.calculateTotalPrice(r1));
@@ -891,10 +890,7 @@ public class InitialDatabase {
 			r2.addReservationAddition(allInclusive);
 			r2.addReservationAddition(spa);
 			
-			r2.addRoomAddition(climate);
 			r2.addRoomAddition(tv);
-			r2.addRoomAddition(wifi);
-			r2.addRoomAddition(jacuzzi);
 			
 			r2.setPrice(ReservationController.calculateTotalPrice(r2));
 			
@@ -906,19 +902,16 @@ public class InitialDatabase {
 			r3.addReservationAddition(roomService);
 			r3.addReservationAddition(pool);
 			
-			r3.addRoomAddition(climate);
+			r3.addRoomAddition(jacuzzi);
 			r3.addRoomAddition(tv);
-			r3.addRoomAddition(wifi);
-            r3.addRoomAddition(balcony);
-            
             r3.setPrice(ReservationController.calculateTotalPrice(r3));
-            r3.setRoom(room801);
             
             db.getReservations().insert(r3);
             
             CleaningLog cl1 = new CleaningLog(LocalDate.of(2024, 5, 31), nikola);
             db.getCleaningLogs().insert(cl1);
             room101.addCleaningLog(cl1);
+            db.getRooms().update(room101);
             
             /*
             // Scenario to test checking availability of rooms

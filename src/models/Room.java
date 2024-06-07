@@ -207,22 +207,28 @@ public class Room extends Model {
 		for (RoomAddition roomAddition : this.roomAdditions) {
 			roomAdditionsClone.add((RoomAddition)roomAddition.clone());
 		}
-		
+		ArrayList<CleaningLog> cleaningLogsClone = new ArrayList<CleaningLog>();
+		for (CleaningLog cleaningLog : this.cleaningLogs) {
+			cleaningLogsClone.add((CleaningLog) cleaningLog.clone());
+		}
 		Room r = new Room(id, number, type != null ? (RoomType)type.clone() : null, status, roomAdditionsClone);
+		r.setMaid(maid != null ? (Maid)maid.clone() : null);
+		r.setCleaningLogs(cleaningLogsClone);
 		if (this.isDeleted()) r.delete();
 		return r;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Model newModel) throws IllegalArgumentException {
 		super.update(newModel);
 		if (!(newModel instanceof Room)) throw new IllegalArgumentException("Not  a Room object");
-		setNumber((int) newModel.get("number"));
-		setType((RoomType) newModel.get("type"));
-		setStatus((RoomStatus) newModel.get("status"));
-		setRoomAdditions((ArrayList<RoomAddition>) newModel.get("roomAdditions"));
-		setMaid((Maid) newModel.get("maid"));
+		Room room = (Room) newModel;
+		this.number = room.number;
+		this.type = room.type;
+		this.status = room.status;
+		this.roomAdditions = room.roomAdditions;
+		this.maid = room.maid;
+		this.cleaningLogs = room.cleaningLogs;
 	}
 	
     @Override

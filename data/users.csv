@@ -1,8 +1,8 @@
-87172d81-4321-479e-9919-60d13cf90661;false;MAID;Nikola;Rogonjić;MALE;2004-09-10;+381644606859;Samaila 5, Kraljevo;nikola;Nikola123;SECONDARY_SCHOOL;0;75000.0
-ed83edf0-4de6-4ad5-986b-e3648c83281c;false;GUEST;Đorđe;Milojević;MALE;2008-05-04;+381642723956;8. Mart 70, Kraljevo;Djole;Majmunce
-54c2792a-ae18-46be-ae32-db6253e5d8c9;false;MAID;Luka;Prlinčević;MALE;2004-08-26;+381640862775;Bulevar despota Stefana 7, Novi Sad;luka;Luka123;PRIMARY_SCHOOL;0;60000.0
-c5b9a9c6-0acf-444e-bcba-3f021550ca8c;false;ADMIN;Mihajlo;Milojević;MALE;2004-05-21;+381649781191;Braće Dronjak 6, Novi Sad;admin;admin;DOCTORATE_DEGREE;2;210000.0
-9006f5d7-f374-4d2a-a08f-e6384eb16efb;false;RECEPTIONIST;Sara;Stojkov;FEMALE;2004-09-17;+381612599941;Maksima Gorkog 12, Novi Sad;sara;Sara987;MASTERS_DEGREE;3;135000.0
-7eaf6144-7508-42f9-b760-7a8c04576c43;false;GUEST;Sofija;Obradović;FEMALE;2004-04-21;+381659786412;Bulevar vojvode Stepe 17, Novi Sad;Sofija;Sofija123
-0d34efa1-715a-437e-ad43-4ff22ed28773;false;RECEPTIONIST;Petar;Popović;MALE;2004-06-06;+381628361185;Bulevar despota Stefana 7, Novi Sad;petar;Petar123;BACHELORS_DEGREE;1;105000.0
-79bfcf2b-5273-4187-98cd-23dc0dc59617;false;GUEST;Sara;Spasojević;FEMALE;2004-04-20;+381628361185;Ulica 9. maja 15, Kraljevo;caja;Sara123
+420c62a4-b49a-422d-a7dc-e34bd4c9850a;false;ADMIN;Mihajlo;Milojević;MALE;2004-05-21;+381649781191;Braće Dronjak 6, Novi Sad;admin;admin;DOCTORATE_DEGREE;2;210000.0
+0fded3ab-1cc8-40e8-94e8-5a1df2b8d413;false;MAID;Nikola;Rogonjić;MALE;2004-09-10;+381644606859;Samaila 5, Kraljevo;nikola;Nikola123;SECONDARY_SCHOOL;0;75000.0
+54612ab1-2d56-4c5c-97ff-d6ab83648cc8;false;GUEST;Đorđe;Milojević;MALE;2008-05-04;+381642723956;8. Mart 70, Kraljevo;Djole;Majmunce
+3355bfc2-e196-42c2-8e23-4d8e290364f6;false;MAID;Luka;Prlinčević;MALE;2004-08-26;+381640862775;Bulevar despota Stefana 7, Novi Sad;luka;Luka123;PRIMARY_SCHOOL;0;60000.0
+9702c717-c010-488d-966e-c4f50f8dd568;false;GUEST;Sofija;Obradović;FEMALE;2004-04-21;+381659786412;Bulevar vojvode Stepe 17, Novi Sad;Sofija;Sofija123
+e99edd9b-e70f-4b33-b2bc-d622cc2c50ed;false;RECEPTIONIST;Petar;Popović;MALE;2004-06-06;+381628361185;Bulevar despota Stefana 7, Novi Sad;petar;Petar123;BACHELORS_DEGREE;1;105000.0
+a878fc9e-1970-4a9e-b16d-ab6fd58993e2;false;RECEPTIONIST;Sara;Stojkov;FEMALE;2004-09-17;+381612599941;Maksima Gorkog 12, Novi Sad;sara;Sara987;MASTERS_DEGREE;3;135000.0
+17b5b605-5962-4300-86dc-01c8a4384379;false;GUEST;Sara;Spasojević;FEMALE;2004-04-20;+381628361185;Ulica 9. maja 15, Kraljevo;caja;Sara123

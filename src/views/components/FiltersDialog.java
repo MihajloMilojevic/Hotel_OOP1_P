@@ -363,7 +363,6 @@ public class FiltersDialog extends JDialog {
 									selectedStatuses.add(pair.getSecond());
 								}
 							}
-							System.out.println(selectedStatuses);
 							ArrayList<RoomType> selectedRoomTypes = new ArrayList<>();
 							for (Pair<JCheckBox, RoomType> pair : roomTypes) {
 								if (pair.getFirst().isSelected()) {

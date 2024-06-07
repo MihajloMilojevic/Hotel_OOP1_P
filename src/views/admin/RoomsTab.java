@@ -12,6 +12,7 @@ import javax.swing.table.TableColumnModel;
 
 import controllers.ControllerActionStatus;
 import controllers.RoomController;
+import models.Maid;
 import models.Room;
 import utils.CustomTableModel;
 import utils.Pair;
@@ -33,6 +34,7 @@ public class RoomsTab extends Tab<Room> {
 		columns.add(new Pair<String, String>("Type", "type")); // 2
 		columns.add(new Pair<String, String>("Status", "status")); // 3
 		columns.add(new Pair<String, String>("Additions", "roomAdditions")); // 4
+		columns.add(new Pair<String, String>("Maid", "maid")); // 5
 	}
 
 	@Override
@@ -74,6 +76,12 @@ public class RoomsTab extends Tab<Room> {
 						return "";
 					return ((Room) data.get(rowIndex)).getType().getName();
 				}
+				if (columns.get(columnIndex).getSecond().equals("maid")) {
+					if (((Room) data.get(rowIndex)).getMaid() == null)
+						return "";
+					Maid maid = ((Room) data.get(rowIndex)).getMaid();
+					return maid.getName() + " " + maid.getSurname();
+				}
 				return super.getValueAt(rowIndex, columnIndex);
 			}
 
@@ -83,6 +91,9 @@ public class RoomsTab extends Tab<Room> {
 					return String.class;
 				}
 				if (columns.get(columnIndex).getSecond().equals("type")) {
+					return String.class;
+				}
+				if (columns.get(columnIndex).getSecond().equals("maid")) {
 					return String.class;
 				}
 				return super.getColumnClass(columnIndex);
@@ -103,6 +114,7 @@ public class RoomsTab extends Tab<Room> {
 		columnModel.getColumn(2).setMinWidth(150);
 		columnModel.getColumn(3).setMinWidth(75);
 		columnModel.getColumn(4).setMinWidth(350);
+		columnModel.getColumn(5).setMinWidth(200);
 	}
 
 	@Override
