@@ -239,4 +239,15 @@ public class RoomsTab extends Tab<Room> {
 			}
 		});
 	}
+
+	@Override
+	protected void addNewButton() {
+		dataPanel.addButton("View Cleaning Logs", "./assets/icons/clean.png", new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Room room = (Room) model.get(dataPanel.getTable().getSelectedRow());
+				CleaningLogsDialog dialog = new CleaningLogsDialog(room);
+				dialog.setVisible(true);
+			}
+		}, true);
+	}
 }

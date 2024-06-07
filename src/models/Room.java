@@ -209,6 +209,7 @@ public class Room extends Model {
 		}
 		ArrayList<CleaningLog> cleaningLogsClone = new ArrayList<CleaningLog>();
 		for (CleaningLog cleaningLog : this.cleaningLogs) {
+			if (cleaningLog == null) continue;
 			cleaningLogsClone.add((CleaningLog) cleaningLog.clone());
 		}
 		Room r = new Room(id, number, type != null ? (RoomType)type.clone() : null, status, roomAdditionsClone);

@@ -16,6 +16,7 @@ import models.Room;
 import models.RoomAddition;
 import models.RoomType;
 import models.enums.RoomStatus;
+import utils.Pair;
 
 public class RoomController {
 
@@ -30,7 +31,7 @@ public class RoomController {
 		rooms.sort((r1, r2) -> r1.getNumber() - r2.getNumber());
 		return rooms;
 	}
-	
+
 	public static ArrayList<Room> getRoomsForMaid(Maid maid) {
 		ArrayList<Room> rooms = AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
 
@@ -41,6 +42,33 @@ public class RoomController {
 			}
 		});
 		rooms.sort((r1, r2) -> r1.getNumber() - r2.getNumber());
+		return rooms;
+	}
+
+	public static ArrayList<Pair<Room, Reservation>> getReceptionistRooms() {
+		ArrayList<Pair<Room, Reservation>> rooms = new ArrayList<>();
+		AppState.getInstance().getDatabase().getRooms().select(new SelectCondition() {
+
+			@Override
+			public boolean check(Model row) {
+				Room room = (Room) row;
+				return !room.isDeleted();
+			}
+		}).forEach(room -> {
+			ArrayList<Reservation> reservations = AppState.getInstance().getDatabase().getReservations()
+					.select(new SelectCondition() {
+
+						@Override
+						public boolean check(Model row) {
+							Reservation reservation = (Reservation) row;
+							return !reservation.isDeleted() && reservation.getRoom() != null && reservation.getRoom().equals(room)
+									&& reservation.getCheckInDate() != null && reservation.getCheckOutDate() == null;
+						}
+					});
+			Reservation reservation = reservations.size() > 0 ? reservations.get(0) : null;
+			rooms.add(new Pair<>(room, reservation));
+		});
+		rooms.sort((r1, r2) -> r1.getFirst().getNumber() - r2.getFirst().getNumber());
 		return rooms;
 	}
 
@@ -323,16 +351,24 @@ public class RoomController {
 
 	public static ControllerActionStatus markRoomAsCleaned(Room room) {
 		try {
-            if (room == null) {
-                return ControllerActionStatus.INCOPLETE_DATA;
-            }
-            Maid maid = room.getMaid();
-            room.addCleaningLog(new CleaningLog(LocalDate.now(), maid));
-            room.setStatus(RoomStatus.FREE);
-            room.setMaid(null);
-            return updateRoom(room);
-        } catch (Exception e) {
-            return ControllerActionStatus.ERROR;
-        }
+			if (room == null) {
+				return ControllerActionStatus.INCOPLETE_DATA;
+			}
+			Maid maid = room.getMaid();
+			room.addCleaningLog(new CleaningLog(LocalDate.now(), maid));
+			room.setStatus(RoomStatus.FREE);
+			room.setMaid(null);
+			return updateRoom(room);
+		} catch (Exception e) {
+			return ControllerActionStatus.ERROR;
+		}
+	}
+
+	public static ArrayList<String> getCleaningLogs(Room room) {
+		ArrayList<String> logs = new ArrayList<>();
+		room.getCleaningLogs().forEach(log -> {
+			logs.add(log.getDate() + "   /   " + log.getMaid().getName() + " " + log.getMaid().getSurname());
+		});
+		return logs;
 	}
 }

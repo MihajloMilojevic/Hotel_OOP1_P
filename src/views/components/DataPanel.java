@@ -81,13 +81,11 @@ public class DataPanel<T extends Model> extends JPanel {
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.setRowHeight(30);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
-		
-		
 		table.setForeground(Color.WHITE);
 		table.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		table.setBackground(new Color(73, 73, 73));
-		
+		table.getTableHeader().setFont(new Font("Times New Roman", Font.BOLD, 14));
+		//table.setAutoCreateRowSorter(true);
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			
 			@Override

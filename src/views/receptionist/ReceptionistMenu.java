@@ -89,6 +89,32 @@ public class ReceptionistMenu extends JMenuBar {
 			}
 		});
 		menu.add(item);
+		
+		menu = new JMenu("View");
+		menu.setMnemonic(KeyEvent.VK_V);
+		add(menu);
+		
+		item = new JMenuItem("Daily Logs");
+		item.setMnemonic(KeyEvent.VK_D);
+		item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+		item.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new DailyLogsDialog().setVisible(true);
+			}
+		});
+		menu.add(item);
+		
+		item = new JMenuItem("Rooms");
+		item.setMnemonic(KeyEvent.VK_R);
+		item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+		item.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new RoomsDialog().setVisible(true);
+			}
+		});
+		menu.add(item);
 	}
 
 }
