@@ -84,7 +84,7 @@ public class MainGuest extends JFrame {
 		addButtons();
 		addReservations();
 		
-		dislpayTotal();
+		displayTotal();
 		
 		addWindowListener(WindowUtils.getWindowClosing());
 	}
@@ -133,7 +133,7 @@ public class MainGuest extends JFrame {
 
 			@Override
 			public ArrayList<Reservation> getData() {
-				dislpayTotal();
+				displayTotal();
 				return ReservationController.getGuestReservation(AppState.getInstance().getUser(), Filters.getCondition());				
 			}
 
@@ -214,6 +214,7 @@ public class MainGuest extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				model.refresh();
+				displayTotal();
 				dataPanel.getTable().updateUI();
 			}
 		});
@@ -335,6 +336,7 @@ public class MainGuest extends JFrame {
 					JOptionPane.showMessageDialog(contentPane, "An error occured", "Error", JOptionPane.ERROR_MESSAGE);
 					break;
 				}
+				MainGuest.this.displayTotal();
 				model.refresh();
 				dataPanel.getTable().updateUI();
 			}
@@ -359,7 +361,7 @@ public class MainGuest extends JFrame {
 		panel.add(totalLb);
 	}
 
-	private void dislpayTotal() {
+	public void displayTotal() {
 		total = 0;
 		for (Reservation r : ReservationController.getGuestReservation(AppState.getInstance().getUser(), Filters.getCondition())) {
 			total += r.getPrice();
