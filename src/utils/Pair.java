@@ -39,7 +39,7 @@ public class Pair<K, V> {
 	/**
 	 * @param second - second element of pair to set
 	 */
-	public void setValue(V second) {
+	public void setSecond(V second) {
 		this.second = second;
 	}
 	

@@ -51,7 +51,7 @@ public class MainAdmin extends JFrame {
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 
 		tabs = new ArrayList<Tab<?>>();
-		
+
 		addEmpoloyeesTab();
 		addGuestsTab();
 		addRoomsTab();
@@ -60,11 +60,13 @@ public class MainAdmin extends JFrame {
 		addReservationAdditionsTab();
 		addReservationsTab();
 		addPriceListsTab();
-		
+
 		for (Tab<?> tab : tabs) {
 			tab.setTabs((ArrayList<Tab<?>>) tabs.clone());
 			tab.removeTab(tab);
 		}
+		ReportsTab reportsTab = new ReportsTab();
+		tabbedPane.addTab("Reports", new ImageIcon("./assets/icons/guests.png"), reportsTab, null);
 
 		addWindowListener(WindowUtils.getWindowClosing());
 
@@ -103,8 +105,10 @@ public class MainAdmin extends JFrame {
 	private void addRoomTypesTab() {
 		RoomTypesTab roomTypesTab = new RoomTypesTab(this);
 		tabs.add(roomTypesTab);
-		tabbedPane.addTab("Room Types", new ImageIcon("./assets/icons/room_types.png"), roomTypesTab.getDataPanel(), null);
+		tabbedPane.addTab("Room Types", new ImageIcon("./assets/icons/room_types.png"), roomTypesTab.getDataPanel(),
+				null);
 	}
+
 	private void addReservationAdditionsTab() {
 		ReservationAdditionsTab reservationAdditionsTab = new ReservationAdditionsTab(this);
 		tabs.add(reservationAdditionsTab);
@@ -115,13 +119,15 @@ public class MainAdmin extends JFrame {
 	private void addReservationsTab() {
 		ReservationsTab reservationTab = new ReservationsTab(this);
 		tabs.add(reservationTab);
-		tabbedPane.addTab("Reservations", new ImageIcon("./assets/icons/reservations.png"), reservationTab.getDataPanel(), null);
+		tabbedPane.addTab("Reservations", new ImageIcon("./assets/icons/reservations.png"),
+				reservationTab.getDataPanel(), null);
 	}
-	
+
 	private void addPriceListsTab() {
 		PriceListsTab priceListsTab = new PriceListsTab(this);
-        tabs.add(priceListsTab);
-        tabbedPane.addTab("Price Lists", new ImageIcon("./assets/icons/price_lists.png"), priceListsTab.getDataPanel(), null);
+		tabs.add(priceListsTab);
+		tabbedPane.addTab("Price Lists", new ImageIcon("./assets/icons/price_lists.png"), priceListsTab.getDataPanel(),
+				null);
 	}
 
 }
