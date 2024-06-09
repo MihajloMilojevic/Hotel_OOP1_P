@@ -355,7 +355,9 @@ public class RoomController {
 				return ControllerActionStatus.INCOPLETE_DATA;
 			}
 			Maid maid = room.getMaid();
-			room.addCleaningLog(new CleaningLog(LocalDate.now(), maid));
+			CleaningLog log = new CleaningLog(LocalDate.now(), maid);
+			AppState.getInstance().getDatabase().getCleaningLogs().insert(log);
+			room.addCleaningLog(log);
 			room.setStatus(RoomStatus.FREE);
 			room.setMaid(null);
 			return updateRoom(room);

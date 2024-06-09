@@ -7,7 +7,9 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
@@ -17,10 +19,13 @@ import javax.swing.border.EmptyBorder;
 
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategorySeries.CategorySeriesRenderStyle;
+import org.knowm.xchart.PieChart;
 import org.knowm.xchart.XChartPanel;
 
 import controllers.ReportsController;
 import controllers.ReportsController.Revenue;
+import models.Maid;
+import models.enums.ReservationStatus;
 
 public class ReportsTab extends JPanel {
 
@@ -75,6 +80,8 @@ public class ReportsTab extends JPanel {
 		gbc_verticalStrut_1.gridy = y++;
 		panel.add(verticalStrut_1, gbc_verticalStrut_1);
 
+		// REVENUE CHART
+		
 		ArrayList<Revenue> revenues = ReportsController.getRevenue();
 		CategoryChart revenueChart = new CategoryChart(1300, 600);
 		revenueChart.getStyler().setDefaultSeriesRenderStyle(CategorySeriesRenderStyle.Line);
@@ -94,6 +101,98 @@ public class ReportsTab extends JPanel {
 		gbc_revenueChart.gridx = 0;
 		gbc_revenueChart.gridy = y++;
 		panel.add(revenueChartPanel, gbc_revenueChart);
+		
+
+		Component verticalStrut_2 = Box.createVerticalStrut(5);
+		GridBagConstraints gbc_verticalStrut_2 = new GridBagConstraints();
+		gbc_verticalStrut_2.insets = new Insets(0, 0, 5, 0);
+		gbc_verticalStrut_2.gridx = 0;
+		gbc_verticalStrut_2.gridy = y++;
+		panel.add(verticalStrut_2, gbc_verticalStrut_2);
+
+		JLabel lblMaidsInLast = new JLabel("Maids work in last 30 days:");
+		lblMaidsInLast.setForeground(Color.WHITE);
+		lblMaidsInLast.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		GridBagConstraints gbc_lblmaidInLast = new GridBagConstraints();
+		gbc_lblmaidInLast.insets = new Insets(0, 0, 5, 0);
+		gbc_lblmaidInLast.anchor = GridBagConstraints.WEST;
+		gbc_lblmaidInLast.gridx = 0;
+		gbc_lblmaidInLast.gridy = y++;
+		panel.add(lblMaidsInLast, gbc_lblmaidInLast);
+		
+		Component verticalStrut_3 = Box.createVerticalStrut(5);
+		GridBagConstraints gbc_verticalStrut_3 = new GridBagConstraints();
+		gbc_verticalStrut_3.insets = new Insets(0, 0, 5, 0);
+		gbc_verticalStrut_3.gridx = 0;
+		gbc_verticalStrut_3.gridy = y++;
+		panel.add(verticalStrut_3, gbc_verticalStrut_3);
+		
+		// MAID WORKLOAD CHART
+		
+		HashMap<Maid, Integer> maidWorkLoad30 = ReportsController.getMaidWorkload(LocalDate.now().minusDays(30), LocalDate.now());
+		
+		PieChart maidWorkLoad30Chart = new PieChart(500, 500);
+		for (Maid maid : maidWorkLoad30.keySet()) {
+			maidWorkLoad30Chart.addSeries(maid.getName(), maidWorkLoad30.get(maid));
+		}
+		XChartPanel<PieChart> maidWorkLoad30ChartPanel = new XChartPanel<>(maidWorkLoad30Chart);
+		maidWorkLoad30ChartPanel.setSize((int)(panel.getSize().width*0.8), (int)(panel.getSize().height*0.8));
+		GridBagConstraints gbc_maidWorkLoad30Chart = new GridBagConstraints();
+		gbc_maidWorkLoad30Chart.insets = new Insets(0, 0, 5, 0);
+		gbc_maidWorkLoad30Chart.gridx = 0;
+		gbc_maidWorkLoad30Chart.gridy = y++;
+		panel.add(maidWorkLoad30ChartPanel, gbc_maidWorkLoad30Chart);
+		
+		Component verticalStrut_4 = Box.createVerticalStrut(5);
+		GridBagConstraints gbc_verticalStrut_4 = new GridBagConstraints();
+		gbc_verticalStrut_4.insets = new Insets(0, 0, 5, 0);
+		gbc_verticalStrut_4.gridx = 0;
+		gbc_verticalStrut_4.gridy = y++;
+		panel.add(verticalStrut_4, gbc_verticalStrut_4);
+		
+		JLabel lblStatusesLast30 = new JLabel("Reservation statuses of reservations created in last 30 days:");
+		lblStatusesLast30.setForeground(Color.WHITE);
+		lblStatusesLast30.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		GridBagConstraints gbc_lblStatusesLast30 = new GridBagConstraints();
+		gbc_lblStatusesLast30.insets = new Insets(0, 0, 5, 0);
+		gbc_lblStatusesLast30.anchor = GridBagConstraints.WEST;
+		gbc_lblStatusesLast30.gridx = 0;
+		gbc_lblStatusesLast30.gridy = y++;
+		panel.add(lblStatusesLast30, gbc_lblStatusesLast30);
+		
+		
+
+		Component verticalStrut_5 = Box.createVerticalStrut(5);
+		GridBagConstraints gbc_verticalStrut_5 = new GridBagConstraints();
+		gbc_verticalStrut_5.insets = new Insets(0, 0, 5, 0);
+		gbc_verticalStrut_5.gridx = 0;
+		gbc_verticalStrut_5.gridy = y++;
+		panel.add(verticalStrut_5, gbc_verticalStrut_5);
+		
+		
+		// RESERVATION STATUSES CHART
+		
+		HashMap<ReservationStatus, Integer> reservationStatuses30 = ReportsController.getReservationStatuses();
+		PieChart reservationStatuses30Chart = new PieChart(500, 500);
+		for (ReservationStatus status : reservationStatuses30.keySet()) {
+			reservationStatuses30Chart.addSeries(status.toString(), reservationStatuses30.get(status));
+		}
+		XChartPanel<PieChart> reservationStatuses30ChartPanel = new XChartPanel<>(reservationStatuses30Chart);
+		reservationStatuses30ChartPanel.setSize((int)(panel.getSize().width*0.8), (int)(panel.getSize().height*0.8));
+		GridBagConstraints gbc_reservationStatuses30Chart = new GridBagConstraints();
+		gbc_reservationStatuses30Chart.insets = new Insets(0, 0, 5, 0);
+		gbc_reservationStatuses30Chart.gridx = 0;
+		gbc_reservationStatuses30Chart.gridy = y++;
+		panel.add(reservationStatuses30ChartPanel, gbc_reservationStatuses30Chart);
+		
+		Component verticalStrut_6 = Box.createVerticalStrut(5);
+		GridBagConstraints gbc_verticalStrut_6 = new GridBagConstraints();
+		gbc_verticalStrut_6.insets = new Insets(0, 0, 5, 0);
+		gbc_verticalStrut_6.gridx = 0;
+		gbc_verticalStrut_6.gridy = y++;
+		panel.add(verticalStrut_6, gbc_verticalStrut_6);
+		
+		// SCROLL PANE
 		
 		setLayout(new BorderLayout(0, 0));
 		JScrollPane scrollPane = new JScrollPane();
