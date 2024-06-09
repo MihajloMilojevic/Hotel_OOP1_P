@@ -21,7 +21,6 @@ public class PopupListener extends MouseAdapter {
 	}
 
 	private void maybeShowPopup(MouseEvent e) {
-		// System.out.println("PopupListener.maybeShowPopup() " + e.isPopupTrigger());
 		if (e.isPopupTrigger()) {
 			popup.show(e.getComponent(), e.getX(), e.getY());
 		}

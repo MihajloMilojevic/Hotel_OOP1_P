@@ -7,6 +7,7 @@ import java.util.HashMap;
 import app.AppState;
 import database.SelectCondition;
 import models.CleaningLog;
+import models.Employee;
 import models.Maid;
 import models.Model;
 import models.Reservation;
@@ -14,6 +15,7 @@ import models.Room;
 import models.RoomType;
 import models.User;
 import models.enums.ReservationStatus;
+import utils.Pair;
 
 public class ReportsController {
 	public static ArrayList<String> getDailyCheckins() {
@@ -108,7 +110,7 @@ public class ReportsController {
 		}
 		for (Room room : AppState.getInstance().getDatabase().getRooms().getRows()) {
 			for (CleaningLog log : room.getCleaningLogs()) {
-				if (log.getDate().isAfter(startDate) && log.getDate().isBefore(endDate)
+				if ((log.getDate().isAfter(startDate) && log.getDate().isBefore(endDate))
 						|| log.getDate().equals(startDate) || log.getDate().equals(endDate)) {
 					int current = workload.get(log.getMaid());
 					workload.put(log.getMaid(), current + 1);
@@ -117,7 +119,7 @@ public class ReportsController {
 		}
 		return workload;
 	}
-	
+
 	public static HashMap<ReservationStatus, Integer> getReservationStatuses() {
 		HashMap<ReservationStatus, Integer> statuses = new HashMap<ReservationStatus, Integer>();
 		for (ReservationStatus status : ReservationStatus.values()) {
@@ -128,7 +130,8 @@ public class ReportsController {
 					@Override
 					public boolean check(Model model) {
 						Reservation reservation = (Reservation) model;
-						return !reservation.isDeleted() && reservation.getCreatedAtDate().isAfter(LocalDate.now().minusDays(30));
+						return !reservation.isDeleted()
+								&& reservation.getCreatedAtDate().isAfter(LocalDate.now().minusDays(30));
 					}
 				});
 		for (Reservation reservation : reservations) {
@@ -136,6 +139,84 @@ public class ReportsController {
 			statuses.put(reservation.getStatus(), current + 1);
 		}
 		return statuses;
+	}
+	
+	public static HashMap<ReservationStatus,Integer> getReservationStatusesForPeriod(LocalDate startDate, LocalDate endDate) {
+		HashMap<ReservationStatus, Integer> statuses = new HashMap<ReservationStatus, Integer>();
+		for (ReservationStatus status : ReservationStatus.values()) {
+			statuses.put(status, 0);
+		}
+		ArrayList<Reservation> reservations = AppState.getInstance().getDatabase().getReservations()
+				.select(new SelectCondition() {
+					@Override
+					public boolean check(Model model) {
+						Reservation reservation = (Reservation) model;
+						return !reservation.isDeleted() && reservation.getStartDate().isBefore(endDate)
+								&& reservation.getEndDate().isAfter(startDate);
+					}
+				});
+		for (Reservation reservation : reservations) {
+			int current = statuses.get(reservation.getStatus());
+			statuses.put(reservation.getStatus(), current + 1);
+		}
+		return statuses;
+	}
+
+	public static Pair<Double, Double> getRevenueForPeriod(LocalDate startDate, LocalDate endDate) {
+		Pair<Double, Double> revenue = new Pair<Double, Double>(0.0, 0.0);
+		ArrayList<Reservation> reservations = AppState.getInstance().getDatabase().getReservations()
+				.select(new SelectCondition() {
+					@Override
+					public boolean check(Model model) {
+						Reservation reservation = (Reservation) model;
+						return !reservation.isDeleted() && reservation.getStartDate().isBefore(endDate)
+								&& reservation.getEndDate().isAfter(startDate);
+					}
+				});
+		for (Reservation reservation : reservations) {
+			revenue.setFirst(revenue.getFirst() + reservation.getPrice());
+		}
+		
+		long days = startDate.until(endDate).getDays();
+		for (User user : AppState.getInstance().getDatabase().getUsers().getRows()) {
+			if (!(user instanceof Employee)) continue;
+			Employee employee = (Employee) user;
+			revenue.setSecond(revenue.getSecond() + employee.getSalary() * days / 30.0);
+		}
+		return revenue;
+	}
+	
+	public static ArrayList<RoomsReport> getRoomsReportForPeriod(LocalDate startDate, LocalDate endDate) {
+		ArrayList<RoomsReport> reports = new ArrayList<RoomsReport>();
+		HashMap<Room, RoomsReport> reportsMap = new HashMap<Room, RoomsReport>();
+		for (Room room : AppState.getInstance().getDatabase().getRooms().getRows()) {
+			RoomsReport report = new RoomsReport(room);
+			reportsMap.put(room, report);
+		}
+		for (Reservation reservation : AppState.getInstance().getDatabase().getReservations().getRows()) {
+			if (reservation.isDeleted()) {
+				continue;
+			}
+			if (reservation.getStartDate().isAfter(endDate)) {
+				continue;
+			}
+			if (reservation.getEndDate().isBefore(startDate)) {
+				continue;
+			}
+			if (reservation.getRoom() == null) {
+				continue;
+			}
+			RoomsReport report = reportsMap.get(reservation.getRoom());
+			if (report == null) {
+				continue;
+			}
+			report.includeReservation(reservation, startDate, endDate);
+		}
+		reports.addAll(reportsMap.values());
+		reports.sort((r1, r2) -> {
+			return r1.getRoom().getNumber() - r2.getRoom().getNumber();
+		});
+		return reports;
 	}
 
 	public static class Revenue {
@@ -173,5 +254,53 @@ public class ReportsController {
 			return months;
 		}
 
+	}
+	
+	public static class RoomsReport {
+		private Room room;
+		private int nights;
+		private double revenue;
+		
+		public RoomsReport(Room room) {
+			this.room = room;
+			this.nights = 0;
+			this.revenue = 0;
+		}
+		
+		public void includeReservation(Reservation reservation, LocalDate startDate, LocalDate endDate) {
+			LocalDate start = reservation.getStartDate();
+			LocalDate end = reservation.getEndDate();
+			if (start.isBefore(startDate)) {
+				start = startDate;
+			}
+			if (end.isAfter(endDate)) {
+				end = endDate;
+			}
+			int nights = (int) start.until(end).getDays();
+			this.nights += nights;
+			this.revenue += reservation.getPrice();
+		}
+
+		/**
+		 * @return the room
+		 */
+		public Room getRoom() {
+			return room;
+		}
+
+		/**
+		 * @return the nights
+		 */
+		public int getNights() {
+			return nights;
+		}
+
+		/**
+		 * @return the revenue
+		 */
+		public double getRevenue() {
+			return revenue;
+		}
+		
 	}
 }

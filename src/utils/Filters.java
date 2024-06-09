@@ -54,27 +54,21 @@ public class Filters {
 				
 				Reservation reservation = (Reservation) row;
 				if (statuses.size() > 0 && !statuses.contains(reservation.getStatus())) {
-					System.out.println("Status not matching");
 					return false;
 				}
 				if (roomTypes.size() > 0 && !roomTypes.contains(reservation.getRoomType())) {
-					System.out.println("Room type not matching");
 					return false;
 				}
 				if (reservationAdditions.size() > 0
 						&& !reservationAdditions.containsAll(reservation.getReservationAdditions())) {
-					System.out.println("Reservation additions not matching");
 					return false;
 				}
 				if (roomAdditions.size() > 0 && !roomAdditions.containsAll(reservation.getRoomAdditions())) {
-					System.out.println("Room additions not matching");
 					return false;
 				}
 				if (priceEnabled && (reservation.getPrice() < minPrice || reservation.getPrice() > maxPrice)) {
-					System.out.println("Price not matching");
 					return false;
 				}
-				System.out.println("Reservation passed all filters");
 				return true;
 			}
 		};

@@ -208,7 +208,6 @@ public abstract class Employee extends User {
 	@Override
 	public Model fromCSV(String csv) throws ParseException {
 		super.fromCSV(csv);
-		// System.out.println(csv);
 		String[] values = csv.split(";");
 		if (values.length < 14)
 			throw new ParseException("Invalid csv record", 2);

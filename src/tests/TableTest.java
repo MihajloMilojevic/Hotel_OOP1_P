@@ -26,15 +26,6 @@ class TableTest {
 
 	private Table<RoomType> table;
 
-	@BeforeAll
-	static void setUpBeforeClass() throws Exception {
-		System.out.println("Testing Table class");
-	}
-
-	@AfterAll
-	static void tearDownAfterClass() throws Exception {
-		System.out.println("Finished testing Table class");
-	}
 
 	@BeforeEach
 	void setUp() throws Exception {

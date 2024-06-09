@@ -280,7 +280,6 @@ public abstract class User extends Model {
             this.name = values[3];
             this.surname = values[4];
             this.gender = Gender.valueOf(values[5]);
-            //System.out.println(values[5]);
             this.birthdate = CSVDateParser.parseString(values[6]);
             this.phone = values[7];
             this.address = values[8];
